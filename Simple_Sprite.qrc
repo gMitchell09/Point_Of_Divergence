@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/Simple_Sprite">
+        <file alias="/1.png">Sprites/Simple_Sprite/1.png</file>
+        <file alias="/2.png">Sprites/Simple_Sprite/2.png</file>
+        <file alias="/3.png">Sprites/Simple_Sprite/3.png</file>
+        <file alias="/4.png">Sprites/Simple_Sprite/4.png</file>
+        <file alias="/5.png">Sprites/Simple_Sprite/5.png</file>
+    </qresource>
+</RCC>

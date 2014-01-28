@@ -1,0 +1,69 @@
+#ifndef GAMEENGINE_H
+#define GAMEENGINE_H
+
+#include <functional>
+#include <vector>
+#include <QGraphicsScene>
+#include <QGraphicsObject>
+#include <QGraphicsView>
+#include <QKeyEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
+
+#include "animatedsprite.h"
+
+class GameEngine : public QGraphicsScene
+{
+private:
+    /* Arbitrary Constants, chosen by fair dice roll */
+    static const int m_gravity = -5; // The enemy's gate is down.
+
+    /* This is the minimum character distance from the edge of the screen before
+     *  the viewport will start following the character.
+     */
+    static const int m_windowXTolerance = 40;
+    static const int m_windowYTolerance = 120;
+    /* --- Arbitrary Constants End */
+
+    qint64 m_prevTime;
+    int m_viewportWidth, m_viewportHeight;
+    int m_sceneWidth, m_sceneHeight;
+
+    AnimatedSprite * m_mainActor;
+
+    std::vector<std::function<void(unsigned long)>> m_stepHandlerVector;
+
+    // This is a vector of sprites that can be interacted with
+    std::vector<AnimatedSprite*> m_spriteArray;
+
+public:
+    GameEngine();
+    GameEngine(int width, int height);
+
+    /* Iterate over m_stepHandlerVector and call each object so that they may update
+     * 0. Calculate dt and update m_prevTime
+     * 1. Call update on all child sprites by iterating over m_stepHandlerVector
+     * 2. Check m_mainActor position to see if we need to update the viewport
+     */
+    void step(qint64 time);
+    void collision(QGraphicsItem *caller, QList<QGraphicsItem*> others);
+
+    inline void addHandler(std::function<void(unsigned long)> callback) {
+        m_stepHandlerVector.push_back(callback);
+    }
+
+    inline size_t addSprite(AnimatedSprite* sprite, bool mainActor = false) {
+        this->addItem(sprite);
+        if (mainActor) {
+            m_mainActor = sprite;
+        }
+        m_spriteArray.push_back(sprite);
+        return m_spriteArray.size();
+    }
+
+protected:
+    virtual void keyPressEvent(QKeyEvent * keyEvent);
+    virtual void keyReleaseEvent(QKeyEvent * keyEvent);
+};
+
+#endif // GAMEENGINE_H
