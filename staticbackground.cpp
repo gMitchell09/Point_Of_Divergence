@@ -2,7 +2,9 @@
 
 StaticBackground::StaticBackground(QPoint repeatDistance, QGraphicsItem* parent) :
     Sprite(parent),
-    m_repeatDistance(repeatDistance) { }
+    m_repeatDistance(repeatDistance) {
+    this->setZValue(-1000);
+}
 
 bool StaticBackground::isStatic() {
     return true;

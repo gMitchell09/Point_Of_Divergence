@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     gameEngine = new GameEngine(ui->graphicsView->width(), ui->graphicsView->height());
+    gameEngine->setSceneRect(0, 0, 3840, 1200);
 
     ui->graphicsView->setScene(gameEngine);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -28,6 +29,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmap myPix3(":Simple_Sprite/3.png");
     QPixmap myPix4(":Simple_Sprite/4.png");
     QPixmap myPix5(":Simple_Sprite/5.png");
+
+    QPixmap bkgPix(":Backgrounds/background.jpg");
 
     std::vector<QPixmap> pixmapList;
     pixmapList.push_back(myPix1);
@@ -57,8 +60,13 @@ MainWindow::MainWindow(QWidget *parent) :
     testSprite2->setSolid(true);
     testSprite2->triggerAnimation(0);
 
+    bkg = new StaticBackground(QPoint(0, 0));
+    bkg->setPixmap(bkgPix);
+    bkg->setPos(0, 0);
+
     gameEngine->addSprite(testSprite, true);
     gameEngine->addSprite(testSprite2);
+    gameEngine->addItem(bkg);
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));

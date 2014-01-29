@@ -33,6 +33,7 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 RESOURCES += \
-    Simple_Sprite.qrc
+    Simple_Sprite.qrc \
+    Backgrounds.qrc
 
 OTHER_FILES +=

@@ -1,4 +1,5 @@
 #include "animatedcollideablesprite.h"
+#include "sprite.h"
 
 #define MIN(x, y) ((x<y)?x:y)
 #define MAX(x, y) ((x>y)?x:y)
@@ -88,13 +89,16 @@ void AnimatedCollideableSprite::step(unsigned long time) {
 unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& collisions, QPointF offset) {
     bool cTop=0, cRight=0, cBottom=0, cLeft=0;
     unsigned char side = 0;
-    AnimatedCollideableSprite *collidee;
+    Sprite *collidee, *collidee2;
     QPointF offsetPos = this->pos() + offset;
 
     // Check top points for collision
-    collidee = dynamic_cast<AnimatedCollideableSprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[0][0], this->transform()));
-    if (this->scene()->itemAt(offsetPos + m_collisionPoints[0][0], this->transform()) != NULL ||
-        this->scene()->itemAt(offsetPos + m_collisionPoints[0][1], this->transform()) != NULL) {
+    collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[0][0], this->transform()));
+    collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[0][1], this->transform()));
+    qDebug() << collidee;
+    qDebug() << collidee2;
+    if ((collidee != NULL && collidee->isCollideable()) ||
+            (collidee2 != NULL && collidee2->isCollideable())) {
         cTop = true;
         side |= Top;
         Collision col = {this, collidee, QPointF(0,0), Top, Top, QPointF(0,0)};
@@ -102,9 +106,10 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     }
 
     // Check right points for collision
-    collidee = dynamic_cast<AnimatedCollideableSprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[1][0], this->transform()));
-    if (this->scene()->itemAt(offsetPos + m_collisionPoints[1][0], this->transform()) != NULL ||
-        this->scene()->itemAt(offsetPos + m_collisionPoints[1][1], this->transform()) != NULL) {
+    collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[1][0], this->transform()));
+    collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[1][1], this->transform()));
+    if ((collidee != NULL && collidee->isCollideable()) ||
+            (collidee2 != NULL && collidee2->isCollideable())) {
         cRight = true;
         side |= Right;
         Collision col = {this, collidee, QPointF(0,0), Right, Right, QPointF(0,0)};
@@ -112,9 +117,10 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     }
 
     // Check left points for collision
-    collidee = dynamic_cast<AnimatedCollideableSprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[2][0], this->transform()));
-    if (this->scene()->itemAt(offsetPos + m_collisionPoints[2][0], this->transform()) != NULL ||
-        this->scene()->itemAt(offsetPos + m_collisionPoints[2][1], this->transform()) != NULL) {
+    collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[2][0], this->transform()));
+    collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[2][1], this->transform()));
+    if ((collidee != NULL && collidee->isCollideable()) ||
+            (collidee2 != NULL && collidee2->isCollideable())) {
         cBottom = true;
         side |= Bottom;
         Collision col = {this, collidee, QPointF(0,0), Bottom, Bottom, QPointF(0,0)};
@@ -122,9 +128,10 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     }
 
     // Check right points for collision
-    collidee = dynamic_cast<AnimatedCollideableSprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[3][0], this->transform()));
-    if (this->scene()->itemAt(offsetPos + m_collisionPoints[3][0], this->transform()) != NULL ||
-        this->scene()->itemAt(offsetPos + m_collisionPoints[3][1], this->transform()) != NULL) {
+    collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[3][0], this->transform()));
+    collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[3][1], this->transform()));
+    if ((collidee != NULL && collidee->isCollideable()) ||
+            (collidee2 != NULL && collidee2->isCollideable())) {
         cLeft = true;
         side |= Left;
         Collision col = {this, collidee, QPointF(0,0), Left, Left, QPointF(0,0)};
