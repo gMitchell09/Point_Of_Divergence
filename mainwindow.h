@@ -7,6 +7,7 @@
 
 #include "gameengine.h"
 #include "animatedsprite.h"
+#include "animatedcollideablesprite.h"
 
 namespace Ui {
 class MainWindow;
@@ -22,7 +23,7 @@ public:
     
 private:
     Ui::MainWindow *ui;
-    AnimatedSprite *testSprite, *testSprite2;
+    AnimatedCollideableSprite *testSprite, *testSprite2;
 
     GameEngine *gameEngine;
 

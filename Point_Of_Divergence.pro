@@ -16,11 +16,19 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     gameengine.cpp \
-    animatedsprite.cpp
+    animatedsprite.cpp \
+    sprite.cpp \
+    staticbackground.cpp \
+    animatedcollideablesprite.cpp \
+    collideablesprite.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
-    animatedsprite.h
+    animatedsprite.h \
+    sprite.h \
+    staticbackground.h \
+    animatedcollideablesprite.h \
+    collideablesprite.h
 
 FORMS    += mainwindow.ui
 

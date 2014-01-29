@@ -11,6 +11,7 @@
 #include <QKeyEvent>
 
 #include "animatedsprite.h"
+#include "animatedcollideablesprite.h"
 
 class GameEngine : public QGraphicsScene
 {
@@ -29,12 +30,14 @@ private:
     int m_viewportWidth, m_viewportHeight;
     int m_sceneWidth, m_sceneHeight;
 
-    AnimatedSprite * m_mainActor;
+    AnimatedCollideableSprite * m_mainActor;
 
     std::vector<std::function<void(unsigned long)>> m_stepHandlerVector;
 
     // This is a vector of sprites that can be interacted with
     std::vector<AnimatedSprite*> m_spriteArray;
+
+    int m_keyRecentPress;
 
 public:
     GameEngine();
@@ -52,7 +55,7 @@ public:
         m_stepHandlerVector.push_back(callback);
     }
 
-    inline size_t addSprite(AnimatedSprite* sprite, bool mainActor = false) {
+    inline size_t addSprite(AnimatedCollideableSprite* sprite, bool mainActor = false) {
         this->addItem(sprite);
         if (mainActor) {
             m_mainActor = sprite;

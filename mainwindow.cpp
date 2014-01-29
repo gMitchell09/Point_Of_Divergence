@@ -43,14 +43,14 @@ MainWindow::MainWindow(QWidget *parent) :
     pixmapList2.push_back(myPix4);
     pixmapList2.push_back(myPix1);
 
-    testSprite = new AnimatedSprite(48, 64);
+    testSprite = new AnimatedCollideableSprite(48, 64);
     testSprite->addAnimation(pixmapList, Forward_Reverse_Loop);
     testSprite->setPos(0, 300);
     testSprite->setVelocity(QPointF(0, 0));
     testSprite->setSolid(true);
     testSprite->triggerAnimation(0);
 
-    testSprite2 = new AnimatedSprite(48, 64);
+    testSprite2 = new AnimatedCollideableSprite(48, 64);
     testSprite2->addAnimation(pixmapList2, Forward_Reverse_Loop);
     testSprite2->setPos(gameEngine->width()/2 - 48, 300);
     testSprite2->setVelocity(QPointF(0, 0));
