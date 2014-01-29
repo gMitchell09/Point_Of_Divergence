@@ -83,15 +83,15 @@ void MainWindow::invalidateTimer() {
     qint64 nMS = QDateTime::currentMSecsSinceEpoch();
     gameEngine->step(nMS);
     if (testSprite->pos().x() > gameEngine->width()) testSprite->setPos(-64, testSprite->pos().y());
-    if (testSprite->pos().y() > 300) {
+    if (testSprite->pos().y() > 972) {
         testSprite->setVelocity(QPointF(testSprite->getVelocity().x(), 0));
-        testSprite->setPos(testSprite->pos().x(), 300);
+        testSprite->setPos(testSprite->pos().x(), 972);
     }
 
     if (testSprite2->pos().x() < 0) testSprite2->setPos(gameEngine->width(), testSprite2->pos().y());
-    if (testSprite2->pos().y() > 300) {
+    if (testSprite2->pos().y() > 972) {
         testSprite2->setVelocity(QPointF(testSprite2->getVelocity().x(), 0));
-        testSprite2->setPos(testSprite2->pos().x(), 300);
+        testSprite2->setPos(testSprite2->pos().x(), 972);
     }
 }
 
