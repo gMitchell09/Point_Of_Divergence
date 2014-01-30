@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     sprite.cpp \
     staticbackground.cpp \
     animatedcollideablesprite.cpp \
-    collideablesprite.cpp
+    collideablesprite.cpp \
+    tilemap.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -28,7 +29,8 @@ HEADERS  += mainwindow.h \
     sprite.h \
     staticbackground.h \
     animatedcollideablesprite.h \
-    collideablesprite.h
+    collideablesprite.h \
+    tilemap.h
 
 FORMS    += mainwindow.ui
 

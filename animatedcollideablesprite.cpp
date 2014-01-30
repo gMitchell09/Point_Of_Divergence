@@ -95,8 +95,6 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     // Check top points for collision
     collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[0][0], this->transform()));
     collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[0][1], this->transform()));
-    qDebug() << collidee;
-    qDebug() << collidee2;
     if ((collidee != NULL && collidee->isCollideable()) ||
             (collidee2 != NULL && collidee2->isCollideable())) {
         cTop = true;

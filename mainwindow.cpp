@@ -88,10 +88,10 @@ void MainWindow::invalidateTimer() {
         testSprite->setPos(testSprite->pos().x(), 972);
     }
 
-    if (testSprite2->pos().x() < 0) testSprite2->setPos(gameEngine->width(), testSprite2->pos().y());
-    if (testSprite2->pos().y() > 972) {
-        testSprite2->setVelocity(QPointF(testSprite2->getVelocity().x(), 0));
-        testSprite2->setPos(testSprite2->pos().x(), 972);
+    if (testSprite->pos().x() < -64) testSprite->setPos(gameEngine->sceneRect().width(), testSprite->pos().y());
+    if (testSprite->pos().y() > 972) {
+        testSprite->setVelocity(QPointF(testSprite->getVelocity().x(), 0));
+        testSprite->setPos(testSprite->pos().x(), 972);
     }
 }
 
