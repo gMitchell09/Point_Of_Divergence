@@ -9,6 +9,7 @@
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
 #include "staticbackground.h"
+#include "tilemap.h"
 
 namespace Ui {
 class MainWindow;
@@ -26,6 +27,8 @@ private:
     Ui::MainWindow *ui;
     AnimatedCollideableSprite *testSprite, *testSprite2;
     StaticBackground *bkg;
+
+    TileMap *playerTiles;
 
     GameEngine *gameEngine;
 

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/MarioRight">
+        <file alias="/MarioRight.png">Sprites/MarioRight.png</file>
+    </qresource>
+</RCC>

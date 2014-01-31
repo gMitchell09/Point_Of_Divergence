@@ -24,6 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(buttonPress()));
 
+    // --
+    playerTiles = new TileMap(16, 33, 1, 0, ":MarioRight/MarioRight.png");
+
     QPixmap myPix1(":Simple_Sprite/1.png");
     QPixmap myPix2(":Simple_Sprite/2.png");
     QPixmap myPix3(":Simple_Sprite/3.png");
@@ -33,11 +36,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmap bkgPix(":Backgrounds/background.jpg");
 
     std::vector<QPixmap> pixmapList;
-    pixmapList.push_back(myPix1);
-    pixmapList.push_back(myPix2);
-    pixmapList.push_back(myPix3);
-    pixmapList.push_back(myPix4);
-    pixmapList.push_back(myPix5);
+    pixmapList.push_back(playerTiles->copyCellAt(1, 0));
+    pixmapList.push_back(playerTiles->copyCellAt(2, 0));
+    pixmapList.push_back(playerTiles->copyCellAt(3, 0));
 
     std::vector<QPixmap> pixmapList2;
     pixmapList2.push_back(myPix3);
@@ -46,8 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
     pixmapList2.push_back(myPix4);
     pixmapList2.push_back(myPix1);
 
-    testSprite = new AnimatedCollideableSprite(48, 64);
-    testSprite->addAnimation(pixmapList, Forward_Reverse_Loop);
+    testSprite = new AnimatedCollideableSprite(16, 32);
+    testSprite->addAnimation(pixmapList, Loop);
     testSprite->setPos(0, 300);
     testSprite->setVelocity(QPointF(0, 0));
     testSprite->setSolid(true);

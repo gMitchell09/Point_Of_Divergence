@@ -99,5 +99,6 @@ void AnimatedSprite::step(unsigned long time) {
         m_msCounter = 0;
     }
 
+    if (m_nCurrentFrame >= m_animationList.at(m_nCurrentAnimation).size() || m_nCurrentFrame < 0) m_nCurrentFrame = m_animationList.at(m_nCurrentAnimation).size() - 1;
     this->setPixmap(m_animationList.at(m_nCurrentAnimation).at(m_nCurrentFrame));
 }

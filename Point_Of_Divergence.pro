@@ -36,6 +36,7 @@ FORMS    += mainwindow.ui
 
 RESOURCES += \
     Simple_Sprite.qrc \
-    Backgrounds.qrc
+    Backgrounds.qrc \
+    MarioSprites.qrc
 
 OTHER_FILES +=

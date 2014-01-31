@@ -1,26 +1,16 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#include <QGraphicsItem>
-#include <QGraphicsPixmapItem>
-#include <QPainterPath>
-#include <QStyleOptionGraphicsItem>
-#include <QWidget>
-#include <QPainter>
+#include <QPixmap>
+#include <QBitmap>
 
-class TileMap : public QGraphicsPixmapItem
+class TileMap : public QPixmap
 {
 private:
     unsigned int m_cellWidth, m_cellHeight, m_dividerWidth, m_dividerHeight;
 public:
-    explicit TileMap(int cellWidth, int cellHeight, int dividerWidth, int dividerHeight, QGraphicsItem *parent = 0);
-
-    virtual QRectF boundingRect() const;
-    virtual bool contains(const QPointF & point) const;
-    virtual bool isObscuredBy(const QGraphicsItem * item) const;
-    virtual QPainterPath opaqueArea() const;
-    virtual void paint(QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget);
-    virtual QPainterPath shape() const;
+    TileMap(int cellWidth, int cellHeight, int dividerWidth, int dividerHeight, QString pixmapInit);
+    QPixmap copyCellAt(unsigned int i, unsigned int j);
 };
 
 #endif // TILEMAP_H
