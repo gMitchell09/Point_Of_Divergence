@@ -12,6 +12,7 @@
 
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
+#include "maincharacter.h"
 
 class GameEngine : public QGraphicsScene
 {
@@ -30,7 +31,7 @@ private:
     int m_viewportWidth, m_viewportHeight;
     int m_sceneWidth, m_sceneHeight;
 
-    AnimatedCollideableSprite * m_mainActor;
+    MainCharacter * m_mainActor;
 
     std::vector<std::function<void(unsigned long)>> m_stepHandlerVector;
 
@@ -58,7 +59,7 @@ public:
     inline size_t addSprite(AnimatedCollideableSprite* sprite, bool mainActor = false) {
         this->addItem(sprite);
         if (mainActor) {
-            m_mainActor = sprite;
+            m_mainActor = dynamic_cast<MainCharacter*>(sprite);
         }
         m_spriteArray.push_back(sprite);
         return m_spriteArray.size();

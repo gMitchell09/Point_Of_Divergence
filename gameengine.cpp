@@ -29,29 +29,12 @@ void GameEngine::step(qint64 time) {
 
 void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
     if (m_mainActor != NULL) {
-        if (keyEvent->key() == Qt::Key_Right) {
-            m_mainActor->setAcceleration(QPointF(500, m_mainActor->getAcceleration().y()));
-            m_mainActor->setBrake(false);
-            m_keyRecentPress = keyEvent->key();
-        }
-        else if (keyEvent->key() == Qt::Key_Left)  {
-            m_mainActor->setAcceleration(QPointF(-500, m_mainActor->getAcceleration().y()));
-            m_mainActor->setBrake(false);
-            m_keyRecentPress = keyEvent->key();
-        }
-        if (keyEvent->key() == Qt::Key_Up)  {
-            m_mainActor->jump();
-        }
+        m_mainActor->keyPressEvent(keyEvent);
     }
 }
 
 void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (m_mainActor != NULL) {
-        if (keyEvent->key() == m_keyRecentPress) {
-            m_mainActor->setAcceleration(QPointF(-m_mainActor->getAcceleration().x(), m_mainActor->getAcceleration().y()));
-            m_mainActor->setBrake(true);
-        }
-//        if (keyEvent->key() == Qt::Key_Up)  {
-//        }
+        m_mainActor->keyReleaseEvent(keyEvent);
     }
 }

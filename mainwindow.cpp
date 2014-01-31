@@ -24,8 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(buttonPress()));
 
-    // --
-    playerTiles = new TileMap(16, 33, 1, 0, ":MarioRight/MarioRight.png");
+    //
+    mainChar = new MainCharacter(16, 32);
+    mainChar->setPos(0, 1020);
 
     QPixmap myPix1(":Simple_Sprite/1.png");
     QPixmap myPix2(":Simple_Sprite/2.png");
@@ -35,11 +36,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QPixmap bkgPix(":Backgrounds/background.jpg");
 
-    std::vector<QPixmap> pixmapList;
-    pixmapList.push_back(playerTiles->copyCellAt(1, 0));
-    pixmapList.push_back(playerTiles->copyCellAt(2, 0));
-    pixmapList.push_back(playerTiles->copyCellAt(3, 0));
-
     std::vector<QPixmap> pixmapList2;
     pixmapList2.push_back(myPix3);
     pixmapList2.push_back(myPix5);
@@ -47,17 +43,11 @@ MainWindow::MainWindow(QWidget *parent) :
     pixmapList2.push_back(myPix4);
     pixmapList2.push_back(myPix1);
 
-    testSprite = new AnimatedCollideableSprite(16, 32);
-    testSprite->addAnimation(pixmapList, Loop);
-    testSprite->setPos(0, 300);
-    testSprite->setVelocity(QPointF(0, 0));
-    testSprite->setSolid(true);
-    testSprite->triggerAnimation(0);
-
     testSprite2 = new AnimatedCollideableSprite(48, 64);
     testSprite2->addAnimation(pixmapList2, Forward_Reverse_Loop);
-    testSprite2->setPos(gameEngine->width()/2 - 48, 300);
+    testSprite2->setPos(gameEngine->sceneRect().width()/2 - 48, 1020);
     testSprite2->setVelocity(QPointF(0, 0));
+    testSprite2->setAcceleration(QPointF(0, 0));
     testSprite2->setSolid(true);
     testSprite2->triggerAnimation(0);
 
@@ -65,9 +55,9 @@ MainWindow::MainWindow(QWidget *parent) :
     bkg->setPixmap(bkgPix);
     bkg->setPos(0, 0);
 
-    gameEngine->addSprite(testSprite, true);
-    gameEngine->addSprite(testSprite2);
     gameEngine->addItem(bkg);
+    gameEngine->addSprite(mainChar, true);
+    gameEngine->addSprite(testSprite2);
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
@@ -75,24 +65,18 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::buttonPress() {
-    if(testSprite) {
-        testSprite->jump();
-    }
+
 }
 
 void MainWindow::invalidateTimer() {
     qint64 nMS = QDateTime::currentMSecsSinceEpoch();
     gameEngine->step(nMS);
-    if (testSprite->pos().x() > gameEngine->width()) testSprite->setPos(-64, testSprite->pos().y());
-    if (testSprite->pos().y() > 972) {
-        testSprite->setVelocity(QPointF(testSprite->getVelocity().x(), 0));
-        testSprite->setPos(testSprite->pos().x(), 972);
-    }
+    if (mainChar->pos().x() > gameEngine->width()) mainChar->setPos(-64, mainChar->pos().y());
+    else if (mainChar->pos().x() < -64) mainChar->setPos(gameEngine->sceneRect().width(), mainChar->pos().y());
 
-    if (testSprite->pos().x() < -64) testSprite->setPos(gameEngine->sceneRect().width(), testSprite->pos().y());
-    if (testSprite->pos().y() > 972) {
-        testSprite->setVelocity(QPointF(testSprite->getVelocity().x(), 0));
-        testSprite->setPos(testSprite->pos().x(), 972);
+    if (mainChar->pos().y() > 1020) {
+        mainChar->setVelocity(QPointF(mainChar->getVelocity().x(), 0));
+        mainChar->setPos(mainChar->pos().x(), 1020);
     }
 }
 

@@ -3,6 +3,9 @@
 
 #include "sprite.h"
 
+///
+/// \brief The StaticBackground class... an immobile, uncollideable sprite that sits in the background and looks pretty
+///
 class StaticBackground : public Sprite
 {
 private:

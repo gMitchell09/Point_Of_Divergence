@@ -23,8 +23,6 @@ private:
     bool jumping, m_brake;
     bool m_solid;
 
-    //////////////////////////////
-    virtual void step(unsigned long time);
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset);
     void resolveCollision(Collision collision);
 
@@ -36,6 +34,10 @@ public:
     bool isCollideable() { return true; }
     bool isBackground() { return false; }
 
+    ///
+    /// \brief setSolid
+    /// \param solid is true if this object shouldn't be able to penetrate other solid objects
+    ///
     void setSolid(bool solid) { m_solid = solid; }
     bool isSolid() { return m_solid; }
 
@@ -45,9 +47,16 @@ public:
     void setVelocity(QPointF velocity) { m_velocity = velocity; }
     QPointF getVelocity() { return m_velocity; }
 
+    ///
+    /// \brief setBrake
+    /// \param brake determines if sprite is slowing to a stop
+    ///
     void setBrake(bool brake) { m_brake = brake; }
 
     void jump();
+
+    virtual void step(unsigned long time);
+
     
 signals:
     
