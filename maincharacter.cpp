@@ -1,8 +1,20 @@
 #include "maincharacter.h"
 
+#define MIN(x, y) ((x<y)?x:y)
+#define MAX(x, y) ((x>y)?x:y)
+#define SIGN(x) ((x>0)?1:-1)
+
 MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent)
-{
+    AnimatedCollideableSprite(width, height, parent) {
+
+    m_leftAccel = -250;
+    m_maxVelX = 250;
+    m_maxVelY = 2000;
+
+    m_jumpStartVel = -500;
+    m_gravity = 1000;
+    m_brakeAccel = 500;
+
     TileMap * playerTiles = new TileMap(16, 33, 1, 1, ":MarioRight/MarioMovement.png");
 
     std::vector<QPixmap> standRight;
@@ -68,20 +80,26 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
     this->setAcceleration(QPointF(0, 0));
 
     this->triggerAnimation(Stand_Right);
-    this->setAcceleration(QPointF(0, 2000));
-
+    this->setAcceleration(QPointF(0, m_gravity));
 }
 
 void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
-    if (keyEvent->key() == Qt::Key_Right) {
-        this->setAcceleration(QPointF(500, this->getAcceleration().y()));
+    if (keyEvent->key() == Qt::Key_Down) {
+        m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
+        this->triggerAnimation(m_currentState);
+
+        this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
+        this->setBrake(true);
+    }
+    else if (keyEvent->key() == Qt::Key_Right) {
+        this->setAcceleration(QPointF(-m_leftAccel, this->getAcceleration().y()));
         this->setBrake(false);
         m_keyRecentPress = keyEvent->key();
         m_currentState = Walk_Right;
         this->triggerAnimation(Walk_Right);
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
-        this->setAcceleration(QPointF(-500, this->getAcceleration().y()));
+        this->setAcceleration(QPointF(m_leftAccel, this->getAcceleration().y()));
         this->setBrake(false);
         m_keyRecentPress = keyEvent->key();
         m_currentState = Walk_Left;
@@ -97,8 +115,12 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 
 void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == m_keyRecentPress) {
-        this->setAcceleration(QPointF(-this->getAcceleration().x(), this->getAcceleration().y()));
+        this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
         this->setBrake(true);
+    }
+    if (keyEvent->key() == Qt::Key_Down) {
+        m_currentState = (MovementState) (m_currentState % 2);
+        this->triggerAnimation(m_currentState);
     }
 }
 
@@ -109,6 +131,7 @@ void MainCharacter::step(unsigned long time) {
         case Run_Right:
         case Brake_Left:
             if (this->getVelocity().x() < 2) {
+                m_currentState = Stand_Right;
                 this->triggerAnimation(Stand_Right);
                 this->setVelocity(QPointF(0, this->getVelocity().y()));
             }
@@ -117,6 +140,7 @@ void MainCharacter::step(unsigned long time) {
         case Run_Left:
         case Brake_Right:
             if (this->getVelocity().x() > -2) {
+                m_currentState = Stand_Left;
                 this->triggerAnimation(Stand_Left);
                 this->setVelocity(QPointF(0, this->getVelocity().y()));
             }
@@ -130,6 +154,24 @@ void MainCharacter::step(unsigned long time) {
         this->triggerAnimation(m_currentState);
     }
     if (!m_jumping && (m_currentState == Jump_Left || m_currentState == Jump_Right)) this->triggerAnimation(m_currentState - Jump_Right);
+
+    if (m_brake) {
+        if (SIGN(this->getVelocity().x()) == SIGN(this->getAcceleration().x())) {
+            this->getVelocity().setX(0);
+            this->getAcceleration().setX(0);
+            m_brake = false;
+        }
+    }
+
+    if (this->getVelocity().x() > 0)
+        this->getVelocity().setX(MIN(this->getVelocity().x(), m_maxVelX));
+    else
+        this->getVelocity().setX(MAX(this->getVelocity().x(), -m_maxVelX));
+
+    if (this->getVelocity().y() > 0)
+        this->getVelocity().setY(MIN(this->getVelocity().y(), m_maxVelY));
+    else
+        this->getVelocity().setY(MAX(this->getVelocity().y(), -m_maxVelY));
 }
 
 /* Possible User Input:
@@ -139,3 +181,11 @@ void MainCharacter::step(unsigned long time) {
  * Up (Moving Left) Jump_Left animation
  * Up (Moving Right) Jump_Right animation
 */
+
+void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
+    qDebug() << "COLLISIONS!!!! WOOOOOOOOOO!!!";
+}
+
+void MainCharacter::jump() {
+    this->getVelocity().setY(m_jumpStartVel);
+}

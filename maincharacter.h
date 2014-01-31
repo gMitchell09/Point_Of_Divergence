@@ -2,6 +2,8 @@
 #define MAINCHARACTER_H
 
 #include <QKeyEvent>
+#include <QDebug>
+
 #include "tilemap.h"
 
 #include "animatedcollideablesprite.h"
@@ -19,7 +21,12 @@ private:
     MovementState m_currentState;
     // nextState is if you are running right and then pressed the left key... it is for mapping between states
     MovementState m_nextState;
+
+    int m_brakeAccel;
+    float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
+
     bool m_jumping;
+    bool m_brake;
 
     int m_keyRecentPress;
 
@@ -28,7 +35,12 @@ public:
     void keyPressEvent(QKeyEvent * keyEvent);
     void keyReleaseEvent(QKeyEvent * keyEvent);
 
+    void setBrake(bool brake) { m_brake = brake; }
+
     virtual void step(unsigned long time);
+    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+    void jump();
+
 };
 
 #endif // MAINCHARACTER_H

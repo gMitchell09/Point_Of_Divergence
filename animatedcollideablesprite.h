@@ -19,8 +19,6 @@ class AnimatedCollideableSprite : public AnimatedSprite
 private:
     QPoint m_collisionPoints[4][2];
     QPointF m_acceleration, m_velocity;
-    float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
-    bool jumping, m_brake;
     bool m_solid;
 
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset);
@@ -42,20 +40,19 @@ public:
     bool isSolid() { return m_solid; }
 
     void setAcceleration(QPointF acceleration) { m_acceleration = acceleration; }
-    QPointF getAcceleration() { return m_acceleration; }
+    QPointF& getAcceleration() { return m_acceleration; }
 
     void setVelocity(QPointF velocity) { m_velocity = velocity; }
-    QPointF getVelocity() { return m_velocity; }
+    QPointF& getVelocity() { return m_velocity; }
 
     ///
     /// \brief setBrake
     /// \param brake determines if sprite is slowing to a stop
     ///
-    void setBrake(bool brake) { m_brake = brake; }
 
-    void jump();
 
     virtual void step(unsigned long time);
+    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 
     
 signals:

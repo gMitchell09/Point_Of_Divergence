@@ -8,31 +8,18 @@
 AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent) :
     AnimatedSprite(width, height, parent)
 {
-    m_leftAccel = -100;
-    m_maxVelX = 500;
-    m_maxVelY = 5000;
-
-    m_jumpStartVel = -1000;
-    m_gravity = 2000;
-
-    m_brake = false;
-
-    jumping = false;
-
     // Top
-    m_collisionPoints[0][0] = QPoint(width/3, 0);
-    m_collisionPoints[0][1] = QPoint((2*width)/3, 0);
+    m_collisionPoints[0][0] = QPoint(width/6, 0);
+    m_collisionPoints[0][1] = QPoint((5*width)/6, 0);
     // Right
-    m_collisionPoints[1][0] = QPoint(width, height/3);
-    m_collisionPoints[1][1] = QPoint(width, (2*height)/3);
+    m_collisionPoints[1][0] = QPoint(width, height/6);
+    m_collisionPoints[1][1] = QPoint(width, (5*height)/6);
     // Bottom
-    m_collisionPoints[2][0] = QPoint(width/3, height);
-    m_collisionPoints[2][1] = QPoint((2*width)/3, height);
+    m_collisionPoints[2][0] = QPoint(width/6, height);
+    m_collisionPoints[2][1] = QPoint((5*width)/6, height);
     // Left
-    m_collisionPoints[3][0] = QPoint(0, height/3);
-    m_collisionPoints[3][1] = QPoint(0, (2*height)/3);
-
-    m_acceleration.setY(m_gravity);
+    m_collisionPoints[3][0] = QPoint(0, height/6);
+    m_collisionPoints[3][1] = QPoint(0, (5*height)/6);
 }
 
 void AnimatedCollideableSprite::step(unsigned long time) {
@@ -52,26 +39,9 @@ void AnimatedCollideableSprite::step(unsigned long time) {
     if (((side & Top) && m_velocity.y() < 0) || ((side & Bottom) && m_velocity.y() > 0)) newYVel = 0;
     if (((side & Left) && m_velocity.x() < 0) || ((side & Right) && m_velocity.x() > 0)) newXVel = 0;
 
+    if (!collisions.empty()) this->collisionOccurred(collisions, side);
+
     m_velocity = QPointF(newXVel, newYVel);
-
-    if (m_brake) {
-        if (SIGN(m_velocity.x()) == SIGN(m_acceleration.x())) {
-            m_velocity.setX(0);
-            m_acceleration.setX(0);
-            m_brake = false;
-        }
-    }
-
-    if (m_velocity.x() > 0)
-        m_velocity.setX(MIN(m_velocity.x(), m_maxVelX));
-    else
-        m_velocity.setX(MAX(m_velocity.x(), -m_maxVelX));
-
-    if (m_velocity.y() > 0)
-        m_velocity.setY(MIN(m_velocity.y(), m_maxVelY));
-    else
-        m_velocity.setY(MAX(m_velocity.y(), -m_maxVelY));
-
 
     QPointF oldPos = this->pos();
 
@@ -95,8 +65,8 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     // Check top points for collision
     collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[0][0], this->transform()));
     collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[0][1], this->transform()));
-    if ((collidee != NULL && collidee->isCollideable()) ||
-            (collidee2 != NULL && collidee2->isCollideable())) {
+    if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
+            (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cTop = true;
         side |= Top;
         Collision col = {this, collidee, QPointF(0,0), Top, Top, QPointF(0,0)};
@@ -106,8 +76,8 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     // Check right points for collision
     collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[1][0], this->transform()));
     collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[1][1], this->transform()));
-    if ((collidee != NULL && collidee->isCollideable()) ||
-            (collidee2 != NULL && collidee2->isCollideable())) {
+    if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
+            (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cRight = true;
         side |= Right;
         Collision col = {this, collidee, QPointF(0,0), Right, Right, QPointF(0,0)};
@@ -117,8 +87,8 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     // Check left points for collision
     collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[2][0], this->transform()));
     collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[2][1], this->transform()));
-    if ((collidee != NULL && collidee->isCollideable()) ||
-            (collidee2 != NULL && collidee2->isCollideable())) {
+    if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
+            (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cBottom = true;
         side |= Bottom;
         Collision col = {this, collidee, QPointF(0,0), Bottom, Bottom, QPointF(0,0)};
@@ -128,8 +98,8 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     // Check right points for collision
     collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[3][0], this->transform()));
     collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[3][1], this->transform()));
-    if ((collidee != NULL && collidee->isCollideable()) ||
-            (collidee2 != NULL && collidee2->isCollideable())) {
+    if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
+            (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cLeft = true;
         side |= Left;
         Collision col = {this, collidee, QPointF(0,0), Left, Left, QPointF(0,0)};
@@ -141,6 +111,6 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     return side;
 }
 
-void AnimatedCollideableSprite::jump() {
-    m_velocity.setY(m_jumpStartVel);
+void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
+    // Override this method in your subclasses if you want to be alerted when collisions occur.
 }
