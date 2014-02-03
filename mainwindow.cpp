@@ -28,6 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
     mainChar = new MainCharacter(16, 32);
     mainChar->setPos(0, 1020);
 
+    floater = new StaticPlatform(0);
+    floater->setPixmap(QPixmap(":Simple_Sprite/1.png"));
+    floater->setPos(300, 900);
+
     QPixmap myPix1(":Simple_Sprite/1.png");
     QPixmap myPix2(":Simple_Sprite/2.png");
     QPixmap myPix3(":Simple_Sprite/3.png");
@@ -50,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     testSprite2->setAcceleration(QPointF(0, 0));
     testSprite2->setSolid(true);
     testSprite2->triggerAnimation(0);
+    testSprite2->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 
     bkg = new StaticBackground(QPoint(0, 0));
     bkg->setPixmap(bkgPix);
@@ -58,10 +63,11 @@ MainWindow::MainWindow(QWidget *parent) :
     gameEngine->addItem(bkg);
     gameEngine->addSprite(mainChar, true);
     gameEngine->addSprite(testSprite2);
+    gameEngine->addItem(floater);
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
-    heartbeat->start(10); // 20fps
+    heartbeat->start(1); // 20fps
 }
 
 void MainWindow::buttonPress() {

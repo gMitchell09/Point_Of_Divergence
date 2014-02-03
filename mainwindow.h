@@ -11,6 +11,7 @@
 #include "staticbackground.h"
 #include "tilemap.h"
 #include "maincharacter.h"
+#include "staticplatform.h"
 
 namespace Ui {
 class MainWindow;
@@ -34,6 +35,7 @@ private:
     GameEngine *gameEngine;
 
     QTimer *heartbeat;
+    StaticPlatform *floater;
 
 private slots:
     void buttonPress();

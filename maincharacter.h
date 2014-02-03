@@ -25,6 +25,8 @@ private:
     int m_brakeAccel;
     float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
 
+    bool m_upPressed, m_downPressed, m_leftPressed, m_rightPressed;
+
     bool m_jumping;
     bool m_brake;
 

@@ -84,12 +84,16 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
 }
 
 void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
+    if (keyEvent->isAutoRepeat()) return;
+    qDebug() << "Key Press!!!";
+
     if (keyEvent->key() == Qt::Key_Down) {
         m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
 
         this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
         this->setBrake(true);
+        m_downPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Right) {
         this->setAcceleration(QPointF(-m_leftAccel, this->getAcceleration().y()));
@@ -97,6 +101,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         m_keyRecentPress = keyEvent->key();
         m_currentState = Walk_Right;
         this->triggerAnimation(Walk_Right);
+        m_rightPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
         this->setAcceleration(QPointF(m_leftAccel, this->getAcceleration().y()));
@@ -104,12 +109,14 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         m_keyRecentPress = keyEvent->key();
         m_currentState = Walk_Left;
         this->triggerAnimation(Walk_Left);
+        m_leftPressed = true;
     }
     if (keyEvent->key() == Qt::Key_Up)  {
         this->jump();
         m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
         this->m_jumping = true;
+        m_upPressed = true;
     }
 }
 
@@ -120,7 +127,23 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     }
     if (keyEvent->key() == Qt::Key_Down) {
         m_currentState = (MovementState) (m_currentState % 2);
-        this->triggerAnimation(m_currentState);
+        if (m_rightPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Right, 0));
+        if (m_leftPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Left, 0));
+    }
+
+    switch (keyEvent->key()) {
+    case Qt::Key_Up:
+        m_upPressed = false;
+        break;
+    case Qt::Key_Down:
+        m_downPressed = false;
+        break;
+    case Qt::Key_Left:
+        m_leftPressed = false;
+        break;
+    case Qt::Key_Right:
+        m_rightPressed = false;
+        break;
     }
 }
 
@@ -130,7 +153,7 @@ void MainCharacter::step(unsigned long time) {
         case Walk_Right:
         case Run_Right:
         case Brake_Left:
-            if (this->getVelocity().x() < 2) {
+            if (this->getVelocity().x() < 0.005 && !m_rightPressed) {
                 m_currentState = Stand_Right;
                 this->triggerAnimation(Stand_Right);
                 this->setVelocity(QPointF(0, this->getVelocity().y()));
@@ -139,7 +162,7 @@ void MainCharacter::step(unsigned long time) {
         case Walk_Left:
         case Run_Left:
         case Brake_Right:
-            if (this->getVelocity().x() > -2) {
+            if (this->getVelocity().x() > -0.005 && !m_leftPressed) {
                 m_currentState = Stand_Left;
                 this->triggerAnimation(Stand_Left);
                 this->setVelocity(QPointF(0, this->getVelocity().y()));
@@ -149,8 +172,8 @@ void MainCharacter::step(unsigned long time) {
     if (this->getVelocity().y() >= 0 && (m_currentState == Jump_Left || m_currentState == Jump_Right)) {
         this->m_jumping = false;
         m_currentState = (MovementState)(m_currentState % 2);
-        if (this->getVelocity().x() > 2) m_currentState = Walk_Right;
-        else if (this->getVelocity().x() < -2) m_currentState = Walk_Left;
+        if (this->getVelocity().x() > 0) m_currentState = Walk_Right;
+        else if (this->getVelocity().x() < 0) m_currentState = Walk_Left;
         this->triggerAnimation(m_currentState);
     }
     if (!m_jumping && (m_currentState == Jump_Left || m_currentState == Jump_Right)) this->triggerAnimation(m_currentState - Jump_Right);

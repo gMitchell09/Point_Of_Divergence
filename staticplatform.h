@@ -15,6 +15,7 @@ public:
     bool isAnimated() { return false; }
     bool isCollideable() { return true; }
     bool isBackground() { return false; }
+    bool isSolid() { return true; }
     
 };
 
