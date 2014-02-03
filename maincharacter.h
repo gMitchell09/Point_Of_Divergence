@@ -20,7 +20,7 @@ class MainCharacter : public AnimatedCollideableSprite
 private:
     MovementState m_currentState;
     // nextState is if you are running right and then pressed the left key... it is for mapping between states
-    MovementState m_nextState;
+//    MovementState m_nextState;
 
     int m_brakeAccel;
     float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;

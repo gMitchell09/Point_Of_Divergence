@@ -8,11 +8,12 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, parent) {
 
     m_leftAccel = -250;
-    m_maxVelX = 250;
+    m_rightAccel = -m_leftAccel;
+    m_maxVelX = 100;
     m_maxVelY = 2000;
 
     m_jumpStartVel = -500;
-    m_gravity = 1000;
+    m_gravity = 2000;
     m_brakeAccel = 500;
 
     TileMap * playerTiles = new TileMap(16, 33, 1, 1, ":MarioRight/MarioMovement.png");
@@ -84,7 +85,11 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
 }
 
 void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
+#ifdef TARGET_OS_MAC
+    if (keyEvent->isAutoRepeat() || keyEvent->key() == m_keyRecentPress /* Hack to make it work properly on OS X */) return;
+#else
     if (keyEvent->isAutoRepeat()) return;
+#endif
     qDebug() << "Key Press!!!";
 
     if (keyEvent->key() == Qt::Key_Down) {
@@ -96,7 +101,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         m_downPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Right) {
-        this->setAcceleration(QPointF(-m_leftAccel, this->getAcceleration().y()));
+        this->setAcceleration(QPointF(m_rightAccel, this->getAcceleration().y()));
         this->setBrake(false);
         m_keyRecentPress = keyEvent->key();
         m_currentState = Walk_Right;
@@ -124,6 +129,7 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == m_keyRecentPress) {
         this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
         this->setBrake(true);
+        m_keyRecentPress = 0;
     }
     if (keyEvent->key() == Qt::Key_Down) {
         m_currentState = (MovementState) (m_currentState % 2);
