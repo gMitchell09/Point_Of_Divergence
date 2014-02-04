@@ -126,6 +126,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 }
 
 void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
+    if (keyEvent->isAutoRepeat()) return; // workaround for CentOS Systems
     if (keyEvent->key() == m_keyRecentPress) {
         this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
         this->setBrake(true);
@@ -140,15 +141,19 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     switch (keyEvent->key()) {
     case Qt::Key_Up:
         m_upPressed = false;
+        qDebug() << "Key Release: Up";
         break;
     case Qt::Key_Down:
         m_downPressed = false;
+        qDebug() << "Key Release: Down";
         break;
     case Qt::Key_Left:
         m_leftPressed = false;
+        qDebug() << "Key Release: Left";
         break;
     case Qt::Key_Right:
         m_rightPressed = false;
+        qDebug() << "Key Release: Right";
         break;
     }
 }
