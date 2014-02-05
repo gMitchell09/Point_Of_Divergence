@@ -47,7 +47,16 @@ void AnimatedCollideableSprite::step(unsigned long time) {
         QPointF newPos = QPointF(0,0);
         this->collisionOccurred(collisions, side);
         for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
-            newPos += ((Collision)(*itr)).normalVector * timeStep;
+            if ((this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
+                (this->pos().x() >= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() > 0)) {
+                newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
+            }
+            if ((this->pos().y() <= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() < 0) ||
+                (this->pos().y() >= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() > 0)) {
+                newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
+            }
+
+            //newPos += ((Collision)(*itr)).normalVector * timeStep;
         }
         this->setPos(this->pos() + newPos);
     }
