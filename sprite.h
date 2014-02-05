@@ -8,7 +8,8 @@
 ///
 class Sprite : public QGraphicsPixmapItem
 {
-private:
+protected:
+    QPointF m_acceleration, m_velocity;
 
 public:
     explicit Sprite(QGraphicsItem *parent = 0);
@@ -36,6 +37,15 @@ public:
     /// \return true if this sprite is a background
     ///
     virtual bool isBackground() = 0;
+
+    void setAcceleration(QPointF acceleration) { m_acceleration = acceleration; }
+    QPointF& getAcceleration() { return m_acceleration; }
+
+    void setVelocity(QPointF velocity) { m_velocity = velocity; }
+    QPointF& getVelocity() { return m_velocity; }
+
+    virtual void step (unsigned long time) = 0;
+
     
 signals:
     

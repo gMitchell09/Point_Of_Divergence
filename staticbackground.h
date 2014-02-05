@@ -18,6 +18,8 @@ public:
     virtual bool isAnimated();
     virtual bool isCollideable();
     virtual bool isBackground();
+
+    virtual void step (unsigned long time);
 };
 
 #endif // STATICBACKGROUND_H

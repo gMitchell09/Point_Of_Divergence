@@ -36,7 +36,7 @@ private:
     std::vector<std::function<void(unsigned long)>> m_stepHandlerVector;
 
     // This is a vector of sprites that can be interacted with
-    std::vector<AnimatedSprite*> m_spriteArray;
+    std::vector<Sprite*> m_spriteArray;
 
     int m_keyRecentPress;
 
@@ -50,13 +50,12 @@ public:
      * 2. Check m_mainActor position to see if we need to update the viewport
      */
     void step(qint64 time);
-    void collision(QGraphicsItem *caller, QList<QGraphicsItem*> others);
 
     inline void addHandler(std::function<void(unsigned long)> callback) {
         m_stepHandlerVector.push_back(callback);
     }
 
-    inline size_t addSprite(AnimatedCollideableSprite* sprite, bool mainActor = false) {
+    inline size_t addSprite(Sprite* sprite, bool mainActor = false) {
         this->addItem(sprite);
         if (mainActor) {
             m_mainActor = dynamic_cast<MainCharacter*>(sprite);

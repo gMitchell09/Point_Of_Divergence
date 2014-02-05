@@ -18,7 +18,6 @@ class AnimatedCollideableSprite : public AnimatedSprite
 {
 private:
     QPoint m_collisionPoints[4][2];
-    QPointF m_acceleration, m_velocity;
     bool m_solid;
 
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset);
@@ -38,12 +37,6 @@ public:
     ///
     void setSolid(bool solid) { m_solid = solid; }
     bool isSolid() { return m_solid; }
-
-    void setAcceleration(QPointF acceleration) { m_acceleration = acceleration; }
-    QPointF& getAcceleration() { return m_acceleration; }
-
-    void setVelocity(QPointF velocity) { m_velocity = velocity; }
-    QPointF& getVelocity() { return m_velocity; }
 
     ///
     /// \brief setBrake

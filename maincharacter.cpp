@@ -9,7 +9,7 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
 
     m_leftAccel = -250;
     m_rightAccel = -m_leftAccel;
-    m_maxVelX = 100;
+    m_maxVelX = 300;
     m_maxVelY = 2000;
 
     m_jumpStartVel = -500;

@@ -21,3 +21,7 @@ bool StaticBackground::isCollideable() {
 bool StaticBackground::isBackground() {
     return true;
 }
+
+void StaticBackground::step(unsigned long time) {
+    // do nothing... for now ;)
+}

@@ -3,6 +3,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsTransform>
 #include <QGraphicsView>
+#include <assert.h>
 
 #define MIN(x, y) ((x<y)?x:y)
 #define MAX(x, y) ((x>y)?x:y)
@@ -28,6 +29,8 @@ void AnimatedSprite::triggerAnimation(unsigned int anim) {
     m_nCurrentAnimation = anim;
     m_msPerFrame = 200;
 
+    if (m_nCurrentAnimation >= m_animationType.size() || m_nCurrentAnimation < 0) return;
+
     switch (m_animationType.at(anim)) {
         case Forward:
         case Forward_Reverse:
@@ -42,11 +45,13 @@ void AnimatedSprite::triggerAnimation(unsigned int anim) {
             m_nCurrentFrame = m_animationList.at(anim).size()-1;
             break;
     }
-
+    assert (m_nCurrentFrame <= m_animationList.at(m_nCurrentAnimation).size());
     this->setPixmap(m_animationList.at(m_nCurrentAnimation).at(m_nCurrentFrame));
 }
 
 void AnimatedSprite::step(unsigned long time) {
+    if (m_animationType.empty() || m_animationList.empty()) return;
+
     m_msCounter += time;
     if (m_msCounter >= m_msPerFrame) {
         switch(m_animationType.at(m_nCurrentAnimation)) {

@@ -28,9 +28,11 @@ MainWindow::MainWindow(QWidget *parent) :
     mainChar = new MainCharacter(16, 32);
     mainChar->setPos(0, 1020);
 
-    floater = new StaticPlatform(0);
+    floater = new MovingPlatform(48, 64);
     floater->setPixmap(QPixmap(":Simple_Sprite/1.png"));
     floater->setPos(300, 900);
+    floater->setVelocity(QPointF(20, 0));
+    floater->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 
     QPixmap myPix1(":Simple_Sprite/1.png");
     QPixmap myPix2(":Simple_Sprite/2.png");
@@ -47,14 +49,12 @@ MainWindow::MainWindow(QWidget *parent) :
     pixmapList2.push_back(myPix4);
     pixmapList2.push_back(myPix1);
 
-    testSprite2 = new AnimatedCollideableSprite(48, 64);
+    testSprite2 = new StaticPlatform(48, 64);
     testSprite2->addAnimation(pixmapList2, Forward_Reverse_Loop);
     testSprite2->setPos(gameEngine->sceneRect().width()/2 - 48, 1020);
     testSprite2->setVelocity(QPointF(0, 0));
     testSprite2->setAcceleration(QPointF(0, 0));
-    testSprite2->setSolid(true);
     testSprite2->triggerAnimation(0);
-    testSprite2->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 
     bkg = new StaticBackground(QPoint(0, 0));
     bkg->setPixmap(bkgPix);
@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
     gameEngine->addItem(bkg);
     gameEngine->addSprite(mainChar, true);
     gameEngine->addSprite(testSprite2);
-    gameEngine->addItem(floater);
+    gameEngine->addSprite(floater);
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
@@ -83,6 +83,10 @@ void MainWindow::invalidateTimer() {
     if (mainChar->pos().y() > 1020) {
         mainChar->setVelocity(QPointF(mainChar->getVelocity().x(), 0));
         mainChar->setPos(mainChar->pos().x(), 1020);
+    }
+
+    if (floater->pos().x() > gameEngine->width()) {
+        floater->setPos(0, floater->pos().y());
     }
 }
 

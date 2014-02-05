@@ -12,6 +12,7 @@
 #include "tilemap.h"
 #include "maincharacter.h"
 #include "staticplatform.h"
+#include "movingplatform.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,7 +28,7 @@ public:
     
 private:
     Ui::MainWindow *ui;
-    AnimatedCollideableSprite *testSprite, *testSprite2;
+    StaticPlatform *testSprite, *testSprite2;
     StaticBackground *bkg;
 
     MainCharacter *mainChar;
@@ -35,7 +36,7 @@ private:
     GameEngine *gameEngine;
 
     QTimer *heartbeat;
-    StaticPlatform *floater;
+    MovingPlatform *floater;
 
 private slots:
     void buttonPress();
