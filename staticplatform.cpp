@@ -1,3 +1,7 @@
+/* Author: George Mitchell
+ * Use Case: Interact With Solid Platform
+ */
+
 #include "staticplatform.h"
 
 StaticPlatform::StaticPlatform(int width, int height, QGraphicsItem *parent) :

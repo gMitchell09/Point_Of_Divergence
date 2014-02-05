@@ -1,6 +1,10 @@
 #ifndef ANIMATEDSPRITE_H
 #define ANIMATEDSPRITE_H
 
+/* Author: George Mitchell
+ * Use Case: Step Through Animation
+ */
+
 #include <QGraphicsPixmapItem>
 #include <QGraphicsItem>
 #include <QPainterPath>

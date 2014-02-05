@@ -1,3 +1,7 @@
+/* Author: George Mitchell
+ * Use Case: Step Through Animation
+ */
+
 #include "animatedsprite.h"
 #include <QDebug>
 #include <QGraphicsScene>

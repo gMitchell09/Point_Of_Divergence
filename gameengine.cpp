@@ -1,3 +1,7 @@
+/* Author: George Mitchell
+ * Use Case: *
+ */
+
 #include <QDebug>
 #include "gameengine.h"
 GameEngine::GameEngine() : m_mainActor(NULL)

@@ -1,6 +1,10 @@
 #ifndef SPRITE_H
 #define SPRITE_H
 
+/* Author: George Mitchell
+ * Use Case: *
+ */
+
 #include <QGraphicsPixmapItem>
 
 ///

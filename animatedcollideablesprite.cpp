@@ -1,3 +1,8 @@
+/* Author: George Mitchell
+ * Use Case 02: Update Object Positions
+ * Use Case: 03: Collide With Object
+ */
+
 #include "animatedcollideablesprite.h"
 #include "sprite.h"
 

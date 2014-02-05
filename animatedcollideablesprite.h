@@ -1,6 +1,11 @@
 #ifndef ANIMATEDCOLLIDEABLESPRITE_H
 #define ANIMATEDCOLLIDEABLESPRITE_H
 
+/* Author: George Mitchell
+ * Use Case 02: Update Object Positions
+ * Use Case: 03: Collide With Object
+ */
+
 #include "animatedsprite.h"
 #include <QGraphicsScene>
 #include <QDebug>

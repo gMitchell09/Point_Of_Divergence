@@ -1,6 +1,10 @@
 #ifndef MAINCHARACTER_H
 #define MAINCHARACTER_H
 
+/* Author: George Mitchell
+ * Use Case: *
+ */
+
 #include <QKeyEvent>
 #include <QDebug>
 

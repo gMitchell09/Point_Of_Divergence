@@ -1,6 +1,10 @@
 #ifndef STATICPLATFORM_H
 #define STATICPLATFORM_H
 
+/* Author: George Mitchell
+ * Use Case: Interact With Solid Platform
+ */
+
 #include <QGraphicsItem>
 
 #include "animatedsprite.h"

@@ -1,6 +1,10 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
+/* Author: George Mitchell
+ * Use Case: *
+ */
+
 #include <QPixmap>
 #include <QBitmap>
 ///

@@ -1,3 +1,7 @@
+/* Author: George Mitchell
+ * Use Case: *
+ */
+
 #include "tilemap.h"
 
 TileMap::TileMap(int cellWidth, int cellHeight, int dividerWidth, int dividerHeight, QString pixmapInit) :

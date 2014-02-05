@@ -20,7 +20,6 @@ SOURCES += main.cpp\
     sprite.cpp \
     staticbackground.cpp \
     animatedcollideablesprite.cpp \
-    collideablesprite.cpp \
     tilemap.cpp \
     maincharacter.cpp \
     staticplatform.cpp \
@@ -32,7 +31,6 @@ HEADERS  += mainwindow.h \
     sprite.h \
     staticbackground.h \
     animatedcollideablesprite.h \
-    collideablesprite.h \
     tilemap.h \
     maincharacter.h \
     staticplatform.h \

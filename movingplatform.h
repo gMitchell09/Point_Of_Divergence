@@ -1,6 +1,12 @@
 #ifndef MOVINGPLATFORM_H
 #define MOVINGPLATFORM_H
 
+/* Author: George Mitchell
+ * Added: Wednesday Feb 5 @ 10:53am
+ * Initial Commit: Wednesday Feb 5 @ 11:23am
+ * Use Case: 05: Interact With Solid Platform
+ */
+
 #include <QGraphicsItem>
 
 #include "animatedsprite.h"

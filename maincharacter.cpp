@@ -1,3 +1,7 @@
+/* Author: George Mitchell
+ * Use Case: *
+ */
+
 #include "maincharacter.h"
 
 #define MIN(x, y) ((x<y)?x:y)

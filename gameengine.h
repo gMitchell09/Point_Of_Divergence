@@ -1,6 +1,10 @@
 #ifndef GAMEENGINE_H
 #define GAMEENGINE_H
 
+/* Author: George Mitchell
+ * Use Case: *
+ */
+
 #include <functional>
 #include <vector>
 #include <QGraphicsScene>
