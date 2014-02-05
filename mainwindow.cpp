@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //
     mainChar = new MainCharacter(16, 32);
-    mainChar->setPos(0, 1020);
+    mainChar->setPos(120 , 1020);
 
     floater = new MovingPlatform(48, 64);
     floater->setPixmap(QPixmap(":Simple_Sprite/1.png"));
