@@ -56,9 +56,14 @@ MainWindow::MainWindow(QWidget *parent) :
     testSprite2->setAcceleration(QPointF(0, 0));
     testSprite2->triggerAnimation(0);
 
+    QPixmap backgroundMask(":Backgrounds/background_mask.png");
+
+    bkgPix.setMask(backgroundMask.createMaskFromColor(QColor(0, 0, 0, 0)));
+
     bkg = new StaticBackground(QPoint(0, 0));
     bkg->setPixmap(bkgPix);
     bkg->setPos(0, 0);
+    bkg->setShapeMode(QGraphicsPixmapItem::HeuristicMaskShape);
 
     gameEngine->addItem(bkg);
     gameEngine->addSprite(mainChar, true);
@@ -77,10 +82,10 @@ void MainWindow::buttonPress() {
 void MainWindow::invalidateTimer() {
     qint64 nMS = QDateTime::currentMSecsSinceEpoch();
     gameEngine->step(nMS);
-    if (mainChar->pos().x() > gameEngine->width()) mainChar->setPos(-64, mainChar->pos().y());
-    else if (mainChar->pos().x() < -64) mainChar->setPos(gameEngine->sceneRect().width(), mainChar->pos().y());
+    if (mainChar->pos().x() > gameEngine->width()) mainChar->setPos(-60, mainChar->pos().y());
+    else if (mainChar->pos().x() < -60) mainChar->setPos(gameEngine->sceneRect().width(), mainChar->pos().y());
 
-    if (mainChar->pos().y() > 1020) {
+    if (mainChar->pos().y() > gameEngine->sceneRect().height()) {
         mainChar->setVelocity(QPointF(mainChar->getVelocity().x(), 0));
         mainChar->setPos(mainChar->pos().x(), 1020);
     }

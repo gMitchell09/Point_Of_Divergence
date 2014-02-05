@@ -51,12 +51,6 @@ public:
 
     virtual void step(unsigned long time);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
-
-    
-signals:
-    
-public slots:
-    
 };
 
 #endif // ANIMATEDCOLLIDEABLESPRITE_H

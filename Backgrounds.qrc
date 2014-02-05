@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/Backgrounds">
         <file alias="/background.jpg">Sprites/background.jpg</file>
+        <file alias="/background_mask.png">Sprites/background_mask.png</file>
     </qresource>
 </RCC>

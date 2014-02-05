@@ -48,7 +48,7 @@ public:
     void setVelocity(QPointF velocity) { m_velocity = velocity; }
     QPointF& getVelocity() { return m_velocity; }
 
-    virtual void step (unsigned long time) = 0;
+    virtual void step (unsigned long time) {};
 
     
 signals:

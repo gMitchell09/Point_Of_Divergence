@@ -47,7 +47,7 @@ void AnimatedCollideableSprite::step(unsigned long time) {
         QPointF newPos = QPointF(0,0);
         this->collisionOccurred(collisions, side);
         for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
-            if ((this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
+            if ((side & Bottom) || (this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
                 (this->pos().x() >= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() > 0)) {
                 newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
             }
@@ -90,8 +90,16 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cTop = true;
         side |= Top;
-        Collision col = {this, collidee, collidee->getVelocity(), Top, Top, QPointF(0,0)};
-        collisions.append(col);
+
+        Collision col;
+        if (collidee != NULL) {
+            col = {this, collidee, collidee->getVelocity(), Top, Top, QPointF(0,0)};
+            collisions.append(col);
+        }
+        if (collidee2 != NULL && collidee2 != collidee) {
+            col = {this, collidee2, collidee2->getVelocity(), Top, Top, QPointF(0,0)};
+            collisions.append(col);
+        }
     }
 
     // Check right points for collision
@@ -101,8 +109,16 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cRight = true;
         side |= Right;
-        Collision col = {this, collidee, collidee->getVelocity(), Right, Right, QPointF(0,0)};
-        collisions.append(col);
+
+        Collision col;
+        if (collidee != NULL) {
+            col = {this, collidee, collidee->getVelocity(), Right, Right, QPointF(0,0)};
+            collisions.append(col);
+        }
+        if (collidee2 != NULL && collidee2 != collidee) {
+            col = {this, collidee2, collidee2->getVelocity(), Right, Right, QPointF(0,0)};
+            collisions.append(col);
+        }
     }
 
     // Check left points for collision
@@ -112,8 +128,15 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cBottom = true;
         side |= Bottom;
-        Collision col = {this, collidee, collidee->getVelocity(), Bottom, Bottom, QPointF(0,0)};
-        collisions.append(col);
+        Collision col;
+        if (collidee != NULL) {
+            col = {this, collidee, collidee->getVelocity(), Bottom, Bottom, QPointF(0,0)};
+            collisions.append(col);
+        }
+        if (collidee2 != NULL && collidee2 != collidee) {
+            col = {this, collidee2, collidee2->getVelocity(), Bottom, Bottom, QPointF(0,0)};
+            collisions.append(col);
+        }
     }
 
     // Check right points for collision
@@ -123,8 +146,16 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cLeft = true;
         side |= Left;
-        Collision col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
-        collisions.append(col);
+
+        Collision col;
+        if (collidee != NULL) {
+            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
+            collisions.append(col);
+        }
+        if (collidee2 != NULL && collidee2 != collidee) {
+            col = {this, collidee2, collidee2->getVelocity(), Left, Left, QPointF(0,0)};
+            collisions.append(col);
+        }
     }
 
     if ((cTop && cBottom) || (cLeft && cRight)) qDebug() << "SQUISH -- " << side;

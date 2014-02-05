@@ -94,7 +94,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 #else
     if (keyEvent->isAutoRepeat()) return;
 #endif
-    qDebug() << "Key Press!!!";
+//    qDebug() << "Key Press!!!";
 
     if (keyEvent->key() == Qt::Key_Down) {
         m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
@@ -145,19 +145,19 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     switch (keyEvent->key()) {
     case Qt::Key_Up:
         m_upPressed = false;
-        qDebug() << "Key Release: Up";
+//        qDebug() << "Key Release: Up";
         break;
     case Qt::Key_Down:
         m_downPressed = false;
-        qDebug() << "Key Release: Down";
+//        qDebug() << "Key Release: Down";
         break;
     case Qt::Key_Left:
         m_leftPressed = false;
-        qDebug() << "Key Release: Left";
+//        qDebug() << "Key Release: Left";
         break;
     case Qt::Key_Right:
         m_rightPressed = false;
-        qDebug() << "Key Release: Right";
+//        qDebug() << "Key Release: Right";
         break;
     }
 }
@@ -221,7 +221,7 @@ void MainCharacter::step(unsigned long time) {
 */
 
 void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    qDebug() << "COLLISIONS!!!! WOOOOOOOOOO!!!";
+//    qDebug() << "COLLISIONS!!!! WOOOOOOOOOO!!!";
 }
 
 void MainCharacter::jump() {
