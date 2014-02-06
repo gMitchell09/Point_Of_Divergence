@@ -164,5 +164,5 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
 }
 
 void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    // Override this method in your subclasses if you want to be alerted when collisions occur.
+    // Override this method in your subclasses if you want to be alerted when collisions occur.        
 }

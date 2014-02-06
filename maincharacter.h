@@ -31,7 +31,7 @@ private:
 
     bool m_upPressed, m_downPressed, m_leftPressed, m_rightPressed;
 
-    bool m_jumping;
+    bool m_jumping, m_jumping_double;
     bool m_brake;
 
     int m_keyRecentPress;

@@ -120,11 +120,13 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         this->triggerAnimation(Walk_Left);
         m_leftPressed = true;
     }
-    if (keyEvent->key() == Qt::Key_Up)  {
+    if (keyEvent->key() == Qt::Key_Up && !(m_jumping && m_jumping_double))  {
+        if(m_jumping)
+            m_jumping_double=true;
         this->jump();
         m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
-        this->m_jumping = true;
+        m_jumping = true;
         m_upPressed = true;
     }
 }
@@ -149,6 +151,9 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
         break;
     case Qt::Key_Down:
         m_downPressed = false;
+        if (m_currentState == Squat_Left || m_currentState == Squat_Right)
+            m_currentState = (MovementState) (m_currentState % 2);
+        this->triggerAnimation(m_currentState);
 //        qDebug() << "Key Release: Down";
         break;
     case Qt::Key_Left:
@@ -185,7 +190,7 @@ void MainCharacter::step(unsigned long time) {
             break;
     }
     if (this->getVelocity().y() >= 0 && (m_currentState == Jump_Left || m_currentState == Jump_Right)) {
-        this->m_jumping = false;
+        //this->m_jumping = false;
         m_currentState = (MovementState)(m_currentState % 2);
         if (this->getVelocity().x() > 0) m_currentState = Walk_Right;
         else if (this->getVelocity().x() < 0) m_currentState = Walk_Left;
@@ -215,13 +220,20 @@ void MainCharacter::step(unsigned long time) {
 /* Possible User Input:
  * Left - Walk and then run left
  * Right - Walk and then run right
- * Left -> Right - (Moving) left, Brake_Left, Walk_Right, Run_Right
+ * Left -> Ri/        if((*itr)==1
+//                this->m_jumping_double=false;ght - (Moving) left, Brake_Left, Walk_Right, Run_Right
  * Up (Moving Left) Jump_Left animation
  * Up (Moving Right) Jump_Right animation
 */
 
 void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-//    qDebug() << "COLLISIONS!!!! WOOOOOOOOOO!!!";
+    qDebug() << "COLLISIONS!!!! WOOOOOOOOOO!!!";
+    for(auto itr = collisions.begin(); itr != collisions.end(); itr++) {
+        if (((Collision)(*itr)).firstSide == 4){// && ((Collision)(*itr)).secondSide == 1)
+            m_jumping_double = false;
+            m_jumping = false;
+        }
+    }
 }
 
 void MainCharacter::jump() {
