@@ -167,7 +167,7 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     }
 }
 
-void MainCharacter::step(unsigned long time) {
+void MainCharacter::step(long time) {
     AnimatedCollideableSprite::step(time);
     switch (m_currentState) {
         case Walk_Right:

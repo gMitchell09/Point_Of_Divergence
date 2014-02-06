@@ -30,6 +30,7 @@ private:
     Ui::MainWindow *ui;
     StaticPlatform *testSprite, *testSprite2;
     StaticBackground *bkg;
+    bool reverseTime;
 
     MainCharacter *mainChar;
 

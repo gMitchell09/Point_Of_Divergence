@@ -14,9 +14,17 @@ GameEngine::GameEngine(int width, int height) :
     m_mainActor(NULL) {}
 
 void GameEngine::step(qint64 time) {
-    qint64 deltaTime = time - m_prevTime;
+    qint64 deltaTime;
+
+    if (time < 0) {
+        deltaTime = -((-time) - m_prevTime);
+        m_prevTime = -time;
+    }
+    else {
+        deltaTime = time - m_prevTime;
+        m_prevTime = time;
+    }
     if (m_prevTime == 0) deltaTime = 0;
-    m_prevTime = time;
 
 //    for(auto itr = m_stepHandlerVector.begin(); itr != m_stepHandlerVector.end(); itr++) {
 //        (*itr)(deltaTime);

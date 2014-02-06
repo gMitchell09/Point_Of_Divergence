@@ -43,7 +43,7 @@ public:
 
     void setBrake(bool brake) { m_brake = brake; }
 
-    virtual void step(unsigned long time);
+    virtual void step(long time);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
     void jump();
 

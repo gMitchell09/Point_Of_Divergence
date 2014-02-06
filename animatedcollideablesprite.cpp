@@ -27,8 +27,13 @@ AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGra
     m_collisionPoints[3][1] = QPoint(0, (5*height)/6);
 }
 
-void AnimatedCollideableSprite::step(unsigned long time) {
+void AnimatedCollideableSprite::step(long time) {
     AnimatedSprite::step(time);
+
+    if (time < 0) {
+        time = -time;
+        // Reverse movement logic goes here...
+    }
 
     double timeStep = time / 1000.0;
     QList<Collision> collisions;
@@ -93,11 +98,23 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
 
         Collision col;
         if (collidee != NULL) {
-            col = {this, collidee, collidee->getVelocity(), Top, Top, QPointF(0,0)};
+//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
+            // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
+            col.firstSprite = this;
+            col.secondSprite = collidee;
+            col.normalVector = collidee->getVelocity();
+            col.firstSide = Top;
+            col.secondSide = Top;
+            col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
         if (collidee2 != NULL && collidee2 != collidee) {
-            col = {this, collidee2, collidee2->getVelocity(), Top, Top, QPointF(0,0)};
+            col.firstSprite = this;
+            col.secondSprite = collidee2;
+            col.normalVector = collidee2->getVelocity();
+            col.firstSide = Top;
+            col.secondSide = Top;
+            col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
     }
@@ -112,11 +129,23 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
 
         Collision col;
         if (collidee != NULL) {
-            col = {this, collidee, collidee->getVelocity(), Right, Right, QPointF(0,0)};
+//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
+            // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
+            col.firstSprite = this;
+            col.secondSprite = collidee;
+            col.normalVector = collidee->getVelocity();
+            col.firstSide = Right;
+            col.secondSide = Right;
+            col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
         if (collidee2 != NULL && collidee2 != collidee) {
-            col = {this, collidee2, collidee2->getVelocity(), Right, Right, QPointF(0,0)};
+            col.firstSprite = this;
+            col.secondSprite = collidee2;
+            col.normalVector = collidee2->getVelocity();
+            col.firstSide = Right;
+            col.secondSide = Right;
+            col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
     }
@@ -130,11 +159,23 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
         side |= Bottom;
         Collision col;
         if (collidee != NULL) {
-            col = {this, collidee, collidee->getVelocity(), Bottom, Bottom, QPointF(0,0)};
+//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
+            // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
+            col.firstSprite = this;
+            col.secondSprite = collidee;
+            col.normalVector = collidee->getVelocity();
+            col.firstSide = Bottom;
+            col.secondSide = Bottom;
+            col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
         if (collidee2 != NULL && collidee2 != collidee) {
-            col = {this, collidee2, collidee2->getVelocity(), Bottom, Bottom, QPointF(0,0)};
+            col.firstSprite = this;
+            col.secondSprite = collidee2;
+            col.normalVector = collidee2->getVelocity();
+            col.firstSide = Bottom;
+            col.secondSide = Bottom;
+            col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
     }
@@ -149,11 +190,23 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
 
         Collision col;
         if (collidee != NULL) {
-            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
+//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
+            // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
+            col.firstSprite = this;
+            col.secondSprite = collidee;
+            col.normalVector = collidee->getVelocity();
+            col.firstSide = Left;
+            col.secondSide = Left;
+            col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
         if (collidee2 != NULL && collidee2 != collidee) {
-            col = {this, collidee2, collidee2->getVelocity(), Left, Left, QPointF(0,0)};
+            col.firstSprite = this;
+            col.secondSprite = collidee2;
+            col.normalVector = collidee2->getVelocity();
+            col.firstSide = Left;
+            col.secondSide = Left;
+            col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
     }

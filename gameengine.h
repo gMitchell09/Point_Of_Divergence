@@ -37,7 +37,7 @@ private:
 
     MainCharacter * m_mainActor;
 
-    std::vector<std::function<void(unsigned long)>> m_stepHandlerVector;
+    std::vector<std::function<void(long)>> m_stepHandlerVector;
 
     // This is a vector of sprites that can be interacted with
     std::vector<Sprite*> m_spriteArray;
@@ -55,7 +55,7 @@ public:
      */
     void step(qint64 time);
 
-    inline void addHandler(std::function<void(unsigned long)> callback) {
+    inline void addHandler(std::function<void(long)> callback) {
         m_stepHandlerVector.push_back(callback);
     }
 

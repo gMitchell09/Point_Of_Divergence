@@ -49,7 +49,7 @@ public:
     ///
 
 
-    virtual void step(unsigned long time);
+    virtual void step(long time);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 };
 

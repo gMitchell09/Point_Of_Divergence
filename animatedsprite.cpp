@@ -53,19 +53,36 @@ void AnimatedSprite::triggerAnimation(unsigned int anim) {
     this->setPixmap(m_animationList.at(m_nCurrentAnimation).at(m_nCurrentFrame));
 }
 
-void AnimatedSprite::step(unsigned long time) {
+void AnimatedSprite::step(long time) {
     if (m_animationType.empty() || m_animationList.empty()) return;
+    kAnimationType currentAnimType = m_animationType.at(m_nCurrentAnimation);
+
+    if (time < 0) {
+        time = -time;
+        if (currentAnimType % 2) currentAnimType = (kAnimationType) (currentAnimType - 1);
+        else currentAnimType = (kAnimationType) (currentAnimType + 1);
+        qDebug() << "Animation: " << currentAnimType;
+    }
 
     m_msCounter += time;
     if (m_msCounter >= m_msPerFrame) {
-        switch(m_animationType.at(m_nCurrentAnimation)) {
+        switch(currentAnimType) {
             case Forward:
                 // DO NOT REPLACE +1 WITH ++.  IF YOU DO I _WILL_ FIND YOU.  :)
                 m_nCurrentFrame = MIN(m_nCurrentFrame+1, m_animationList.at(m_nCurrentAnimation).size() - 1);
                 break;
 
+            case Reverse:
+                m_nCurrentFrame = MAX(m_nCurrentFrame-1, 0); // We don't want our frame to drop below zero
+                break;
+
             case Loop:
                 m_nCurrentFrame = ++m_nCurrentFrame % m_animationList.at(m_nCurrentAnimation).size();
+                break;
+
+            case Loop_Reverse:
+                m_nCurrentFrame--;
+                if (m_nCurrentFrame < 0) m_nCurrentFrame = m_animationList.at(m_nCurrentAnimation).size() - 1;
                 break;
 
             case Forward_Reverse:

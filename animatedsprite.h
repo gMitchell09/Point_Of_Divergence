@@ -14,12 +14,10 @@
 #include "sprite.h"
 
 enum kAnimationType {
-    Forward,
-    Loop,
-    Forward_Reverse,
-    Reverse_Forward,
-    Forward_Reverse_Loop,
-    Reverse_Forward_Loop
+    Loop,                   Loop_Reverse,
+    Forward,                Reverse,
+    Forward_Reverse,        Reverse_Forward,
+    Forward_Reverse_Loop,   Reverse_Forward_Loop
 };
 
 class AnimatedSprite : public Sprite {
@@ -32,8 +30,8 @@ private:
      */
 
     std::vector<QPainterPath> m_animationPathList;
-    unsigned char m_nCurrentFrame;
-    unsigned char m_nCurrentAnimation;
+    char m_nCurrentFrame;
+    char m_nCurrentAnimation;
     std::vector<std::vector<QPixmap>> m_animationList;
     std::vector<kAnimationType> m_animationType;
 
@@ -50,7 +48,7 @@ public:
     void addAnimation(std::vector<QPixmap> pixmapList, QPainterPath animationPath, kAnimationType animationType = Forward);
     void addAnimation(std::vector<QPixmap> pixmapList, kAnimationType animationType = Forward);
 
-    virtual void step(unsigned long time);
+    virtual void step(long time);
 
     bool isStatic() { return false; }
     bool isAnimated() { return true; }

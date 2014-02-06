@@ -19,7 +19,7 @@ public:
     virtual bool isCollideable();
     virtual bool isBackground();
 
-    virtual void step (unsigned long time);
+    virtual void step (long time);
 };
 
 #endif // STATICBACKGROUND_H

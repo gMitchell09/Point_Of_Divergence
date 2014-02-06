@@ -11,7 +11,7 @@ MovingPlatform::MovingPlatform(int width, int height, QGraphicsItem *parent) :
 {
 }
 
-void MovingPlatform::step(unsigned long time) {
+void MovingPlatform::step(long time) {
     AnimatedSprite::step(time);
 
     double timeStep = time / 1000.0;

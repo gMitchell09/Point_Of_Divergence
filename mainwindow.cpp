@@ -43,14 +43,14 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmap bkgPix(":Backgrounds/background.jpg");
 
     std::vector<QPixmap> pixmapList2;
-    pixmapList2.push_back(myPix3);
-    pixmapList2.push_back(myPix5);
-    pixmapList2.push_back(myPix2);
-    pixmapList2.push_back(myPix4);
     pixmapList2.push_back(myPix1);
+    pixmapList2.push_back(myPix2);
+    pixmapList2.push_back(myPix3);
+    pixmapList2.push_back(myPix4);
+    pixmapList2.push_back(myPix5);
 
     testSprite2 = new StaticPlatform(48, 64);
-    testSprite2->addAnimation(pixmapList2, Forward_Reverse_Loop);
+    testSprite2->addAnimation(pixmapList2, Loop);
     testSprite2->setPos(gameEngine->sceneRect().width()/2 - 48, 1020);
     testSprite2->setVelocity(QPointF(0, 0));
     testSprite2->setAcceleration(QPointF(0, 0));
@@ -76,11 +76,12 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::buttonPress() {
-
+    reverseTime = !reverseTime;
 }
 
 void MainWindow::invalidateTimer() {
     qint64 nMS = QDateTime::currentMSecsSinceEpoch();
+    if (reverseTime == true) nMS = -nMS;
     gameEngine->step(nMS);
     if (mainChar->pos().x() > gameEngine->width()) mainChar->setPos(-60, mainChar->pos().y());
     else if (mainChar->pos().x() < -60) mainChar->setPos(gameEngine->sceneRect().width(), mainChar->pos().y());

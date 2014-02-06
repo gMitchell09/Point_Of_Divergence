@@ -15,7 +15,7 @@ class StaticPlatform : public AnimatedSprite
 public:
     explicit StaticPlatform(int width, int height, QGraphicsItem *parent = 0);
 
-    virtual void step(unsigned long time);
+    virtual void step(long time);
 
     bool isStatic() { return true; }
     bool isAnimated() { return false; }

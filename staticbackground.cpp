@@ -22,6 +22,6 @@ bool StaticBackground::isBackground() {
     return true;
 }
 
-void StaticBackground::step(unsigned long time) {
+void StaticBackground::step(long time) {
     // do nothing... for now ;)
 }
