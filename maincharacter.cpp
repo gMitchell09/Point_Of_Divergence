@@ -107,20 +107,30 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         qDebug() << "Down";
     }
     else if (keyEvent->key() == Qt::Key_Right) {
-        this->setAcceleration(QPointF(m_rightAccel, this->getAcceleration().y()));
+        m_currentState = Walk_Right;
+        if (!m_jumping && this->getVelocity().x() < 0) {
+            m_currentState = Brake_Right; // We are already moving left so we have to play "brake" animation
+            this->setAcceleration(QPointF(2*m_rightAccel, this->getAcceleration().y()));
+        } else {
+            this->setAcceleration(QPointF(m_rightAccel, this->getAcceleration().y()));
+        }
         this->setBrake(false);
 
-        m_currentState = Walk_Right;
         this->triggerAnimation(m_currentState);
 
         m_rightPressed = true;
         qDebug() << "Right";
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
-        this->setAcceleration(QPointF(m_leftAccel, this->getAcceleration().y()));
+        m_currentState = Walk_Left;
+        if (!m_jumping && this->getVelocity().x() > 0) {
+            m_currentState = Brake_Left;
+            this->setAcceleration(QPointF(2*m_leftAccel, this->getAcceleration().y()));
+        } else {
+            this->setAcceleration(QPointF(m_leftAccel, this->getAcceleration().y()));
+        }
         this->setBrake(false);
 
-        m_currentState = Walk_Left;
         this->triggerAnimation(m_currentState);
 
         m_leftPressed = true;
@@ -192,7 +202,7 @@ void MainCharacter::step(long time) {
         case Brake_Left:
             if (this->getVelocity().x() < 0.005 && !m_rightPressed) {
                 m_currentState = Stand_Right;
-                this->triggerAnimation(Stand_Right);
+                this->triggerAnimation(m_currentState);
                 this->setVelocity(QPointF(0, this->getVelocity().y()));
             }
             break;
@@ -201,19 +211,36 @@ void MainCharacter::step(long time) {
         case Brake_Right:
             if (this->getVelocity().x() > -0.005 && !m_leftPressed) {
                 m_currentState = Stand_Left;
-                this->triggerAnimation(Stand_Left);
+                this->triggerAnimation(m_currentState);
                 this->setVelocity(QPointF(0, this->getVelocity().y()));
             }
             break;
     }
-    if (this->getVelocity().y() >= 0 && (m_currentState == Jump_Left || m_currentState == Jump_Right)) {
-        //this->m_jumping = false;
-        m_currentState = (MovementState)(m_currentState % 2);
-        if (this->getVelocity().x() > 0) m_currentState = Walk_Right;
-        else if (this->getVelocity().x() < 0) m_currentState = Walk_Left;
+
+    // If we are magically moving at a walking pace in either direction then play the walking animation
+    if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() < -0.005) {
+        if (m_acceleration.x() < 2*m_leftAccel) this->getAcceleration().setX(m_leftAccel);
+        m_currentState = Walk_Left;
+        this->triggerAnimation(m_currentState);
+        qDebug() << "WTF LEFT";
+    } else if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() > 0.005) {
+        if (m_acceleration.x() > 2*m_rightAccel) this->getAcceleration().setX(m_rightAccel);
+        m_currentState = Walk_Right;
+        this->triggerAnimation(m_currentState);
+        qDebug() << "WTF RIGHT";
+    }
+
+//    // We've peaked our jump and let's play the standing animation
+//    if (this->getVelocity().y() >= 0 && (m_currentState == Jump_Left || m_currentState == Jump_Right)) {
+//        m_currentState = (MovementState)(m_currentState % 2);
+//        if (this->getVelocity().x() > 0) m_currentState = Walk_Right;
+//        else if (this->getVelocity().x() < 0) m_currentState = Walk_Left;
+//        this->triggerAnimation(m_currentState);
+//    }
+    if (!m_jumping && (m_currentState == Jump_Left || m_currentState == Jump_Right)) {
+        m_currentState = (MovementState) (m_currentState - Jump_Right);
         this->triggerAnimation(m_currentState);
     }
-    if (!m_jumping && (m_currentState == Jump_Left || m_currentState == Jump_Right)) this->triggerAnimation(m_currentState - Jump_Right);
 
     if (m_brake) {
         if (SIGN(this->getVelocity().x()) == SIGN(this->getAcceleration().x())) {
