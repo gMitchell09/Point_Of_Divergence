@@ -5,6 +5,6 @@
 #include "sprite.h"
 
 Sprite::Sprite(QGraphicsItem *parent) :
-    QGraphicsPixmapItem(parent)
-{
+    QGraphicsPixmapItem(parent) {
+    this->setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 }
