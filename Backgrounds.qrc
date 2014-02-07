@@ -2,5 +2,6 @@
     <qresource prefix="/Backgrounds">
         <file alias="/background.jpg">Sprites/background.jpg</file>
         <file alias="/background_mask.png">Sprites/background_mask.png</file>
+        <file alias="/background_mask_test.png">Sprites/background_mask_test.png</file>
     </qresource>
 </RCC>
