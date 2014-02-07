@@ -94,7 +94,6 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 #else
     if (keyEvent->isAutoRepeat()) return;
 #endif
-    qDebug() << "Key Press!!!";
 
     if (keyEvent->key() == Qt::Key_Down) {
         this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
@@ -104,7 +103,6 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         this->triggerAnimation(m_currentState);
 
         m_downPressed = true;
-        qDebug() << "Down";
     }
     else if (keyEvent->key() == Qt::Key_Right) {
         m_currentState = Walk_Right;
@@ -119,7 +117,6 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         this->triggerAnimation(m_currentState);
 
         m_rightPressed = true;
-        qDebug() << "Right";
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
         m_currentState = Walk_Left;
@@ -134,7 +131,6 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         this->triggerAnimation(m_currentState);
 
         m_leftPressed = true;
-        qDebug() << "Left";
     }
     if (keyEvent->key() == Qt::Key_Up && !(m_jumping && m_jumping_double))  {
         if(m_jumping)
@@ -146,7 +142,6 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 
         m_jumping = true;
         m_upPressed = true;
-        qDebug() << "Up";
     }
 
     m_keyRecentPress = keyEvent->key();
@@ -171,11 +166,9 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     switch (keyEvent->key()) {
     case Qt::Key_Up:
         m_upPressed = false;
-//        qDebug() << "Key Release: Up";
         break;
     case Qt::Key_Down:
         m_downPressed = false;
-//        qDebug() << "Key Release: Down";
         break;
     case Qt::Key_Left:
         m_leftPressed = false;
@@ -218,25 +211,16 @@ void MainCharacter::step(long time) {
     }
 
     // If we are magically moving at a walking pace in either direction then play the walking animation
-    if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() < -0.005) {
+    if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() < -5) {
         if (m_acceleration.x() < 2*m_leftAccel) this->getAcceleration().setX(m_leftAccel);
         m_currentState = Walk_Left;
         this->triggerAnimation(m_currentState);
-        qDebug() << "WTF LEFT";
-    } else if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() > 0.005) {
+    } else if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() > 5) {
         if (m_acceleration.x() > 2*m_rightAccel) this->getAcceleration().setX(m_rightAccel);
         m_currentState = Walk_Right;
         this->triggerAnimation(m_currentState);
-        qDebug() << "WTF RIGHT";
     }
 
-//    // We've peaked our jump and let's play the standing animation
-//    if (this->getVelocity().y() >= 0 && (m_currentState == Jump_Left || m_currentState == Jump_Right)) {
-//        m_currentState = (MovementState)(m_currentState % 2);
-//        if (this->getVelocity().x() > 0) m_currentState = Walk_Right;
-//        else if (this->getVelocity().x() < 0) m_currentState = Walk_Left;
-//        this->triggerAnimation(m_currentState);
-//    }
     if (!m_jumping && (m_currentState == Jump_Left || m_currentState == Jump_Right)) {
         m_currentState = (MovementState) (m_currentState - Jump_Right);
         this->triggerAnimation(m_currentState);

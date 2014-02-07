@@ -10,8 +10,9 @@ GameEngine::GameEngine() : m_mainActor(NULL), m_prevTime(0)
 
 GameEngine::GameEngine(int width, int height) :
     m_mainActor(NULL),
-    m_prevTime(0)
-{}
+    m_prevTime(0) {
+    this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
+}
 
 void GameEngine::step(qint64 time) {
     qint64 deltaTime = 0;
@@ -48,7 +49,7 @@ void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
 void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
         m_timeReversed = false;
-        this->setBackgroundBrush(QBrush(QColor(255, 255, 255, 255)));
+        this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
     }
     else if (m_mainActor != NULL) {
         m_mainActor->keyReleaseEvent(keyEvent);

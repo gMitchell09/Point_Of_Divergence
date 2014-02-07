@@ -62,6 +62,7 @@ void AnimatedCollideableSprite::step(long time) {
             if ((this->pos().y() <= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() < 0) ||
                 (this->pos().y() >= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() > 0)) {
                 newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
+                qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
             }
 
             //newPos += ((Collision)(*itr)).normalVector * timeStep;
@@ -100,7 +101,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
         side |= Top;
 
         Collision col;
-        if (collidee != NULL) {
+        if (collidee != NULL && collidee != this) {
 //            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
             // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
             col.firstSprite = this;
@@ -111,7 +112,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
-        if (collidee2 != NULL && collidee2 != collidee) {
+        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
             col.firstSprite = this;
             col.secondSprite = collidee2;
             col.normalVector = collidee2->getVelocity();
@@ -131,7 +132,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
         side |= Right;
 
         Collision col;
-        if (collidee != NULL) {
+        if (collidee != NULL && collidee != this) {
 //            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
             // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
             col.firstSprite = this;
@@ -142,7 +143,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
-        if (collidee2 != NULL && collidee2 != collidee) {
+        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
             col.firstSprite = this;
             col.secondSprite = collidee2;
             col.normalVector = collidee2->getVelocity();
@@ -161,7 +162,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
         cBottom = true;
         side |= Bottom;
         Collision col;
-        if (collidee != NULL) {
+        if (collidee != NULL && collidee != this) {
 //            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
             // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
             col.firstSprite = this;
@@ -172,7 +173,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
-        if (collidee2 != NULL && collidee2 != collidee) {
+        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
             col.firstSprite = this;
             col.secondSprite = collidee2;
             col.normalVector = collidee2->getVelocity();
@@ -192,7 +193,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
         side |= Left;
 
         Collision col;
-        if (collidee != NULL) {
+        if (collidee != NULL && collidee != this) {
 //            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
             // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
             col.firstSprite = this;
@@ -203,7 +204,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.overlapDistance = QPointF(0, 0);
             collisions.append(col);
         }
-        if (collidee2 != NULL && collidee2 != collidee) {
+        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
             col.firstSprite = this;
             col.secondSprite = collidee2;
             col.normalVector = collidee2->getVelocity();
