@@ -26,7 +26,8 @@ SOURCES += main.cpp\
     tilemap.cpp \
     maincharacter.cpp \
     staticplatform.cpp \
-    movingplatform.cpp
+    movingplatform.cpp \
+    hudsprite.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -37,7 +38,8 @@ HEADERS  += mainwindow.h \
     tilemap.h \
     maincharacter.h \
     staticplatform.h \
-    movingplatform.h
+    movingplatform.h \
+    hudsprite.h
 
 FORMS    += mainwindow.ui
 
