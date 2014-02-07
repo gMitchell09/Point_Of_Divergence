@@ -5,6 +5,7 @@
  */
 
 #include "movingplatform.h"
+#include <QDebug>
 
 MovingPlatform::MovingPlatform(int width, int height, QGraphicsItem *parent) :
     AnimatedSprite(width, height, parent)

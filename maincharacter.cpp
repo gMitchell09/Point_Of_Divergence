@@ -94,54 +94,66 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 #else
     if (keyEvent->isAutoRepeat()) return;
 #endif
-//    qDebug() << "Key Press!!!";
+    qDebug() << "Key Press!!!";
 
     if (keyEvent->key() == Qt::Key_Down) {
+        this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
+        this->setBrake(true);
+
         m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
 
-        this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
-        this->setBrake(true);
         m_downPressed = true;
+        qDebug() << "Down";
     }
     else if (keyEvent->key() == Qt::Key_Right) {
         this->setAcceleration(QPointF(m_rightAccel, this->getAcceleration().y()));
         this->setBrake(false);
-        m_keyRecentPress = keyEvent->key();
+
         m_currentState = Walk_Right;
-        this->triggerAnimation(Walk_Right);
+        this->triggerAnimation(m_currentState);
+
         m_rightPressed = true;
+        qDebug() << "Right";
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
         this->setAcceleration(QPointF(m_leftAccel, this->getAcceleration().y()));
         this->setBrake(false);
-        m_keyRecentPress = keyEvent->key();
+
         m_currentState = Walk_Left;
-        this->triggerAnimation(Walk_Left);
+        this->triggerAnimation(m_currentState);
+
         m_leftPressed = true;
+        qDebug() << "Left";
     }
     if (keyEvent->key() == Qt::Key_Up && !(m_jumping && m_jumping_double))  {
         if(m_jumping)
             m_jumping_double=true;
         this->jump();
+
         m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
+
         m_jumping = true;
         m_upPressed = true;
+        qDebug() << "Up";
     }
+
+    m_keyRecentPress = keyEvent->key();
 }
 
 void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->isAutoRepeat()) return; // workaround for CentOS Systems
-    if (keyEvent->key() == m_keyRecentPress) {
-        this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
-        this->setBrake(true);
-        m_keyRecentPress = 0;
-    }
+
     if (keyEvent->key() == Qt::Key_Down) {
         m_currentState = (MovementState) (m_currentState % 2);
+        this->triggerAnimation(m_currentState);
         if (m_rightPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Right, 0));
         if (m_leftPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Left, 0));
+    }
+
+    if (keyEvent->key() == m_keyRecentPress) {
+        m_keyRecentPress = 0;
     }
 
     switch (keyEvent->key()) {
@@ -151,18 +163,21 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
         break;
     case Qt::Key_Down:
         m_downPressed = false;
-        if (m_currentState == Squat_Left || m_currentState == Squat_Right)
-            m_currentState = (MovementState) (m_currentState % 2);
-        this->triggerAnimation(m_currentState);
 //        qDebug() << "Key Release: Down";
         break;
     case Qt::Key_Left:
         m_leftPressed = false;
-//        qDebug() << "Key Release: Left";
+        if (this->getAcceleration().x() < 0) {
+            this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
+            this->setBrake(true);
+        }
         break;
     case Qt::Key_Right:
         m_rightPressed = false;
-//        qDebug() << "Key Release: Right";
+        if (this->getAcceleration().x() > 0) {
+            this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
+            this->setBrake(true);
+        }
         break;
     }
 }
@@ -227,12 +242,9 @@ void MainCharacter::step(long time) {
 */
 
 void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    qDebug() << "COLLISIONS!!!! WOOOOOOOOOO!!!";
-    for(auto itr = collisions.begin(); itr != collisions.end(); itr++) {
-        if (((Collision)(*itr)).firstSide == 4){// && ((Collision)(*itr)).secondSide == 1)
-            m_jumping_double = false;
-            m_jumping = false;
-        }
+    if (side & Bottom) {
+        m_jumping_double = false;
+        m_jumping = false;
     }
 }
 

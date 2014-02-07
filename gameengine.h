@@ -13,6 +13,8 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QBrush>
+#include <QColor>
 
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
@@ -32,8 +34,6 @@ private:
     /* --- Arbitrary Constants End */
 
     qint64 m_prevTime;
-    int m_viewportWidth, m_viewportHeight;
-    int m_sceneWidth, m_sceneHeight;
 
     MainCharacter * m_mainActor;
 
@@ -42,7 +42,9 @@ private:
     // This is a vector of sprites that can be interacted with
     std::vector<Sprite*> m_spriteArray;
 
-    int m_keyRecentPress;
+    //int m_keyRecentPress;
+    bool m_timeReversed = false;
+
 
 public:
     GameEngine();

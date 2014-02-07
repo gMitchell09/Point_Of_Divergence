@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     floater = new MovingPlatform(48, 64);
     floater->setPixmap(QPixmap(":Simple_Sprite/1.png"));
-    floater->setPos(300, 1020);
+    floater->setPos(300, 900);
     floater->setVelocity(QPointF(20, 0));
     floater->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 
@@ -76,12 +76,10 @@ MainWindow::MainWindow(QWidget *parent) :
 }
 
 void MainWindow::buttonPress() {
-    reverseTime = !reverseTime;
 }
 
 void MainWindow::invalidateTimer() {
     qint64 nMS = QDateTime::currentMSecsSinceEpoch();
-    if (reverseTime == true) nMS = -nMS;
     gameEngine->step(nMS);
     if (mainChar->pos().x() > gameEngine->width()) mainChar->setPos(-60, mainChar->pos().y());
     else if (mainChar->pos().x() < -60) mainChar->setPos(gameEngine->sceneRect().width(), mainChar->pos().y());

@@ -30,8 +30,11 @@ AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGra
 void AnimatedCollideableSprite::step(long time) {
     AnimatedSprite::step(time);
 
+    bool timeReversed = false;
+
     if (time < 0) {
-        time = -time;
+        //time = time;
+        timeReversed = true;
         // Reverse movement logic goes here...
     }
 
@@ -44,7 +47,7 @@ void AnimatedCollideableSprite::step(long time) {
     m_velocity += m_acceleration * timeStep;
     newVel = m_velocity;
 
-    unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep);
+    unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep, timeReversed);
     if (((side & Top) && m_velocity.y() < 0) || ((side & Bottom) && m_velocity.y() > 0)) newVel.setY(0);
     if (((side & Left) && m_velocity.x() < 0) || ((side & Right) && m_velocity.x() > 0)) newVel.setX(0);
 
@@ -82,7 +85,7 @@ void AnimatedCollideableSprite::step(long time) {
 
 }
 
-unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& collisions, QPointF offset) {
+unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& collisions, QPointF offset, bool timeReversed) {
     bool cTop=0, cRight=0, cBottom=0, cLeft=0;
     unsigned char side = 0;
     Sprite *collidee, *collidee2;

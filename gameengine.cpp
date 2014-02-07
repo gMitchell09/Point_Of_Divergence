@@ -4,26 +4,22 @@
 
 #include <QDebug>
 #include "gameengine.h"
-GameEngine::GameEngine() : m_mainActor(NULL)
+GameEngine::GameEngine() : m_mainActor(NULL), m_prevTime(0)
 {
 }
 
 GameEngine::GameEngine(int width, int height) :
-    m_viewportWidth(width),
-    m_viewportHeight(height),
-    m_mainActor(NULL) {}
+    m_mainActor(NULL),
+    m_prevTime(0)
+{}
 
 void GameEngine::step(qint64 time) {
-    qint64 deltaTime;
+    qint64 deltaTime = 0;
 
-    if (time < 0) {
-        deltaTime = -((-time) - m_prevTime);
-        m_prevTime = -time;
-    }
-    else {
-        deltaTime = time - m_prevTime;
-        m_prevTime = time;
-    }
+    deltaTime = time - m_prevTime;
+    if (m_timeReversed) deltaTime = -deltaTime;
+    m_prevTime = time;
+
     if (m_prevTime == 0) deltaTime = 0;
 
 //    for(auto itr = m_stepHandlerVector.begin(); itr != m_stepHandlerVector.end(); itr++) {
@@ -40,13 +36,21 @@ void GameEngine::step(qint64 time) {
 }
 
 void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
-    if (m_mainActor != NULL) {
+    if (keyEvent->key() == Qt::Key_R) {
+        m_timeReversed = true;
+        this->setBackgroundBrush(QBrush(QColor(120, 255, 120, 120)));
+    }
+    else if (m_mainActor != NULL) {
         m_mainActor->keyPressEvent(keyEvent);
     }
 }
 
 void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
-    if (m_mainActor != NULL) {
+    if (keyEvent->key() == Qt::Key_R) {
+        m_timeReversed = false;
+        this->setBackgroundBrush(QBrush(QColor(255, 255, 255, 255)));
+    }
+    else if (m_mainActor != NULL) {
         m_mainActor->keyReleaseEvent(keyEvent);
     }
 }

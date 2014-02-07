@@ -7,6 +7,9 @@
 QT       += core gui
 CONFIG   += c++11
 
+# Silly warning
+QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Point_Of_Divergence

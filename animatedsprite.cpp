@@ -30,10 +30,10 @@ void AnimatedSprite::addAnimation(std::vector<QPixmap> pixmapList, kAnimationTyp
 }
 
 void AnimatedSprite::triggerAnimation(unsigned int anim) {
+    if (anim >= m_animationType.size()) return;
+
     m_nCurrentAnimation = anim;
     m_msPerFrame = 200;
-
-    if (m_nCurrentAnimation >= m_animationType.size() || m_nCurrentAnimation < 0) return;
 
     switch (m_animationType.at(anim)) {
         case Forward:
@@ -45,11 +45,13 @@ void AnimatedSprite::triggerAnimation(unsigned int anim) {
             break;
         case Reverse_Forward:
         case Reverse_Forward_Loop:
+        case Loop_Reverse:
+        case Reverse:
             m_countUp = false;
             m_nCurrentFrame = m_animationList.at(anim).size()-1;
             break;
     }
-    assert (m_nCurrentFrame <= m_animationList.at(m_nCurrentAnimation).size());
+    assert (m_nCurrentFrame <= (signed)m_animationList.at(m_nCurrentAnimation).size());
     this->setPixmap(m_animationList.at(m_nCurrentAnimation).at(m_nCurrentFrame));
 }
 
@@ -69,7 +71,7 @@ void AnimatedSprite::step(long time) {
         switch(currentAnimType) {
             case Forward:
                 // DO NOT REPLACE +1 WITH ++.  IF YOU DO I _WILL_ FIND YOU.  :)
-                m_nCurrentFrame = MIN(m_nCurrentFrame+1, m_animationList.at(m_nCurrentAnimation).size() - 1);
+                m_nCurrentFrame = MIN(m_nCurrentFrame+1, (signed)m_animationList.at(m_nCurrentAnimation).size() - 1);
                 break;
 
             case Reverse:
@@ -87,7 +89,7 @@ void AnimatedSprite::step(long time) {
 
             case Forward_Reverse:
                 if (m_nCurrentFrame == 0 && !m_countUp) break;
-                if (m_nCurrentFrame == m_animationList.at(m_nCurrentAnimation).size() - 1)
+                if (m_nCurrentFrame == (signed)m_animationList.at(m_nCurrentAnimation).size() - 1)
                     m_countUp = !m_countUp;
 
                 if (m_countUp)
@@ -97,7 +99,7 @@ void AnimatedSprite::step(long time) {
                 break;
 
             case Reverse_Forward:
-                if (m_nCurrentFrame == m_animationList.at(m_nCurrentAnimation).size() - 1 && m_countUp) break;
+                if (m_nCurrentFrame == (signed)m_animationList.at(m_nCurrentAnimation).size() - 1 && m_countUp) break;
                 if (m_nCurrentFrame == 0)
                     m_countUp = !m_countUp;
 
@@ -109,7 +111,7 @@ void AnimatedSprite::step(long time) {
 
             case Forward_Reverse_Loop:
             case Reverse_Forward_Loop:
-                if ((m_nCurrentFrame == m_animationList.at(m_nCurrentAnimation).size() - 1 && m_countUp)||
+                if ((m_nCurrentFrame == (signed)m_animationList.at(m_nCurrentAnimation).size() - 1 && m_countUp)||
                         (m_nCurrentFrame == 0 && !m_countUp))
                     m_countUp = !m_countUp;
 
@@ -125,6 +127,6 @@ void AnimatedSprite::step(long time) {
         m_msCounter = 0;
     }
 
-    if (m_nCurrentFrame >= m_animationList.at(m_nCurrentAnimation).size() || m_nCurrentFrame < 0) m_nCurrentFrame = m_animationList.at(m_nCurrentAnimation).size() - 1;
+    if (m_nCurrentFrame >= (signed)m_animationList.at(m_nCurrentAnimation).size() || m_nCurrentFrame < 0) m_nCurrentFrame = m_animationList.at(m_nCurrentAnimation).size() - 1;
     this->setPixmap(m_animationList.at(m_nCurrentAnimation).at(m_nCurrentFrame));
 }

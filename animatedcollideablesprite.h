@@ -25,7 +25,7 @@ private:
     QPoint m_collisionPoints[4][2];
     bool m_solid;
 
-    unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset);
+    unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset, bool timeReversed);
     void resolveCollision(Collision collision);
 
 public:
