@@ -146,10 +146,12 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->isAutoRepeat()) return; // workaround for CentOS Systems
 
     if (keyEvent->key() == Qt::Key_Down) {
-        m_currentState = (MovementState) (m_currentState % 2);
-        this->triggerAnimation(m_currentState);
-        if (m_rightPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Right, 0));
-        if (m_leftPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Left, 0));
+        if (m_currentState == Squat_Left || m_currentState == Squat_Right) {
+            m_currentState = (MovementState) (m_currentState % 2);
+            this->triggerAnimation(m_currentState);
+            if (m_rightPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Right, 0));
+            if (m_leftPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Left, 0));
+        }
     }
 
     if (keyEvent->key() == m_keyRecentPress) {
