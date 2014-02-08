@@ -14,6 +14,7 @@
 #include "maincharacter.h"
 #include "staticplatform.h"
 #include "movingplatform.h"
+#include "hudsprite.h"
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +32,7 @@ private:
     Ui::MainWindow *ui;
     StaticPlatform *testSprite, *testSprite2;
     StaticBackground *bkg;
+    HUDsprite *testhud;
 
     MainCharacter *mainChar;
 

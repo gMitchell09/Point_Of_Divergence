@@ -19,6 +19,7 @@
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
 #include "maincharacter.h"
+#include "hudsprite.h"
 
 class GameEngine : public QGraphicsScene
 {
@@ -41,6 +42,7 @@ private:
 
     // This is a vector of sprites that can be interacted with
     std::vector<Sprite*> m_spriteArray;
+    std::vector<HUDsprite*> m_hudArray;
 
     //int m_keyRecentPress;
     bool m_timeReversed = false;
@@ -61,6 +63,11 @@ public:
         m_stepHandlerVector.push_back(callback);
     }
 
+    inline void addHUD(HUDsprite* sprite) {
+        this->addItem(sprite);
+        m_hudArray.push_back(sprite);
+    }
+
     inline size_t addSprite(Sprite* sprite, bool mainActor = false) {
         this->addItem(sprite);
         if (mainActor) {
@@ -69,6 +76,8 @@ public:
         m_spriteArray.push_back(sprite);
         return m_spriteArray.size();
     }
+
+    virtual bool event(QEvent *event);
 
 protected:
     virtual void keyPressEvent(QKeyEvent * keyEvent);

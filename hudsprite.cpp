@@ -1,13 +1,21 @@
-/* Author: George Mitchell
+/* Author: Jesse Hairston
  * Added: Friday Feb 7 @ 4:25pm
  * Initial Commit: Wednesday Feb 5 @ 4:25pm
  * Use Case: 09: Heads-Up Display
  */
 
-#include "hudsprite.h"
+#include <QGraphicsScene>
 
-HUDsprite::HUDsprite(QGraphicsItem *parent) :
-    Sprite(parent)
-{
-    //code
+#include "hudsprite.h"
+#include <QDebug>
+
+HUDsprite::HUDsprite(QGraphicsView *&view, QPointF screenPos, QGraphicsItem *parent) :
+    Sprite(parent),
+    m_screenPos(screenPos),
+    m_view(view) {
+}
+
+void HUDsprite::step(long time) {
+    Sprite::step(time);
+    this->setPos(m_view->mapToScene(m_screenPos.x(), m_screenPos.y()));
 }

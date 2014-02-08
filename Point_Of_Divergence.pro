@@ -19,8 +19,8 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     gameengine.cpp \
-    animatedsprite.cpp \
     sprite.cpp \
+    animatedsprite.cpp \
     staticbackground.cpp \
     animatedcollideablesprite.cpp \
     tilemap.cpp \

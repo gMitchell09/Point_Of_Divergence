@@ -23,10 +23,6 @@ void GameEngine::step(qint64 time) {
 
     if (m_prevTime == 0) deltaTime = 0;
 
-//    for(auto itr = m_stepHandlerVector.begin(); itr != m_stepHandlerVector.end(); itr++) {
-//        (*itr)(deltaTime);
-//    }
-
     for(auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); itr++) {
         (*itr)->step(deltaTime);
     }
@@ -54,4 +50,12 @@ void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
     else if (m_mainActor != NULL) {
         m_mainActor->keyReleaseEvent(keyEvent);
     }
+}
+
+bool GameEngine::event(QEvent *event) {
+    if (event->type() == QEvent::MetaCall)
+        for(auto itr = m_hudArray.begin(); itr != m_hudArray.end(); itr++) {
+            (*itr)->step(0);
+        }
+    return QGraphicsScene::event(event);
 }
