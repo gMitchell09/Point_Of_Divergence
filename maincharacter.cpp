@@ -189,60 +189,62 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
 
 void MainCharacter::step(long time) {
     AnimatedCollideableSprite::step(time);
-    switch (m_currentState) {
-        case Walk_Right:
-        case Run_Right:
-        case Brake_Left:
-            if (this->getVelocity().x() < 0.005 && !m_rightPressed) {
-                m_currentState = Stand_Right;
-                this->triggerAnimation(m_currentState);
-                this->setVelocity(QPointF(0, this->getVelocity().y()));
-            }
-            break;
-        case Walk_Left:
-        case Run_Left:
-        case Brake_Right:
-            if (this->getVelocity().x() > -0.005 && !m_leftPressed) {
-                m_currentState = Stand_Left;
-                this->triggerAnimation(m_currentState);
-                this->setVelocity(QPointF(0, this->getVelocity().y()));
-            }
-            break;
-    }
-
-    // If we are magically moving at a walking pace in either direction then play the walking animation
-    if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() < -5) {
-        if (m_acceleration.x() < 2*m_leftAccel) this->getAcceleration().setX(m_leftAccel);
-        m_currentState = Walk_Left;
-        this->triggerAnimation(m_currentState);
-    } else if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() > 5) {
-        if (m_acceleration.x() > 2*m_rightAccel) this->getAcceleration().setX(m_rightAccel);
-        m_currentState = Walk_Right;
-        this->triggerAnimation(m_currentState);
-    }
-
-    if (!m_jumping && (m_currentState == Jump_Left || m_currentState == Jump_Right)) {
-        m_currentState = (MovementState) (m_currentState - Jump_Right);
-        this->triggerAnimation(m_currentState);
-    }
-
-    if (m_brake) {
-        if (SIGN(this->getVelocity().x()) == SIGN(this->getAcceleration().x())) {
-            this->getVelocity().setX(0);
-            this->getAcceleration().setX(0);
-            m_brake = false;
+    if (time > 0) {
+        switch (m_currentState) {
+            case Walk_Right:
+            case Run_Right:
+            case Brake_Left:
+                if (this->getVelocity().x() < 0.005 && !m_rightPressed) {
+                    m_currentState = Stand_Right;
+                    this->triggerAnimation(m_currentState);
+                    this->setVelocity(QPointF(0, this->getVelocity().y()));
+                }
+                break;
+            case Walk_Left:
+            case Run_Left:
+            case Brake_Right:
+                if (this->getVelocity().x() > -0.005 && !m_leftPressed) {
+                    m_currentState = Stand_Left;
+                    this->triggerAnimation(m_currentState);
+                    this->setVelocity(QPointF(0, this->getVelocity().y()));
+                }
+                break;
         }
+
+        // If we are magically moving at a walking pace in either direction then play the walking animation
+        if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() < -5) {
+            if (m_acceleration.x() < 2*m_leftAccel) this->getAcceleration().setX(m_leftAccel);
+            m_currentState = Walk_Left;
+            this->triggerAnimation(m_currentState);
+        } else if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() > 5) {
+            if (m_acceleration.x() > 2*m_rightAccel) this->getAcceleration().setX(m_rightAccel);
+            m_currentState = Walk_Right;
+            this->triggerAnimation(m_currentState);
+        }
+
+        if (!m_jumping && (m_currentState == Jump_Left || m_currentState == Jump_Right)) {
+            m_currentState = (MovementState) (m_currentState - Jump_Right);
+            this->triggerAnimation(m_currentState);
+        }
+
+        if (m_brake) {
+            if (SIGN(this->getVelocity().x()) == SIGN(this->getAcceleration().x())) {
+                this->getVelocity().setX(0);
+                this->getAcceleration().setX(0);
+                m_brake = false;
+            }
+        }
+
+        if (this->getVelocity().x() > 0)
+            this->getVelocity().setX(MIN(this->getVelocity().x(), m_maxVelX));
+        else
+            this->getVelocity().setX(MAX(this->getVelocity().x(), -m_maxVelX));
+
+        if (this->getVelocity().y() > 0)
+            this->getVelocity().setY(MIN(this->getVelocity().y(), m_maxVelY));
+        else
+            this->getVelocity().setY(MAX(this->getVelocity().y(), -m_maxVelY));
     }
-
-    if (this->getVelocity().x() > 0)
-        this->getVelocity().setX(MIN(this->getVelocity().x(), m_maxVelX));
-    else
-        this->getVelocity().setX(MAX(this->getVelocity().x(), -m_maxVelX));
-
-    if (this->getVelocity().y() > 0)
-        this->getVelocity().setY(MIN(this->getVelocity().y(), m_maxVelY));
-    else
-        this->getVelocity().setY(MAX(this->getVelocity().y(), -m_maxVelY));
 }
 
 /* Possible User Input:

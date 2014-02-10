@@ -68,7 +68,7 @@ void AnimatedSprite::step(long time) {
    if (isReversed && this->usesStack()) { // Smart reverse
         if (!m_stateStack.empty()) {
             m_msCounter += time;
-            if (m_msCounter >= m_msPerFrame) {
+            if (1 || m_msCounter >= m_msPerFrame) {
                 State currentState = m_stateStack.top();
                 m_nCurrentAnimation = currentState.m_nCurrentAnimation;
                 m_nCurrentFrame = currentState.m_nCurrentFrame;
@@ -144,12 +144,13 @@ void AnimatedSprite::step(long time) {
             }
             m_msCounter = 0;
 
-            if (this->usesStack()) {
-                State currentState;
-                currentState.m_nCurrentAnimation = m_nCurrentAnimation;
-                currentState.m_nCurrentFrame = m_nCurrentFrame;
-                m_stateStack.push(currentState);
-            }
+        }
+
+        if (this->usesStack()) {
+            State currentState;
+            currentState.m_nCurrentAnimation = m_nCurrentAnimation;
+            currentState.m_nCurrentFrame = m_nCurrentFrame;
+            m_stateStack.push(currentState);
         }
     }
 
