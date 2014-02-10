@@ -8,7 +8,7 @@ QT       += core gui
 CONFIG   += c++11
 
 # Silly warning
-QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder
+QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder -Wsequence-point
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 

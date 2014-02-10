@@ -9,8 +9,11 @@
 #include "animatedsprite.h"
 #include <QGraphicsScene>
 #include <QDebug>
+#include <stack>
 
 enum Side { Top = 1, Right = 2, Bottom = 4, Left = 8 };
+
+struct PositionState { QPointF pos; };
 
 struct Collision {
     Sprite *firstSprite, *secondSprite;
@@ -23,6 +26,7 @@ class AnimatedCollideableSprite : public AnimatedSprite
 {
 private:
     QPoint m_collisionPoints[4][2];
+    std::stack<PositionState> m_positionStateStack;
     bool m_solid;
 
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset, bool timeReversed);
@@ -51,6 +55,9 @@ public:
 
     virtual void step(long time);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+
+protected:
+    virtual bool usesStack() { return false; }
 };
 
 #endif // ANIMATEDCOLLIDEABLESPRITE_H

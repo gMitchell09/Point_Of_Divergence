@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     floater = new MovingPlatform(48, 64);
     floater->setPixmap(QPixmap(":Simple_Sprite/1.png"));
     floater->setPos(300, 900);
-    floater->setVelocity(QPointF(20, 0));
+    floater->setVelocity(QPointF(200, 0));
     floater->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 
     QPixmap myPix1(":Simple_Sprite/1.png");

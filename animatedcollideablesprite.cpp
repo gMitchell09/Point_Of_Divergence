@@ -35,55 +35,70 @@ void AnimatedCollideableSprite::step(long time) {
     if (time < 0) {
         //time = time;
         timeReversed = true;
-        // Reverse movement logic goes here...
+        this->setVelocity(QPointF(0, 0));
     }
 
-    double timeStep = time / 1000.0;
-    QList<Collision> collisions;
-
-    QPointF oldVel = m_velocity;
-    QPointF newVel;
-
-    m_velocity += m_acceleration * timeStep;
-    newVel = m_velocity;
-
-    unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep, timeReversed);
-    if (((side & Top) && m_velocity.y() < 0) || ((side & Bottom) && m_velocity.y() > 0)) newVel.setY(0);
-    if (((side & Left) && m_velocity.x() < 0) || ((side & Right) && m_velocity.x() > 0)) newVel.setX(0);
-
-    if (!collisions.empty()) {
-        QPointF newPos = QPointF(0,0);
-        this->collisionOccurred(collisions, side);
-        for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
-            if ((side & Bottom) || (this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
-                (this->pos().x() >= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() > 0)) {
-                newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
-            }
-            if ((this->pos().y() <= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() < 0) ||
-                (this->pos().y() >= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() > 0)) {
-                newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
-                qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
-            }
-
-            //newPos += ((Collision)(*itr)).normalVector * timeStep;
+    if (timeReversed && this->usesStack()) {
+        if (!m_positionStateStack.empty()) {
+            PositionState currentState = m_positionStateStack.top();
+            this->setPos(currentState.pos);
+            m_positionStateStack.pop();
         }
-        this->setPos(this->pos() + newPos);
     }
 
+    else {
+        double timeStep = time / 1000.0;
+        QList<Collision> collisions;
 
-    m_velocity = newVel;
+        QPointF oldVel = m_velocity;
+        QPointF newVel;
 
-    QPointF oldPos = this->pos();
+        m_velocity += m_acceleration * timeStep;
+        newVel = m_velocity;
 
-    this->setPos(this->pos() + (m_velocity + oldVel) * 0.5 * timeStep);
+        unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep, timeReversed);
+        if (((side & Top) && m_velocity.y() < 0) || ((side & Bottom) && m_velocity.y() > 0)) newVel.setY(0);
+        if (((side & Left) && m_velocity.x() < 0) || ((side & Right) && m_velocity.x() > 0)) newVel.setX(0);
 
-    if (side & Top) {
-        // If m_velocity.y is positive then set it to zero
-        if (m_velocity.y() < 0) this->m_velocity.setY(0);
-        //if (m_acceleration.y() < 0) this->m_acceleration.setY(0);
-        this->pos().setY(oldPos.y());
+        if (!collisions.empty()) {
+            QPointF newPos = QPointF(0,0);
+            this->collisionOccurred(collisions, side);
+            for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
+                if ((side & Bottom) || (this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
+                    (this->pos().x() >= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() > 0)) {
+                    newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
+                }
+                if ((this->pos().y() <= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() < 0) ||
+                    (this->pos().y() >= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() > 0)) {
+                    newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
+                    qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
+                }
+
+                //newPos += ((Collision)(*itr)).normalVector * timeStep;
+            }
+            this->setPos(this->pos() + newPos);
+        }
+
+
+        m_velocity = newVel;
+
+        QPointF oldPos = this->pos();
+
+        this->setPos(this->pos() + (m_velocity + oldVel) * 0.5 * timeStep);
+
+        if (side & Top) {
+            // If m_velocity.y is positive then set it to zero
+            if (m_velocity.y() < 0) this->m_velocity.setY(0);
+            //if (m_acceleration.y() < 0) this->m_acceleration.setY(0);
+            this->pos().setY(oldPos.y());
+        }
+
+        if (this->usesStack()) {
+            PositionState currentState;
+            currentState.pos = this->pos();
+            m_positionStateStack.push(currentState);
+        }
     }
-
 }
 
 unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& collisions, QPointF offset, bool timeReversed) {

@@ -10,6 +10,7 @@
 #include <QPainterPath>
 #include <QPixmap>
 #include <vector>
+#include <stack>
 
 #include "sprite.h"
 
@@ -19,6 +20,8 @@ enum kAnimationType {
     Forward_Reverse,        Reverse_Forward,
     Forward_Reverse_Loop,   Reverse_Forward_Loop
 };
+
+struct State { char m_nCurrentFrame, m_nCurrentAnimation; };
 
 class AnimatedSprite : public Sprite {
 
@@ -35,6 +38,8 @@ private:
     std::vector<std::vector<QPixmap>> m_animationList;
     std::vector<kAnimationType> m_animationType;
 
+    std::stack<State> m_stateStack;
+
     bool m_countUp;
     unsigned int m_msPerFrame;
     unsigned int m_msCounter;
@@ -50,10 +55,13 @@ public:
 
     virtual void step(long time);
 
-    bool isStatic() { return false; }
-    bool isAnimated() { return true; }
-    bool isCollideable() { return false; }
-    bool isBackground() { return false; }
+    virtual bool isStatic() { return false; }
+    virtual bool isAnimated() { return true; }
+    virtual bool isCollideable() { return false; }
+    virtual bool isBackground() { return false; }
+
+protected:
+    virtual bool usesStack() { return false; }
 
 signals:
     

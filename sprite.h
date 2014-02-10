@@ -15,6 +15,8 @@ class Sprite : public QGraphicsPixmapItem
 protected:
     QPointF m_acceleration, m_velocity;
 
+    virtual bool usesStack() { return false; }
+
 public:
     explicit Sprite(QGraphicsItem *parent = 0);
 
