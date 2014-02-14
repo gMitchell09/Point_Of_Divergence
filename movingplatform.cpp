@@ -12,10 +12,10 @@ MovingPlatform::MovingPlatform(int width, int height, QGraphicsItem *parent) :
 {
 }
 
-void MovingPlatform::step(long time) {
-    AnimatedSprite::step(time);
+void MovingPlatform::step(qint64 time, long delta) {
+    AnimatedSprite::step(time, delta);
 
-    double timeStep = time / 1000.0;
+    double timeStep = delta / 1000.0;
 
     QPointF oldVel = m_velocity;
 

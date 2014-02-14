@@ -22,6 +22,6 @@ bool StaticBackground::isBackground() {
     return true;
 }
 
-void StaticBackground::step(long time) {
+void StaticBackground::step(qint64 time, long delta) {
     // do nothing... for now ;)
 }

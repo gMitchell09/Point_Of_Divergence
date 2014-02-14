@@ -21,10 +21,14 @@ void GameEngine::step(qint64 time) {
     if (m_timeReversed) deltaTime = -deltaTime;
     m_prevTime = time;
 
+    // This is what we will timestamp all history events with so we can have a definite point-of-reference
+    //   to accurately play back events.
+    m_gameTime += deltaTime;
+
     if (m_prevTime == 0) deltaTime = 0;
 
     for(auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); itr++) {
-        (*itr)->step(deltaTime);
+        (*itr)->step(m_gameTime, deltaTime);
     }
 
     if (m_mainActor != NULL) {
@@ -55,7 +59,7 @@ void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
 bool GameEngine::event(QEvent *event) {
     if (event->type() == QEvent::MetaCall)
         for(auto itr = m_hudArray.begin(); itr != m_hudArray.end(); itr++) {
-            (*itr)->step(0);
+            (*itr)->step(0, 0);
         }
     return QGraphicsScene::event(event);
 }

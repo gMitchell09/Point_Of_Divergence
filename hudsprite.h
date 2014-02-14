@@ -26,7 +26,7 @@ public:
     bool isCollideable() { return false; }
     bool isBackground() { return false; }
 
-    virtual void step (long time);
+    virtual void step (qint64 time, long delta);
 
 };
 

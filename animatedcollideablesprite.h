@@ -13,7 +13,7 @@
 
 enum Side { Top = 1, Right = 2, Bottom = 4, Left = 8 };
 
-struct PositionState { QPointF pos; };
+struct PositionState { QPointF pos; qint64 timestamp; };
 
 struct Collision {
     Sprite *firstSprite, *secondSprite;
@@ -53,7 +53,7 @@ public:
     ///
 
 
-    virtual void step(long time);
+    virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 
 protected:

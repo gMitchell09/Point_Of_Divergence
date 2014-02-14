@@ -55,19 +55,20 @@ void AnimatedSprite::triggerAnimation(unsigned int anim) {
     this->setPixmap(m_animationList.at(m_nCurrentAnimation).at(m_nCurrentFrame));
 }
 
-void AnimatedSprite::step(long time) {
+void AnimatedSprite::step(qint64 time, long delta) {
+    Sprite::step(time, delta);
     if (m_animationType.empty() || m_animationList.empty()) return;
     kAnimationType currentAnimType = m_animationType.at(m_nCurrentAnimation);
     bool isReversed = false;
 
-    if (time < 0) {
-        time = -time;
+    if (delta < 0) {
+        delta = -delta;
         isReversed = true;
     }
 
    if (isReversed && this->usesStack()) { // Smart reverse
         if (!m_stateStack.empty()) {
-            m_msCounter += time;
+            m_msCounter += delta;
             if (1 || m_msCounter >= m_msPerFrame) {
                 State currentState = m_stateStack.top();
                 m_nCurrentAnimation = currentState.m_nCurrentAnimation;
@@ -78,7 +79,7 @@ void AnimatedSprite::step(long time) {
             }
         }
     } else { // normal time flow
-        m_msCounter += time;
+        m_msCounter += delta;
 
         if (isReversed) {
             if (currentAnimType % 2) currentAnimType = (kAnimationType) (currentAnimType - 1);

@@ -10,6 +10,6 @@ StaticPlatform::StaticPlatform(int width, int height, QGraphicsItem *parent) :
     this->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 }
 
-void StaticPlatform::step(long time) {
-    AnimatedSprite::step(time);
+void StaticPlatform::step(qint64 time, long delta) {
+    AnimatedSprite::step(time, delta);
 }

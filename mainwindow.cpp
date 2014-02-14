@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     testhud->setPixmap(QPixmap(":Simple_Sprite/3.png"));
     testhud->setPos(QPointF(600, 900));
 
+    gameTime = new HUDsprite(ui->graphicsView, QPointF(300, 300), 0);
     QPixmap backgroundMask(":Backgrounds/background_mask.png");
 
     bkgPix.setMask(backgroundMask.createMaskFromColor(QColor(0, 0, 0, 0)));
@@ -95,7 +96,9 @@ void MainWindow::invalidateTimer() {
     }
 
     if (floater->pos().x() > gameEngine->width()) {
-        floater->setPos(0, floater->pos().y());
+        floater->setPos(-60, floater->pos().y());
+    } else if (floater->pos().x() < -60) {
+        floater->setPos(gameEngine->sceneRect().width(), floater->pos().y());
     }
 }
 

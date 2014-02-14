@@ -35,6 +35,7 @@ private:
     /* --- Arbitrary Constants End */
 
     qint64 m_prevTime;
+    qint64 m_gameTime;
 
     MainCharacter * m_mainActor;
 

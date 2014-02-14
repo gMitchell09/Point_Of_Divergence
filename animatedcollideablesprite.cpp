@@ -27,12 +27,12 @@ AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGra
     m_collisionPoints[3][1] = QPoint(0, (5*height)/6);
 }
 
-void AnimatedCollideableSprite::step(long time) {
-    AnimatedSprite::step(time);
+void AnimatedCollideableSprite::step(qint64 time, long delta) {
+    AnimatedSprite::step(time, delta);
 
     bool timeReversed = false;
 
-    if (time < 0) {
+    if (delta < 0) {
         //time = time;
         timeReversed = true;
         this->setVelocity(QPointF(0, 0));
@@ -41,13 +41,15 @@ void AnimatedCollideableSprite::step(long time) {
     if (timeReversed && this->usesStack()) {
         if (!m_positionStateStack.empty()) {
             PositionState currentState = m_positionStateStack.top();
-            this->setPos(currentState.pos);
-            m_positionStateStack.pop();
+            if (time < currentState.timestamp) {
+                this->setPos(currentState.pos);
+                m_positionStateStack.pop();
+            }
         }
     }
 
     else {
-        double timeStep = time / 1000.0;
+        double timeStep = delta / 1000.0;
         QList<Collision> collisions;
 
         QPointF oldVel = m_velocity;
@@ -96,6 +98,7 @@ void AnimatedCollideableSprite::step(long time) {
         if (this->usesStack()) {
             PositionState currentState;
             currentState.pos = this->pos();
+            currentState.timestamp = time;
             m_positionStateStack.push(currentState);
         }
     }
@@ -169,7 +172,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
         }
     }
 
-    // Check left points for collision
+    // Check bottom points for collision
     collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[2][0], this->transform()));
     collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[2][1], this->transform()));
     if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
@@ -199,7 +202,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
         }
     }
 
-    // Check right points for collision
+    // Check left points for collision
     collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[3][0], this->transform()));
     collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[3][1], this->transform()));
     if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||

@@ -53,7 +53,7 @@ public:
     void addAnimation(std::vector<QPixmap> pixmapList, QPainterPath animationPath, kAnimationType animationType = Forward);
     void addAnimation(std::vector<QPixmap> pixmapList, kAnimationType animationType = Forward);
 
-    virtual void step(long time);
+    virtual void step(qint64 time, long delta);
 
     virtual bool isStatic() { return false; }
     virtual bool isAnimated() { return true; }

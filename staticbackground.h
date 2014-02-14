@@ -19,7 +19,7 @@ public:
     virtual bool isCollideable();
     virtual bool isBackground();
 
-    virtual void step (long time);
+    virtual void step (qint64 time, long delta);
 };
 
 #endif // STATICBACKGROUND_H

@@ -187,9 +187,10 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     }
 }
 
-void MainCharacter::step(long time) {
-    AnimatedCollideableSprite::step(time);
-    if (time > 0) {
+void MainCharacter::step(qint64 time, long delta) {
+    AnimatedCollideableSprite::step(time, delta);
+
+    if (delta > 0) {
         switch (m_currentState) {
             case Walk_Right:
             case Run_Right:

@@ -15,7 +15,7 @@ HUDsprite::HUDsprite(QGraphicsView *&view, QPointF screenPos, QGraphicsItem *par
     m_view(view) {
 }
 
-void HUDsprite::step(long time) {
-    Sprite::step(time);
+void HUDsprite::step(qint64 time, long delta) {
+    Sprite::step(time, delta);
     this->setPos(m_view->mapToScene(m_screenPos.x(), m_screenPos.y()));
 }

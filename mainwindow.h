@@ -33,6 +33,7 @@ private:
     StaticPlatform *testSprite, *testSprite2;
     StaticBackground *bkg;
     HUDsprite *testhud;
+    HUDsprite *gameTime;
 
     MainCharacter *mainChar;
 

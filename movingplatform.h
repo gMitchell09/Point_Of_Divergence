@@ -16,12 +16,15 @@ class MovingPlatform : public AnimatedSprite
 public:
     explicit MovingPlatform(int width, int height, QGraphicsItem *parent = 0);
 
-    virtual void step(long time);
+    virtual void step(qint64 time, long delta);
 
     virtual bool isStatic() { return false; }
     virtual bool isAnimated() { return true; }
     virtual bool isCollideable() { return true; }
     virtual bool isBackground() { return false; }
+
+protected:
+    virtual bool usesStack() { return true; }
 
 };
 
