@@ -7,9 +7,27 @@
 
 #include <QPixmap>
 #include <QBitmap>
-///
-/// \brief The TileMap class is an extension of QPixmap which allows for the selection of specific cells in a tile map.
-///
+
+/*!
+    \class TileMap
+    \brief The TileMap class represents a vector or vertex in 3D space.
+    \since Sprint 1
+    \ingroup TileMap
+
+    Vectors are one of the main building blocks of 3D representation and
+    drawing.  They consist of three coordinates, traditionally called
+    x, y, and z.
+
+    The QVector3D class can also be used to represent vertices in 3D space.
+    We therefore do not need to provide a separate vertex class.
+
+    \b{Note:} By design values in the QVector3D instance are stored as \c float.
+    This means that on platforms where the \c qreal arguments to QVector3D
+    functions are represented by \c double values, it is possible to
+    lose precision.
+
+    \sa QVector2D, QVector4D, QQuaternion
+*/
 class TileMap : public QPixmap
 {
 private:

@@ -60,7 +60,9 @@ MainWindow::MainWindow(QWidget *parent) :
     testhud->setPixmap(QPixmap(":Simple_Sprite/3.png"));
     testhud->setPos(QPointF(600, 900));
 
-    gameTime = new HUDsprite(ui->graphicsView, QPointF(300, 300), 0);
+    gameTime = new HUDText(ui->graphicsView, QPointF(ui->graphicsView->width()/2, 25), 0);
+    gameTime->setText("WOOOOO!!!!!");
+
     QPixmap backgroundMask(":Backgrounds/background_mask.png");
 
     bkgPix.setMask(backgroundMask.createMaskFromColor(QColor(0, 0, 0, 0)));
@@ -75,6 +77,7 @@ MainWindow::MainWindow(QWidget *parent) :
     gameEngine->addSprite(testSprite2);
     gameEngine->addSprite(floater);
     gameEngine->addHUD(testhud);
+    gameEngine->addHUDText(gameTime);
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));

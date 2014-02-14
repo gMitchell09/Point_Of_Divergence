@@ -71,6 +71,7 @@ void AnimatedSprite::step(qint64 time, long delta) {
             m_msCounter += delta;
             if (1 || m_msCounter >= m_msPerFrame) {
                 State currentState = m_stateStack.top();
+
                 m_nCurrentAnimation = currentState.m_nCurrentAnimation;
                 m_nCurrentFrame = currentState.m_nCurrentFrame;
 

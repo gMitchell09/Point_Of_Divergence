@@ -20,6 +20,7 @@
 #include "animatedcollideablesprite.h"
 #include "maincharacter.h"
 #include "hudsprite.h"
+#include "hudtext.h"
 
 class GameEngine : public QGraphicsScene
 {
@@ -44,6 +45,9 @@ private:
     // This is a vector of sprites that can be interacted with
     std::vector<Sprite*> m_spriteArray;
     std::vector<HUDsprite*> m_hudArray;
+    std::vector<HUDText*> m_hudTextArray;
+
+    HUDText* m_hudGameTime;
 
     //int m_keyRecentPress;
     bool m_timeReversed = false;
@@ -67,6 +71,12 @@ public:
     inline void addHUD(HUDsprite* sprite) {
         this->addItem(sprite);
         m_hudArray.push_back(sprite);
+    }
+
+    inline void addHUDText(HUDText* text) {
+        this->addItem(text);
+        m_hudTextArray.push_back(text);
+        m_hudGameTime = text;
     }
 
     inline size_t addSprite(Sprite* sprite, bool mainActor = false) {

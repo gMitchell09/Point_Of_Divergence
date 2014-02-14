@@ -10,7 +10,9 @@ GameEngine::GameEngine() : m_mainActor(NULL), m_prevTime(0)
 
 GameEngine::GameEngine(int width, int height) :
     m_mainActor(NULL),
-    m_prevTime(0) {
+    m_prevTime(0),
+    m_gameTime(0),
+    m_hudGameTime(NULL) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 }
 
@@ -19,13 +21,14 @@ void GameEngine::step(qint64 time) {
 
     deltaTime = time - m_prevTime;
     if (m_timeReversed) deltaTime = -deltaTime;
-    m_prevTime = time;
+
+    if (m_prevTime == 0) deltaTime = 0;
 
     // This is what we will timestamp all history events with so we can have a definite point-of-reference
     //   to accurately play back events.
     m_gameTime += deltaTime;
 
-    if (m_prevTime == 0) deltaTime = 0;
+    m_prevTime = time;
 
     for(auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); itr++) {
         (*itr)->step(m_gameTime, deltaTime);
@@ -33,6 +36,10 @@ void GameEngine::step(qint64 time) {
 
     if (m_mainActor != NULL) {
         this->views()[0]->ensureVisible(m_mainActor, 200, 200);
+    }
+
+    if (m_hudGameTime != NULL) {
+        m_hudGameTime->setText(QString("Time: %1").arg(m_gameTime/1000, 4, 10, QChar('0')));
     }
 }
 
@@ -57,9 +64,13 @@ void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
 }
 
 bool GameEngine::event(QEvent *event) {
-    if (event->type() == QEvent::MetaCall)
-        for(auto itr = m_hudArray.begin(); itr != m_hudArray.end(); itr++) {
+    if (event->type() == QEvent::MetaCall) {
+        for (auto itr = m_hudArray.begin(); itr != m_hudArray.end(); itr++) {
             (*itr)->step(0, 0);
         }
+        for (auto itr = m_hudTextArray.begin(); itr != m_hudTextArray.end(); itr++) {
+            (*itr)->step(0, 0);
+        }
+    }
     return QGraphicsScene::event(event);
 }

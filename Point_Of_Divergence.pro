@@ -8,7 +8,7 @@ QT       += core gui
 CONFIG   += c++11
 
 # Silly warning
-QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder -Wsequence-point
+QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder -Wsequence-point -Wno-unused-parameter
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     maincharacter.cpp \
     staticplatform.cpp \
     movingplatform.cpp \
-    hudsprite.cpp
+    hudsprite.cpp \
+    hudtext.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -39,7 +40,8 @@ HEADERS  += mainwindow.h \
     maincharacter.h \
     staticplatform.h \
     movingplatform.h \
-    hudsprite.h
+    hudsprite.h \
+    hudtext.h
 
 FORMS    += mainwindow.ui
 

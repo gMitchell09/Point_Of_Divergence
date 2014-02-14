@@ -14,8 +14,8 @@ TileMap::TileMap(int cellWidth, int cellHeight, int dividerWidth, int dividerHei
 QPixmap TileMap::copyCellAt(unsigned int i, unsigned int j) {
     /* Here is an example image:
      01234567890123456789012345678901
-     [   ]|[   ]|[   ]|[   ]|[   ]
-     [   ]|[   ]|[   ]|[   ]|[   ]
+     [0 0]|[0 0]|[0 0]|[0 0]|[_ _]|[^ ^]
+     [ u ]|[ n ]|[ _ ]|[|o|]|[ ~ ]|[ _ ]
      -----------------------------
      ...
      */

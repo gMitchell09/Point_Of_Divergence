@@ -6,7 +6,7 @@
  */
 
 #include <QGraphicsItem>
-#include <QGraphicsObject>
+#include <QGraphicsPixmapItem>
 
 ///
 /// \brief The Sprite class is an abstract base class for all other sprites in engine
@@ -51,7 +51,10 @@ public:
     void setVelocity(QPointF velocity) { m_velocity = velocity; }
     QPointF& getVelocity() { return m_velocity; }
 
-    virtual void step (qint64 time, long delta) {}
+    virtual void step(qint64 time, long delta) {}
+
+    virtual void pushState(qint64 time, long delta) {}
+    virtual void popState(qint64 time, long delta) {}
 
     
 signals:

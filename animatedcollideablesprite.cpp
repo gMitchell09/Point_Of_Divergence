@@ -42,6 +42,10 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
         if (!m_positionStateStack.empty()) {
             PositionState currentState = m_positionStateStack.top();
             if (time < currentState.timestamp) {
+                if (m_positionStateStack.size() > 2 && time < currentState.timestamp - 10) {
+                    m_positionStateStack.pop();
+                    currentState = m_positionStateStack.top();
+                }
                 this->setPos(currentState.pos);
                 m_positionStateStack.pop();
             }
@@ -54,6 +58,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
 
         QPointF oldVel = m_velocity;
         QPointF newVel;
+        QPointF relativeVel = QPointF(0, 0);
 
         m_velocity += m_acceleration * timeStep;
         newVel = m_velocity;
@@ -68,11 +73,13 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
             for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
                 if ((side & Bottom) || (this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
                     (this->pos().x() >= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() > 0)) {
-                    newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
+                    //newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
+                    relativeVel.setX(((Collision)(*itr)).secondSprite->getVelocity().x());
                 }
                 if ((this->pos().y() <= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() < 0) ||
                     (this->pos().y() >= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() > 0)) {
-                    newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
+                    //newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
+                    relativeVel.setY(((Collision)(*itr)).secondSprite->getVelocity().y());
                     qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
                 }
 
@@ -86,7 +93,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
 
         QPointF oldPos = this->pos();
 
-        this->setPos(this->pos() + (m_velocity + oldVel) * 0.5 * timeStep);
+        this->setPos(this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep);
 
         if (side & Top) {
             // If m_velocity.y is positive then set it to zero
