@@ -40,15 +40,14 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
 
     if (timeReversed && this->usesStack()) {
         if (!m_positionStateStack.empty()) {
-            PositionState currentState = m_positionStateStack.top();
-            if (time < currentState.timestamp) {
-                if (m_positionStateStack.size() > 2 && time < currentState.timestamp - 10) {
-                    m_positionStateStack.pop();
-                    currentState = m_positionStateStack.top();
-                }
-                this->setPos(currentState.pos);
+            PositionState currentState;
+
+            // Loop until we are ahead of the past... wait, WTF does that even mean?!?!
+            while (!m_positionStateStack.empty() && (currentState = m_positionStateStack.top()).timestamp > time) {
                 m_positionStateStack.pop();
             }
+
+            this->setPos(currentState.pos);
         }
     }
 

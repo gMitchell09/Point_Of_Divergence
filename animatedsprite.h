@@ -21,7 +21,7 @@ enum kAnimationType {
     Forward_Reverse_Loop,   Reverse_Forward_Loop
 };
 
-struct State { char m_nCurrentFrame, m_nCurrentAnimation; };
+struct State { char m_nCurrentFrame, m_nCurrentAnimation; qint64 timestamp; };
 
 class AnimatedSprite : public Sprite {
 

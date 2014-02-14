@@ -68,16 +68,15 @@ void AnimatedSprite::step(qint64 time, long delta) {
 
    if (isReversed && this->usesStack()) { // Smart reverse
         if (!m_stateStack.empty()) {
-            m_msCounter += delta;
-            if (1 || m_msCounter >= m_msPerFrame) {
-                State currentState = m_stateStack.top();
+            State currentState;
 
-                m_nCurrentAnimation = currentState.m_nCurrentAnimation;
-                m_nCurrentFrame = currentState.m_nCurrentFrame;
-
+            // Loop until we are ahead of the past... wait, WTF does that even mean?!?!
+            while (!m_stateStack.empty() && (currentState = m_stateStack.top()).timestamp > time) {
                 m_stateStack.pop();
-                m_msCounter = 0;
             }
+
+            m_nCurrentAnimation = currentState.m_nCurrentAnimation;
+            m_nCurrentFrame = currentState.m_nCurrentFrame;
         }
     } else { // normal time flow
         m_msCounter += delta;
@@ -152,6 +151,7 @@ void AnimatedSprite::step(qint64 time, long delta) {
             State currentState;
             currentState.m_nCurrentAnimation = m_nCurrentAnimation;
             currentState.m_nCurrentFrame = m_nCurrentFrame;
+            currentState.timestamp = time;
             m_stateStack.push(currentState);
         }
     }
