@@ -95,6 +95,7 @@ public:
     }
 
     virtual bool event(QEvent *event);
+    virtual void removeItem(QGraphicsItem *item);
 
 protected:
     virtual void keyPressEvent(QKeyEvent * keyEvent);

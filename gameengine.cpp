@@ -81,6 +81,18 @@ bool GameEngine::event(QEvent *event) {
 void GameEngine::displayBackground(QColor mycolor) {
     this->setBackgroundBrush(QBrush(mycolor));
 }
+
+//iterates through sprite array to remove deleted sprite
+void GameEngine::removeItem(QGraphicsItem *item) {
+    for(auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); itr++) {
+        if ((*itr) == item) {
+            m_spriteArray.erase(itr);
+        }
+    }
+
+    QGraphicsScene::removeItem(item);
+}
+
 void GameEngine::displayBackground(QPixmap &bkgPix) {
     bkg = new StaticBackground(QPoint(0, 0));
     bkg->setPixmap(bkgPix);

@@ -1,4 +1,5 @@
 #include "enemy1.h"
+#include "gameengine.h"
 
 Enemy1::Enemy1(int width, int height, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, parent) {
@@ -27,23 +28,31 @@ Enemy1::Enemy1(int width, int height, QGraphicsItem *parent) :
     this->setVelocity(QPointF(0, 0));
     this->setAcceleration(QPointF(0, 0));
 
-    this->triggerAnimation(Goomba::Stand);
+    m_currentState = Goomba::Stand;
+    this->triggerAnimation(m_currentState);
     this->setAcceleration(QPointF(m_rightAccel, m_gravity));
 }
 void Enemy1::step(qint64 time, long delta) {
     AnimatedCollideableSprite::step(time, delta);
+    if (m_currentState == Goomba::Squish) {
+        m_squishCtr += delta;
+        if (m_squishCtr > 500) {
+            ((GameEngine*)this->scene())->removeItem(this);
+        }
+    }
     if (this->getVelocity().x() > m_maxVelX) this->getVelocity().setX(m_maxVelX);
     if (this->getVelocity().y() > m_maxVelY) this->getVelocity().setY(m_maxVelY);
 }
 void Enemy1::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
     AnimatedCollideableSprite::collisionOccurred(collisions, side);
     if (side & Right) {
-        this->getAcceleration().setX(m_leftAccel);      //walk left
+        this->getAcceleration().setX(m_leftAccel);
     }
     if (side & Left) {
-        this->getAcceleration().setX(m_rightAccel);     //walk right
+        this->getAcceleration().setX(m_rightAccel);
     }
     if (side & Top) {
-        this->triggerAnimation(Goomba::Squish);         //trigger squish animation
+        m_currentState = Goomba::Squish;
+        this->triggerAnimation(m_currentState);
     }
 }
