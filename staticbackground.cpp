@@ -15,7 +15,7 @@ bool StaticBackground::isAnimated() {
 }
 
 bool StaticBackground::isCollideable() {
-    return true;
+    return m_collideable;
 }
 
 bool StaticBackground::isBackground() {

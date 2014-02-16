@@ -10,6 +10,7 @@ class StaticBackground : public Sprite
 {
 private:
     QPoint m_repeatDistance;
+    bool m_collideable; // REMOVE ASAP
 public:
     explicit StaticBackground(QPoint repeatDistance, QGraphicsItem* parent = 0);
 
@@ -20,6 +21,9 @@ public:
     virtual bool isBackground();
 
     virtual void step (qint64 time, long delta);
+    inline void setCollideable(bool c) {
+        m_collideable = c;
+    }
 };
 
 #endif // STATICBACKGROUND_H

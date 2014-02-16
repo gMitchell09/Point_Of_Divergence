@@ -15,12 +15,15 @@
 #include <QKeyEvent>
 #include <QBrush>
 #include <QColor>
+#include <QPixmap>
 
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
 #include "maincharacter.h"
 #include "hudsprite.h"
 #include "hudtext.h"
+#include "staticbackground.h"
+
 
 class GameEngine : public QGraphicsScene
 {
@@ -39,6 +42,7 @@ private:
     qint64 m_gameTime;
 
     MainCharacter * m_mainActor;
+    StaticBackground *bkg;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
 
@@ -63,6 +67,8 @@ public:
      * 2. Check m_mainActor position to see if we need to update the viewport
      */
     void step(qint64 time);
+    void displayBackground(QColor mycolor);
+    void displayBackground(QPixmap &bkgPix);
 
     inline void addHandler(std::function<void(long)> callback) {
         m_stepHandlerVector.push_back(callback);

@@ -3,5 +3,7 @@
         <file alias="/background.jpg">Sprites/background.jpg</file>
         <file alias="/background_mask.png">Sprites/background_mask.png</file>
         <file alias="/background_mask_test.png">Sprites/background_mask_test.png</file>
+        <file alias="/sky.jpg">Sprites/sky.png</file>
+        <file alias="/sky2.jpg">Sprites/sky2.jpg</file>
     </qresource>
 </RCC>

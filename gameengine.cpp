@@ -3,6 +3,7 @@
  */
 
 #include <QDebug>
+#include <QPixmap>
 #include "gameengine.h"
 GameEngine::GameEngine() : m_mainActor(NULL), m_prevTime(0)
 {
@@ -46,7 +47,8 @@ void GameEngine::step(qint64 time) {
 void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
         m_timeReversed = true;
-        this->setBackgroundBrush(QBrush(QColor(120, 255, 120, 120)));
+        displayBackground(QColor(120, 255, 120, 120));
+//        this->setBackgroundBrush(QBrush(QColor(120, 255, 120, 120)));
     }
     else if (m_mainActor != NULL) {
         m_mainActor->keyPressEvent(keyEvent);
@@ -56,7 +58,8 @@ void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
 void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
         m_timeReversed = false;
-        this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
+        displayBackground(QColor(210, 210, 255, 255));
+//        this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
     }
     else if (m_mainActor != NULL) {
         m_mainActor->keyReleaseEvent(keyEvent);
@@ -73,4 +76,15 @@ bool GameEngine::event(QEvent *event) {
         }
     }
     return QGraphicsScene::event(event);
+}
+
+void GameEngine::displayBackground(QColor mycolor) {
+    this->setBackgroundBrush(QBrush(mycolor));
+}
+void GameEngine::displayBackground(QPixmap &bkgPix) {
+    bkg = new StaticBackground(QPoint(0, 0));
+    bkg->setPixmap(bkgPix);
+    bkg->setCollideable(false);
+    bkg->setZValue(-1001);
+    this->addItem(bkg);
 }

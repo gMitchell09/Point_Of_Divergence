@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmap myPix5(":Simple_Sprite/5.png");
 
     QPixmap bkgPix(":Backgrounds/background.jpg");
+    QPixmap bkgImg(":Backgrounds/sky2.jpg");
+    QPixmap bkgMask(":Backgrounds/background_mask.png");
 
     std::vector<QPixmap> pixmapList2;
     pixmapList2.push_back(myPix1);
@@ -63,16 +65,20 @@ MainWindow::MainWindow(QWidget *parent) :
     gameTime = new HUDText(ui->graphicsView, QPointF(ui->graphicsView->width()/2, 25), 0);
     gameTime->setText("WOOOOO!!!!!");
 
-    QPixmap backgroundMask(":Backgrounds/background_mask.png");
+    bkgPix.setMask(bkgMask.createMaskFromColor(QColor(0, 0, 0, 0)));
 
-    bkgPix.setMask(backgroundMask.createMaskFromColor(QColor(0, 0, 0, 0)));
-
+    // Hackish code
     bkg = new StaticBackground(QPoint(0, 0));
     bkg->setPixmap(bkgPix);
     bkg->setPos(0, 0);
     bkg->setShapeMode(QGraphicsPixmapItem::HeuristicMaskShape);
+    bkg->setCollideable(true);
 
     gameEngine->addItem(bkg);
+    // Hackish
+
+    gameEngine->displayBackground(bkgImg);
+//    gameEngine->displayBackground(QColor(255, 0, 0, 255));
     gameEngine->addSprite(mainChar, true);
     gameEngine->addSprite(testSprite2);
     gameEngine->addSprite(floater);
