@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
     mainChar = new MainCharacter(16, 32);
     mainChar->setPos(120 , 1020);
 
+    goomba = new Enemy1(20, 18);
+    goomba->setPos(200 , 1020);
+
     floater = new MovingPlatform(48, 64);
     floater->setPixmap(QPixmap(":Simple_Sprite/1.png"));
     floater->setPos(300, 900);
@@ -77,8 +80,10 @@ MainWindow::MainWindow(QWidget *parent) :
     gameEngine->addItem(bkg);
     // Hackish
 
+    gameEngine->addSprite(goomba); // Add our goomba
+
     gameEngine->displayBackground(bkgImg);
-//    gameEngine->displayBackground(QColor(255, 0, 0, 255));
+
     gameEngine->addSprite(mainChar, true);
     gameEngine->addSprite(testSprite2);
     gameEngine->addSprite(floater);
