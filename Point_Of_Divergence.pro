@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     staticplatform.cpp \
     movingplatform.cpp \
     hudsprite.cpp \
-    hudtext.cpp
+    hudtext.cpp \
+    statearray.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -41,7 +42,8 @@ HEADERS  += mainwindow.h \
     staticplatform.h \
     movingplatform.h \
     hudsprite.h \
-    hudtext.h
+    hudtext.h \
+    statearray.h
 
 FORMS    += mainwindow.ui
 
