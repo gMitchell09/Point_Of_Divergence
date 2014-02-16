@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/Goomba">
+        <file alias="/Goomba.png">Sprites/Goomba.png</file>
+        <file alias="/GoombaSquish.png">Sprites/GoombaSquish.png</file>
+        <file alias="/GoombaStand.png">Sprites/GoombaStand.png</file>
+    </qresource>
+</RCC>

@@ -29,7 +29,8 @@ SOURCES += main.cpp\
     movingplatform.cpp \
     hudsprite.cpp \
     hudtext.cpp \
-    statearray.cpp
+    statearray.cpp \
+    enemy1.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -43,13 +44,15 @@ HEADERS  += mainwindow.h \
     movingplatform.h \
     hudsprite.h \
     hudtext.h \
-    statearray.h
+    statearray.h \
+    enemy1.h
 
 FORMS    += mainwindow.ui
 
 RESOURCES += \
     Simple_Sprite.qrc \
     Backgrounds.qrc \
-    MarioSprites.qrc
+    MarioSprites.qrc \
+    Goomba.qrc
 
 OTHER_FILES +=

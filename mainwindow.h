@@ -16,6 +16,7 @@
 #include "movingplatform.h"
 #include "hudsprite.h"
 #include "hudtext.h"
+#include "enemy1.h"
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +38,7 @@ private:
     HUDText *gameTime;
 
     MainCharacter *mainChar;
+    Enemy1 *goomba;
 
     GameEngine *gameEngine;
 
