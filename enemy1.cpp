@@ -1,3 +1,7 @@
+/* Author: Jesse Hairston
+ * Use Case: 07 (Destroy Enemy)
+ */
+
 #include "enemy1.h"
 #include "gameengine.h"
 

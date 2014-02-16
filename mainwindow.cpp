@@ -61,9 +61,17 @@ MainWindow::MainWindow(QWidget *parent) :
     testSprite2->setAcceleration(QPointF(0, 0));
     testSprite2->triggerAnimation(0);
 
-    testhud = new HUDsprite(ui->graphicsView, QPointF(25,25));
-    testhud->setPixmap(QPixmap(":Simple_Sprite/3.png"));
-    testhud->setPos(QPointF(600, 900));
+    life1 = new HUDsprite(ui->graphicsView, QPointF(25,25));
+    life1->setPixmap(QPixmap(":Life/HeartContainer.png"));
+    life1->setPos(QPointF(600, 900));
+
+    life2 = new HUDsprite(ui->graphicsView, QPointF(50,25));
+    life2->setPixmap(QPixmap(":Life/HeartContainer.png"));
+    life2->setPos(QPointF(600, 900));
+
+    life3 = new HUDsprite(ui->graphicsView, QPointF(75,25));
+    life3->setPixmap(QPixmap(":Life/HeartContainer.png"));
+    life3->setPos(QPointF(600, 900));
 
     gameTime = new HUDText(ui->graphicsView, QPointF(ui->graphicsView->width()/2, 25), 0);
     gameTime->setText("WOOOOO!!!!!");
@@ -87,7 +95,9 @@ MainWindow::MainWindow(QWidget *parent) :
     gameEngine->addSprite(mainChar, true);
     gameEngine->addSprite(testSprite2);
     gameEngine->addSprite(floater);
-    gameEngine->addHUD(testhud);
+    gameEngine->addHUD(life1);
+    gameEngine->addHUD(life2);
+    gameEngine->addHUD(life3);
     gameEngine->addHUDText(gameTime);
 
     heartbeat = new QTimer(this);

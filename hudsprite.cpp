@@ -1,7 +1,5 @@
 /* Author: Jesse Hairston
- * Added: Friday Feb 7 @ 4:25pm
- * Initial Commit: Wednesday Feb 5 @ 4:25pm
- * Use Case: 09: Heads-Up Display
+ * Use Case: 09 (Heads-Up Display)
  */
 
 #include <QGraphicsScene>

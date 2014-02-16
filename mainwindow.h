@@ -34,7 +34,9 @@ private:
     Ui::MainWindow *ui;
     StaticPlatform *testSprite, *testSprite2;
     StaticBackground *bkg;
-    HUDsprite *testhud;
+    HUDsprite *life1;
+    HUDsprite *life2;
+    HUDsprite *life3;
     HUDText *gameTime;
 
     MainCharacter *mainChar;
