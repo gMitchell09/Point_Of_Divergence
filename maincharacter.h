@@ -47,6 +47,8 @@ public:
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
     void jump();
 
+    virtual QString className() { return "MainCharacter"; }
+
 protected:
     virtual bool usesStack() { return true; }
 

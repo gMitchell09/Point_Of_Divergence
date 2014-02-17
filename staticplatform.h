@@ -22,6 +22,8 @@ public:
     bool isCollideable() { return true; }
     bool isBackground() { return false; }
     bool isSolid() { return true; }
+
+    virtual QString className() { return "StaticPlatform"; }
     
 };
 

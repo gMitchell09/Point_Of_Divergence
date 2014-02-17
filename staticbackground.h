@@ -24,6 +24,8 @@ public:
     inline void setCollideable(bool c) {
         m_collideable = c;
     }
+
+    virtual QString className() { return "StaticBackground"; }
 };
 
 #endif // STATICBACKGROUND_H

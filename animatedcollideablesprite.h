@@ -27,7 +27,6 @@ class AnimatedCollideableSprite : public AnimatedSprite
 private:
     QPoint m_collisionPoints[4][2];
     std::stack<PositionState> m_positionStateStack;
-    bool m_solid;
 
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset, bool timeReversed);
     void resolveCollision(Collision collision);
@@ -41,13 +40,6 @@ public:
     bool isBackground() { return false; }
 
     ///
-    /// \brief setSolid
-    /// \param solid is true if this object shouldn't be able to penetrate other solid objects
-    ///
-    void setSolid(bool solid) { m_solid = solid; }
-    bool isSolid() { return m_solid; }
-
-    ///
     /// \brief setBrake
     /// \param brake determines if sprite is slowing to a stop
     ///
@@ -55,6 +47,8 @@ public:
 
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+
+    virtual QString className() { return "AnimatedCollideableSprite"; }
 
 protected:
     virtual bool usesStack() { return false; }

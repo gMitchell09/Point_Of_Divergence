@@ -13,6 +13,9 @@
 ///
 class Sprite : public QGraphicsPixmapItem
 {
+private:
+    bool m_solid;
+
 protected:
     QPointF m_acceleration, m_velocity;
 
@@ -55,6 +58,11 @@ public:
 
     virtual void pushState(qint64 time, long delta) {}
     virtual void popState(qint64 time, long delta) {}
+
+    void setSolid(bool solid = true) { m_solid = solid; }
+    bool isSolid() { return m_solid; }
+
+    virtual QString className() { return "Sprite"; }
 
     
 signals:

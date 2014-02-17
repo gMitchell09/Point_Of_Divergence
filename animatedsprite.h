@@ -60,6 +60,8 @@ public:
     virtual bool isCollideable() { return false; }
     virtual bool isBackground() { return false; }
 
+    virtual QString className() { return "AnimatedSprite"; }
+
 protected:
     virtual bool usesStack() { return false; }
 

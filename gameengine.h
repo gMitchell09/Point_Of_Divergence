@@ -50,12 +50,14 @@ private:
     std::vector<Sprite*> m_spriteArray;
     std::vector<HUDsprite*> m_hudArray;
     std::vector<HUDText*> m_hudTextArray;
+    std::vector<Sprite*> m_deletedItems;
 
     HUDText* m_hudGameTime;
 
     //int m_keyRecentPress;
     bool m_timeReversed = false;
 
+    void removeDeletedItems();
 
 public:
     GameEngine();
@@ -96,6 +98,7 @@ public:
 
     virtual bool event(QEvent *event);
     virtual void removeItem(QGraphicsItem *item);
+    virtual void removeItem(Sprite *item);
 
 protected:
     virtual void keyPressEvent(QKeyEvent * keyEvent);

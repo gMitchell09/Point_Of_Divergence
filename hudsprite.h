@@ -27,6 +27,7 @@ public:
     bool isBackground() { return false; }
 
     virtual void step (qint64 time, long delta);
+    virtual QString className() { return "HUDSprite"; }
 
 };
 

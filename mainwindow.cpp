@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //
     mainChar = new MainCharacter(16, 32);
     mainChar->setPos(120 , 1020);
+    mainChar->setSolid(true);
 
     goomba = new Enemy1(20, 18);
     goomba->setPos(200 , 1020);
@@ -36,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
     floater->setPos(300, 900);
     floater->setVelocity(QPointF(200, 0));
     floater->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
+    floater->setSolid(true);
 
     QPixmap myPix1(":Simple_Sprite/1.png");
     QPixmap myPix2(":Simple_Sprite/2.png");

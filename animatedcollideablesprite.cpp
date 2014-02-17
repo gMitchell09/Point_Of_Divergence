@@ -63,17 +63,20 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
         newVel = m_velocity;
 
         unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep, timeReversed);
-        if (((side & Top) && m_velocity.y() < 0) || ((side & Bottom) && m_velocity.y() > 0)) newVel.setY(0);
-        if (((side & Left) && m_velocity.x() < 0) || ((side & Right) && m_velocity.x() > 0)) newVel.setX(0);
 
         if (!collisions.empty()) {
             QPointF newPos = QPointF(0,0);
             this->collisionOccurred(collisions, side);
             for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
+
                 AnimatedCollideableSprite *first = (AnimatedCollideableSprite*)((Collision)(*itr)).firstSprite;
                 AnimatedCollideableSprite *second = (AnimatedCollideableSprite*)((Collision)(*itr)).secondSprite;
+                Side locSide = (*itr).firstSide;
 
-                if (1 || this->isSolid() && second->isSolid()) {
+                if (this->isSolid() && second->isSolid()) {
+                    if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
+                    if (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0)) newVel.setX(0);
+
                     if ((side & Bottom) || (this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
                         (this->pos().x() >= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() > 0)) {
                         //newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);

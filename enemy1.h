@@ -22,6 +22,8 @@ public:
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 
+    virtual QString className() { return "Enemy1"; }
+
 protected:
     virtual bool usesStack() { return true; }
 };

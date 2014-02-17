@@ -42,6 +42,8 @@ void GameEngine::step(qint64 time) {
     if (m_hudGameTime != NULL) {
         m_hudGameTime->setText(QString("Time: %1").arg(m_gameTime/1000, 4, 10, QChar('0')));
     }
+
+    this->removeDeletedItems();
 }
 
 void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
@@ -78,19 +80,30 @@ bool GameEngine::event(QEvent *event) {
     return QGraphicsScene::event(event);
 }
 
-void GameEngine::displayBackground(QColor mycolor) {
-    this->setBackgroundBrush(QBrush(mycolor));
-}
 
 //iterates through sprite array to remove deleted sprite
 void GameEngine::removeItem(QGraphicsItem *item) {
-    for(auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); itr++) {
-        if ((*itr) == item) {
-            m_spriteArray.erase(itr);
-        }
+    QGraphicsScene::removeItem(item);
+
+    delete item;
+}
+
+void GameEngine::removeItem(Sprite *item) {
+    QGraphicsScene::removeItem(item);
+
+    m_deletedItems.push_back(item);
+}
+
+void GameEngine::removeDeletedItems() {
+    for (auto itr = m_deletedItems.begin(); itr != m_deletedItems.end(); itr++) {
+        m_spriteArray.erase(std::remove(m_spriteArray.begin(), m_spriteArray.end(), (*itr)), m_spriteArray.end());
     }
 
-    QGraphicsScene::removeItem(item);
+    m_deletedItems.empty();
+}
+
+void GameEngine::displayBackground(QColor mycolor) {
+    this->setBackgroundBrush(QBrush(mycolor));
 }
 
 void GameEngine::displayBackground(QPixmap &bkgPix) {

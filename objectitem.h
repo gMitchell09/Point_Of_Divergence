@@ -19,6 +19,8 @@ public:
     bool isCollideable() { return true; }
     bool isBackground() { return false; }
 
+    virtual QString className() { return "ObjectItem"; }
+
 
 protected:
     virtual bool usesStack() { return true; }
