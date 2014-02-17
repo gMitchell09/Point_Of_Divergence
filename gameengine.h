@@ -55,7 +55,7 @@ private:
     HUDText* m_hudGameTime;
 
     //int m_keyRecentPress;
-    bool m_timeReversed = false;
+    bool m_timeReversed;
 
     void removeDeletedItems();
 

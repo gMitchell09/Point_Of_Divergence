@@ -14,8 +14,10 @@ class Enemy1 : public AnimatedCollideableSprite
 {
 private:
     float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
-    long m_squishCtr = 0;
+    long m_squishCtr;
+
     Goomba::MovementState m_currentState;
+
 public:
     explicit Enemy1(int width, int height, QGraphicsItem *parent = 0);
 
