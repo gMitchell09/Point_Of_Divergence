@@ -17,6 +17,7 @@
 #include "hudsprite.h"
 #include "hudtext.h"
 #include "enemy1.h"
+#include "objectitem.h"
 
 namespace Ui {
 class MainWindow;
@@ -38,6 +39,7 @@ private:
     HUDsprite *life2;
     HUDsprite *life3;
     HUDText *gameTime;
+    ObjectItem *object1;
 
     MainCharacter *mainChar;
     Enemy1 *goomba;

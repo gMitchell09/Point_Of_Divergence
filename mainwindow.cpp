@@ -73,6 +73,10 @@ MainWindow::MainWindow(QWidget *parent) :
     life3->setPixmap(QPixmap(":Life/HeartContainer.png"));
     life3->setPos(QPointF(600, 900));
 
+    object1 = new ObjectItem(48, 64);
+    object1->setPos(700, 1020);
+    object1->setSolid(false);
+
     gameTime = new HUDText(ui->graphicsView, QPointF(ui->graphicsView->width()/2, 25), 0);
     gameTime->setText("WOOOOO!!!!!");
 
@@ -88,8 +92,6 @@ MainWindow::MainWindow(QWidget *parent) :
     gameEngine->addItem(bkg);
     // Hackish
 
-    gameEngine->addSprite(goomba); // Add our goomba
-
     gameEngine->displayBackground(bkgImg);
 
     gameEngine->addSprite(mainChar, true);
@@ -99,6 +101,9 @@ MainWindow::MainWindow(QWidget *parent) :
     gameEngine->addHUD(life2);
     gameEngine->addHUD(life3);
     gameEngine->addHUDText(gameTime);
+
+    gameEngine->addSprite(object1);
+    gameEngine->addSprite(goomba); // Add our goomba
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));

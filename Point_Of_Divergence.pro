@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     hudsprite.cpp \
     hudtext.cpp \
     statearray.cpp \
-    enemy1.cpp
+    enemy1.cpp \
+    objectitem.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -45,7 +46,8 @@ HEADERS  += mainwindow.h \
     hudsprite.h \
     hudtext.h \
     statearray.h \
-    enemy1.h
+    enemy1.h \
+    objectitem.h
 
 FORMS    += mainwindow.ui
 
