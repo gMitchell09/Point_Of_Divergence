@@ -13,7 +13,8 @@ GameEngine::GameEngine(int width, int height) :
     m_mainActor(NULL),
     m_prevTime(0),
     m_gameTime(0),
-    m_hudGameTime(NULL) {
+    m_hudGameTime(NULL),
+    m_coinCount(0) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 }
 
@@ -40,7 +41,7 @@ void GameEngine::step(qint64 time) {
     }
 
     if (m_hudGameTime != NULL) {
-        m_hudGameTime->setText(QString("Time: %1").arg(m_gameTime/1000, 4, 10, QChar('0')));
+        m_hudGameTime->setText(QString("Time: %1 Coins: %2").arg(m_gameTime/1000, 4, 10, QChar('0')).arg(m_coinCount, 3, 10, QChar('0')));
     }
 
     this->removeDeletedItems();

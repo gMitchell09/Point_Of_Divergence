@@ -45,7 +45,7 @@ void Enemy1::step(qint64 time, long delta) {
 
     if (m_currentState == Goomba::Squish) {
         m_squishCtr += delta;
-        if (m_squishCtr > 500) {
+        if (m_squishCtr > 250) {
             ((GameEngine*)this->scene())->removeItem(this);
         }
     }

@@ -57,6 +57,8 @@ private:
     //int m_keyRecentPress;
     bool m_timeReversed;
 
+    int m_coinCount;
+
     void removeDeletedItems();
 
 public:
@@ -99,6 +101,8 @@ public:
     virtual bool event(QEvent *event);
     virtual void removeItem(QGraphicsItem *item);
     virtual void removeItem(Sprite *item);
+
+    virtual void incrementCoins() { m_coinCount++; }
 
 protected:
     virtual void keyPressEvent(QKeyEvent * keyEvent);

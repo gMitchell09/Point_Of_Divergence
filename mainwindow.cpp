@@ -73,11 +73,11 @@ MainWindow::MainWindow(QWidget *parent) :
     life3->setPixmap(QPixmap(":Life/HeartContainer.png"));
     life3->setPos(QPointF(600, 900));
 
-    object1 = new ObjectItem(48, 64);
+    object1 = new ObjectItem(16, 16);
     object1->setPos(700, 1020);
     object1->setSolid(false);
 
-    gameTime = new HUDText(ui->graphicsView, QPointF(ui->graphicsView->width()/2, 25), 0);
+    gameTime = new HUDText(ui->graphicsView, QPointF(630, 15), 0);
     gameTime->setText("WOOOOO!!!!!");
 
     bkgPix.setMask(bkgMask.createMaskFromColor(QColor(0, 0, 0, 0)));
@@ -88,7 +88,6 @@ MainWindow::MainWindow(QWidget *parent) :
     bkg->setPos(0, 0);
     bkg->setShapeMode(QGraphicsPixmapItem::HeuristicMaskShape);
     bkg->setCollideable(true);
-
     gameEngine->addItem(bkg);
     // Hackish
 
