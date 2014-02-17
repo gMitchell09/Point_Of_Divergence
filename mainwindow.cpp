@@ -22,8 +22,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(buttonPress()));
-
     //
     mainChar = new MainCharacter(16, 32);
     mainChar->setPos(120 , 1020);
@@ -110,9 +108,6 @@ MainWindow::MainWindow(QWidget *parent) :
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
     heartbeat->start(1); // 20fps
-}
-
-void MainWindow::buttonPress() {
 }
 
 void MainWindow::invalidateTimer() {

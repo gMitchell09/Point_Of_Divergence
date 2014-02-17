@@ -50,7 +50,6 @@ private:
     MovingPlatform *floater;
 
 private slots:
-    void buttonPress();
     void invalidateTimer();
 };
 
