@@ -1,6 +1,8 @@
 #ifndef STATEARRAY_H
 #define STATEARRAY_H
 
+#define nullptr (void*)0
+
 template<typename T>
 struct Node {
     Node* next;

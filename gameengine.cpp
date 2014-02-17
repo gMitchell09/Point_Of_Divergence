@@ -14,7 +14,8 @@ GameEngine::GameEngine(int width, int height) :
     m_prevTime(0),
     m_gameTime(0),
     m_hudGameTime(NULL),
-    m_coinCount(0) {
+    m_coinCount(0),
+    m_timeReversed(false) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 }
 
