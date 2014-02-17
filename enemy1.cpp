@@ -16,6 +16,8 @@ Enemy1::Enemy1(int width, int height, QGraphicsItem *parent) :
     m_jumpStartVel = -500;
     m_gravity = 2000;
 
+    m_squishCtr = 0;
+
     QPixmap goombaStand(":Goomba/GoombaStand.png");
     QPixmap goombaSquish(":Goomba/GoombaSquish.png");
 
