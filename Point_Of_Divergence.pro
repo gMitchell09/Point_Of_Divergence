@@ -55,6 +55,7 @@ RESOURCES += \
     Simple_Sprite.qrc \
     Backgrounds.qrc \
     MarioSprites.qrc \
-    Goomba.qrc
+    Goomba.qrc \
+    Life.qrc
 
 OTHER_FILES +=
