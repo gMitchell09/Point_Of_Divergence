@@ -44,6 +44,10 @@ void GameEngine::step(qint64 time) {
     if (m_hudGameTime != NULL) {
         m_hudGameTime->setText(QString("Time: %1 Coins: %2").arg(m_gameTime/1000, 4, 10, QChar('0')).arg(m_coinCount, 3, 10, QChar('0')));
     }
+    if(m_timeReversed){
+         this->setForegroundBrush(QColor(255, 255, 255, 127));
+    }
+    else this->setForegroundBrush(QColor(255, 255, 255, 0));
 
     this->removeDeletedItems();
 }
@@ -52,7 +56,6 @@ void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
         m_timeReversed = true;
         displayBackground(QColor(120, 255, 120, 120));
-//        this->setBackgroundBrush(QBrush(QColor(120, 255, 120, 120)));
     }
     else if (m_mainActor != NULL) {
         m_mainActor->keyPressEvent(keyEvent);
@@ -63,7 +66,6 @@ void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
         m_timeReversed = false;
         displayBackground(QColor(210, 210, 255, 255));
-//        this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
     }
     else if (m_mainActor != NULL) {
         m_mainActor->keyReleaseEvent(keyEvent);
