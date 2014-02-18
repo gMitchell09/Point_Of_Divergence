@@ -2,6 +2,7 @@
 #define TILE_H
 
 #include <QGraphicsItem>
+#include <QGraphicsScene>
 
 #include "sprite.h"
 #include "animatedcollideablesprite.h"
@@ -10,7 +11,7 @@
 class Tile : public AnimatedCollideableSprite
 {
 public:
-    explicit Tile(QGraphicsItem *parent = 0);
+    explicit Tile(int width, int height, QGraphicsItem *parent);
 
     virtual bool isStatic() { return true; }
     virtual bool isAnimated() { return true; }

@@ -61,24 +61,24 @@ MainWindow::MainWindow(QWidget *parent) :
     testSprite2->setAcceleration(QPointF(0, 0));
     testSprite2->triggerAnimation(0);
 
-    life1 = new HUDsprite(ui->graphicsView, QPointF(25,25));
+    life1 = new Sprite();
+    life1->setPos(QPointF(25, 25));
     life1->setPixmap(QPixmap(":Life/HeartContainer.png"));
-    life1->setPos(QPointF(600, 900));
 
-    life2 = new HUDsprite(ui->graphicsView, QPointF(50,25));
+    life2 = new Sprite();
+    life2->setPos(QPointF(50, 25));
     life2->setPixmap(QPixmap(":Life/HeartContainer.png"));
-    life2->setPos(QPointF(600, 900));
 
-    life3 = new HUDsprite(ui->graphicsView, QPointF(75,25));
+    life3 = new Sprite();
+    life3->setPos(QPointF(75, 25));
     life3->setPixmap(QPixmap(":Life/HeartContainer.png"));
-    life3->setPos(QPointF(600, 900));
 
     object1 = new ObjectItem(16, 16);
     object1->setPos(700, 1020);
     object1->setSolid(false);
 
-    gameTime = new HUDText(ui->graphicsView, QPointF(630, 15), 0);
-    gameTime->setText("WOOOOO!!!!!");
+    gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
+    gameTime->setPos(QPointF(630, 15));
 
     bkgPix.setMask(bkgMask.createMaskFromColor(QColor(0, 0, 0, 0)));
 

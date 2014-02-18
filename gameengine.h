@@ -20,8 +20,6 @@
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
 #include "maincharacter.h"
-#include "hudsprite.h"
-#include "hudtext.h"
 #include "staticbackground.h"
 #include "global.h"
 #include "hud.h"
@@ -50,12 +48,10 @@ private:
 
     // This is a vector of sprites that can be interacted with
     std::vector<Sprite*> m_spriteArray;
-    std::vector<HUDsprite*> m_hudArray;
-    std::vector<HUDText*> m_hudTextArray;
     std::vector<Sprite*> m_deletedItems;
 
     HUD* m_hud;
-    HUDText* m_hudGameTime;
+    QGraphicsSimpleTextItem* m_hudGameTime;
 
     //int m_keyRecentPress;
     bool m_timeReversed;
@@ -81,14 +77,22 @@ public:
         m_stepHandlerVector.push_back(callback);
     }
 
-    inline void addHUD(HUDsprite* sprite) {
+    inline void addHUD(Sprite* sprite) {
+        if (!m_hud) {
+            m_hud = new HUD(this->views().at(0), QPointF(0, 0));
+            this->addItem(m_hud);
+        }
         this->addItem(sprite);
-        m_hudArray.push_back(sprite);
+        m_hud->addToGroup(sprite);
     }
 
-    inline void addHUDText(HUDText* text) {
+    inline void addHUDText(QGraphicsSimpleTextItem* text) {
+        if (!m_hud) {
+            m_hud = new HUD(this->views().at(0), QPointF(0, 0));
+            this->addItem(m_hud);
+        }
         this->addItem(text);
-        m_hudTextArray.push_back(text);
+        m_hud->addToGroup(text);
         m_hudGameTime = text;
     }
 

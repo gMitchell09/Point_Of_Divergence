@@ -30,25 +30,25 @@ public:
     /// \brief isStatic
     /// \return true if sprite doesn't respond to changes in velocity and acceleration
     ///
-    virtual bool isStatic() = 0;
+    virtual bool isStatic() { return false; }
 
     ///
     /// \brief isAnimated
     /// \return true if sprite has multiple frames
     ///
-    virtual bool isAnimated() = 0;
+    virtual bool isAnimated() { return false; }
 
     ///
     /// \brief isCollideable
     /// \return true if we need to perform collision checking on this sprite
     ///
-    virtual bool isCollideable() = 0;
+    virtual bool isCollideable() { return false; }
 
     ///
     /// \brief isBackground
     /// \return true if this sprite is a background
     ///
-    virtual bool isBackground() = 0;
+    virtual bool isBackground() { return false; }
 
     void setAcceleration(QPointF acceleration) { m_acceleration = acceleration; }
     QPointF& getAcceleration() { return m_acceleration; }

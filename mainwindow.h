@@ -14,8 +14,6 @@
 #include "maincharacter.h"
 #include "staticplatform.h"
 #include "movingplatform.h"
-#include "hudsprite.h"
-#include "hudtext.h"
 #include "enemy1.h"
 #include "objectitem.h"
 #include "global.h"
@@ -36,10 +34,8 @@ private:
     Ui::MainWindow *ui;
     StaticPlatform *testSprite, *testSprite2;
     StaticBackground *bkg;
-    HUDsprite *life1;
-    HUDsprite *life2;
-    HUDsprite *life3;
-    HUDText *gameTime;
+    Sprite *life1, *life2, *life3;
+    QGraphicsSimpleTextItem *gameTime;
     ObjectItem *object1;
 
     MainCharacter *mainChar;

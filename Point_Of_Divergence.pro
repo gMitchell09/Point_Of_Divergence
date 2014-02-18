@@ -26,8 +26,6 @@ SOURCES += main.cpp\
     maincharacter.cpp \
     staticplatform.cpp \
     movingplatform.cpp \
-    hudsprite.cpp \
-    hudtext.cpp \
     statearray.cpp \
     enemy1.cpp \
     objectitem.cpp \
@@ -45,8 +43,6 @@ HEADERS  += mainwindow.h \
     maincharacter.h \
     staticplatform.h \
     movingplatform.h \
-    hudsprite.h \
-    hudtext.h \
     statearray.h \
     enemy1.h \
     objectitem.h \
