@@ -23,6 +23,8 @@
 #include "hudsprite.h"
 #include "hudtext.h"
 #include "staticbackground.h"
+#include "global.h"
+#include "hud.h"
 
 
 class GameEngine : public QGraphicsScene
@@ -52,6 +54,7 @@ private:
     std::vector<HUDText*> m_hudTextArray;
     std::vector<Sprite*> m_deletedItems;
 
+    HUD* m_hud;
     HUDText* m_hudGameTime;
 
     //int m_keyRecentPress;

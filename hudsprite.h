@@ -19,7 +19,7 @@ private:
     QGraphicsView *&m_view;
 
 public:
-    explicit HUDsprite(QGraphicsView *&view, QPointF screenPos, QGraphicsItem *parent = 0);
+    HUDsprite(QGraphicsView *&view, QPointF screenPos, QGraphicsItem *parent = 0);
 
     bool isStatic() { return true; }
     bool isAnimated() { return false; }

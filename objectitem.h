@@ -14,10 +14,10 @@ public:
 
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 
-    bool isStatic() { return true; }
-    bool isAnimated() { return true; }
-    bool isCollideable() { return true; }
-    bool isBackground() { return false; }
+    virtual bool isStatic() { return true; }
+    virtual bool isAnimated() { return true; }
+    virtual bool isCollideable() { return true; }
+    virtual bool isBackground() { return false; }
 
     virtual QString className() { return "ObjectItem"; }
 

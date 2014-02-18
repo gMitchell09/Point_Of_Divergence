@@ -5,6 +5,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsView>
 
+#include "global.h"
 // Abstract
 class HUDText : public QGraphicsSimpleTextItem
 {

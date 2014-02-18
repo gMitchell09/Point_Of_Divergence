@@ -19,7 +19,7 @@ private:
     Goomba::MovementState m_currentState;
 
 public:
-    explicit Enemy1(int width, int height, QGraphicsItem *parent = 0);
+    Enemy1(int width, int height, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);

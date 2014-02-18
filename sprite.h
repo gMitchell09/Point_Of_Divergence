@@ -8,6 +8,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 
+#include "global.h"
+
 ///
 /// \brief The Sprite class is an abstract base class for all other sprites in engine
 ///

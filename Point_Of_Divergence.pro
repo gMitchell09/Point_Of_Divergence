@@ -17,7 +17,6 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
     gameengine.cpp \
     sprite.cpp \
     animatedsprite.cpp \
@@ -31,7 +30,10 @@ SOURCES += main.cpp\
     hudtext.cpp \
     statearray.cpp \
     enemy1.cpp \
-    objectitem.cpp
+    objectitem.cpp \
+    mainwindow.cpp \
+    tile.cpp \
+    hud.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -47,7 +49,10 @@ HEADERS  += mainwindow.h \
     hudtext.h \
     statearray.h \
     enemy1.h \
-    objectitem.h
+    objectitem.h \
+    tile.h \
+    global.h \
+    hud.h
 
 FORMS    += mainwindow.ui
 

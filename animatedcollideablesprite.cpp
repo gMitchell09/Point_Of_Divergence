@@ -6,10 +6,6 @@
 #include "animatedcollideablesprite.h"
 #include "sprite.h"
 
-#define MIN(x, y) ((x<y)?x:y)
-#define MAX(x, y) ((x>y)?x:y)
-#define SIGN(x) ((x>0)?1:-1)
-
 AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent) :
     AnimatedSprite(width, height, parent)
 {
@@ -62,50 +58,51 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
         m_velocity += m_acceleration * timeStep;
         newVel = m_velocity;
 
-        unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep, timeReversed);
+        if (!this->isStatic()) {
+            unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep, timeReversed);
 
-        if (!collisions.empty()) {
-            QPointF newPos = QPointF(0,0);
-            this->collisionOccurred(collisions, side);
-            for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
+            if (!collisions.empty()) {
+                QPointF newPos = QPointF(0,0);
+                this->collisionOccurred(collisions, side);
+                for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
 
-                AnimatedCollideableSprite *first = (AnimatedCollideableSprite*)((Collision)(*itr)).firstSprite;
-                AnimatedCollideableSprite *second = (AnimatedCollideableSprite*)((Collision)(*itr)).secondSprite;
-                Side locSide = (*itr).firstSide;
+                    AnimatedCollideableSprite *first = (AnimatedCollideableSprite*)((Collision)(*itr)).firstSprite;
+                    AnimatedCollideableSprite *second = (AnimatedCollideableSprite*)((Collision)(*itr)).secondSprite;
+                    Side locSide = (*itr).firstSide;
 
-                if (this->isSolid() && second->isSolid()) {
-                    if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
-                    if (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0)) newVel.setX(0);
+                    if (this->isSolid() && second->isSolid()) {
+                        if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
+                        if (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0)) newVel.setX(0);
 
-                    if ((side & Bottom) || (this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
-                        (this->pos().x() >= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() > 0)) {
-                        //newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
-                        relativeVel.setX(((Collision)(*itr)).secondSprite->getVelocity().x());
+                        if ((side & Bottom) || (this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
+                            (this->pos().x() >= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() > 0)) {
+                            //newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
+                            relativeVel.setX(((Collision)(*itr)).secondSprite->getVelocity().x());
+                        }
+                        if ((this->pos().y() <= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() < 0) ||
+                            (this->pos().y() >= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() > 0)) {
+                            //newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
+                            relativeVel.setY(((Collision)(*itr)).secondSprite->getVelocity().y());
+                            qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
+                        }
                     }
-                    if ((this->pos().y() <= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() < 0) ||
-                        (this->pos().y() >= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() > 0)) {
-                        //newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
-                        relativeVel.setY(((Collision)(*itr)).secondSprite->getVelocity().y());
-                        qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
-                    }
+                    //newPos += ((Collision)(*itr)).normalVector * timeStep;
                 }
-                //newPos += ((Collision)(*itr)).normalVector * timeStep;
+                this->setPos(this->pos() + newPos);
             }
-            this->setPos(this->pos() + newPos);
-        }
 
+            m_velocity = newVel;
 
-        m_velocity = newVel;
+            QPointF oldPos = this->pos();
 
-        QPointF oldPos = this->pos();
+            this->setPos(this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep);
 
-        this->setPos(this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep);
-
-        if (side & Top) {
-            // If m_velocity.y is positive then set it to zero
-            if (m_velocity.y() < 0) this->m_velocity.setY(0);
-            //if (m_acceleration.y() < 0) this->m_acceleration.setY(0);
-            this->pos().setY(oldPos.y());
+            if (side & Top) {
+                // If m_velocity.y is positive then set it to zero
+                if (m_velocity.y() < 0) this->m_velocity.setY(0);
+                //if (m_acceleration.y() < 0) this->m_acceleration.setY(0);
+                this->pos().setY(oldPos.y());
+            }
         }
 
         if (this->usesStack()) {

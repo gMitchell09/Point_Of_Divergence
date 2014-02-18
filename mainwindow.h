@@ -18,6 +18,7 @@
 #include "hudtext.h"
 #include "enemy1.h"
 #include "objectitem.h"
+#include "global.h"
 
 namespace Ui {
 class MainWindow;
