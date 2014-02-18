@@ -123,6 +123,19 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     // Check top points for collision
     collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[0][0], this->transform()));
     collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[0][1], this->transform()));
+
+    /* Images always make things easier:
+     *
+     *   |----[---------]----|
+     *   |    [   Top   ]    |
+     *[ Left ]           [ Right]
+     *[  |   ]           [   |  ]
+     *   |                   |
+     *   |____[_Bottom__]____|
+     *        [         ]
+     */
+    //collidee = spriteWithinWhisker(QRectF()) <-- Do THIS FOR ALL COLLISION DETECTION BEFORE NEXT COMMIT!!!
+
     if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
             (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cTop = true;
@@ -185,6 +198,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     // Check bottom points for collision
     collidee = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[2][0], this->transform()));
     collidee2 = dynamic_cast<Sprite*>(this->scene()->itemAt(offsetPos + m_collisionPoints[2][1], this->transform()));
+
     if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
             (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
         cBottom = true;
@@ -246,6 +260,13 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     if ((cTop && cBottom) || (cLeft && cRight)) qDebug() << "SQUISH -- " << side;
 
     return side;
+}
+
+Sprite* AnimatedCollideableSprite::spriteWithinWhisker(QRectF whisker, Side side) {
+    QList<QGraphicsItem *> items = this->scene()->items(whisker);
+
+    // Following stolen from QGraphicsScene.cpp
+    return (items.size() > 0) ? dynamic_cast<Sprite*>(items.at(0)) : 0;
 }
 
 void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, unsigned char side) {

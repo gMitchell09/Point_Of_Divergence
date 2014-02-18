@@ -30,6 +30,7 @@ private:
 
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset, bool timeReversed);
     void resolveCollision(Collision collision);
+    Sprite* spriteWithinWhisker(QRectF whisker, Side side);
 
 public:
     explicit AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent = 0);

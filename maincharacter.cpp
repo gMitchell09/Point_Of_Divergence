@@ -11,14 +11,14 @@
 MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, parent) {
 
-    m_leftAccel = -250;
+    m_leftAccel = -400;
     m_rightAccel = -m_leftAccel;
     m_maxVelX = 300;
     m_maxVelY = 2000;
 
     m_jumpStartVel = -500;
     m_gravity = 2000;
-    m_brakeAccel = 500;
+    m_brakeAccel = 800;
 
     TileMap * playerTiles = new TileMap(16, 33, 1, 1, ":MarioRight/MarioMovement.png");
 

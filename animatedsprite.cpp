@@ -33,7 +33,7 @@ void AnimatedSprite::triggerAnimation(unsigned int anim) {
     if (anim >= m_animationType.size()) return;
 
     m_nCurrentAnimation = anim;
-    m_msPerFrame = 200;
+    m_msPerFrame = 120;
 
     switch (m_animationType.at(anim)) {
         case Forward:
