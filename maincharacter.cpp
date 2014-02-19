@@ -258,7 +258,7 @@ void MainCharacter::step(qint64 time, long delta) {
 */
 
 void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    if (side & Bottom) {
+    if (side & Bottom && this->getVelocity().y() >= 0) {
         m_jumping_double = false;
         m_jumping = false;
     }
