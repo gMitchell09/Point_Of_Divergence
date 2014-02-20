@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     objectitem.cpp \
     mainwindow.cpp \
     tile.cpp \
-    hud.cpp
+    hud.cpp \
+    menubutton.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     objectitem.h \
     tile.h \
     global.h \
-    hud.h
+    hud.h \
+    menubutton.h
 
 FORMS    += mainwindow.ui
 

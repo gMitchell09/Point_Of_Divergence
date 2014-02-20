@@ -11,6 +11,8 @@
 #include "tilemap.h"
 
 #include "animatedcollideablesprite.h"
+#include "global.h"
+#include "gameengine.h"
 
 enum MovementState { Stand_Right = 0, Stand_Left,
                      Walk_Right, Walk_Left,

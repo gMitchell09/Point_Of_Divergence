@@ -66,6 +66,8 @@ public:
 
     virtual QString className() { return "Sprite"; }
 
+    virtual ItemType blockType() { return ItemType::kBlock; }
+
     
 signals:
     

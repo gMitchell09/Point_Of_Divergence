@@ -21,6 +21,11 @@ public:
 
     virtual QString className() { return "ObjectItem"; }
 
+    virtual ItemType blockType() { return ItemType::kCoin; }
+
+    // In here we want to give the subclasses the ability to "flip" switches, "press" buttons, ...
+    virtual void triggerEvent() {}
+
 
 protected:
     virtual bool usesStack() { return true; }

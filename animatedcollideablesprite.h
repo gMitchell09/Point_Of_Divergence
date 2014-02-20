@@ -32,7 +32,6 @@ private:
     void resolveCollision(Collision collision);
     Sprite* spriteWithinWhisker(QRectF whisker, Side side = Top);
 
-    QGraphicsRectItem *whiskers[8];
     QRectF topWhiskerLeft, topWhiskerRight, rightWhiskerTop, rightWhiskerBottom, bottomWhiskerRight, bottomWhiskerLeft, leftWhiskerBottom, leftWhiskerTop;
     void updateWhiskers(QPointF offset);
 
@@ -54,6 +53,7 @@ public:
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 
     virtual QString className() { return "AnimatedCollideableSprite"; }
+
 
 protected:
     virtual bool usesStack() { return false; }

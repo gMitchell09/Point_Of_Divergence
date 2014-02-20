@@ -7,4 +7,6 @@
 #define MAX(x, y) ((x>y)?x:y)
 #define SIGN(x) ((x>0)?1:-1)
 
+enum ItemType { kBlock, kBox, kCoin, kLever, kButton, kSwitch, kDoor, kMovingPlatform, kGate, kClock, kTime_Lever };
+
 #endif // GLOBAL_H

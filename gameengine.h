@@ -24,7 +24,7 @@
 #include "global.h"
 #include "hud.h"
 
-
+class MainCharacter;
 class GameEngine : public QGraphicsScene
 {
 private:
@@ -99,7 +99,7 @@ public:
     inline size_t addSprite(Sprite* sprite, bool mainActor = false) {
         this->addItem(sprite);
         if (mainActor) {
-            m_mainActor = dynamic_cast<MainCharacter*>(sprite);
+            m_mainActor = (MainCharacter*)(sprite);
         }
         m_spriteArray.push_back(sprite);
         return m_spriteArray.size();

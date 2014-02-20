@@ -21,10 +21,6 @@ AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGra
     // Left
     m_collisionPoints[3][0] = QPoint(0, height/3);
     m_collisionPoints[3][1] = QPoint(0, (2*height)/3);
-
-    for (int i=0; i < 8; i++) {
-        whiskers[i] = this->scene()->addRect(QRectF(m_collisionPoints[0][0], m_collisionPoints[2][0]), QPen(QColor(255/8*i, 0, 0, 100)), QBrush(QColor(255/8*i, 0, 0, 100)));
-    }
 }
 
 void AnimatedCollideableSprite::updateWhiskers(QPointF offset) {
@@ -39,26 +35,14 @@ void AnimatedCollideableSprite::updateWhiskers(QPointF offset) {
     topWhiskerLeft = QRectF(m_collisionPoints[0][0] + offsetY, m_collisionPoints[0][0] + this->pos());
     topWhiskerRight = QRectF(m_collisionPoints[0][1] + offsetY, m_collisionPoints[0][1] + this->pos());
 
-    whiskers[0]->setRect(topWhiskerLeft);
-    whiskers[1]->setRect(topWhiskerRight);
-
     rightWhiskerTop = QRectF(m_collisionPoints[1][0] + offsetX, m_collisionPoints[1][0] + this->pos());
     rightWhiskerBottom = QRectF(m_collisionPoints[1][1] + offsetX, m_collisionPoints[1][1] + this->pos());
-
-    whiskers[2]->setRect(rightWhiskerTop);
-    whiskers[3]->setRect(rightWhiskerBottom);
 
     bottomWhiskerRight = QRectF(m_collisionPoints[2][0] + offsetY, m_collisionPoints[2][0] + this->pos());
     bottomWhiskerLeft = QRectF(m_collisionPoints[2][1] + offsetY, m_collisionPoints[2][1] + this->pos());
 
-    whiskers[4]->setRect(bottomWhiskerLeft);
-    whiskers[5]->setRect(bottomWhiskerRight);
-
     leftWhiskerBottom = QRectF(m_collisionPoints[3][0] + offsetX, m_collisionPoints[3][0] + this->pos());
     leftWhiskerTop = QRectF(m_collisionPoints[3][1] + offsetX, m_collisionPoints[3][1] + this->pos());
-
-    whiskers[6]->setRect(leftWhiskerBottom);
-    whiskers[7]->setRect(leftWhiskerTop);
 }
 
 void AnimatedCollideableSprite::step(qint64 time, long delta) {
@@ -134,13 +118,6 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
             QPointF oldPos = this->pos();
 
             this->setPos(this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep);
-
-            if (side & Top) {
-                // If m_velocity.y is positive then set it to zero
-                if (m_velocity.y() < 0) this->m_velocity.setY(0);
-                //if (m_acceleration.y() < 0) this->m_acceleration.setY(0);
-                this->pos().setY(oldPos.y());
-            }
         }
 
         if (this->usesStack()) {

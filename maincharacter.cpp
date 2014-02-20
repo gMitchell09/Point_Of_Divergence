@@ -262,6 +262,13 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
         m_jumping_double = false;
         m_jumping = false;
     }
+
+    for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
+        if ((((Collision)(*itr)).secondSprite)->blockType() == ItemType::kCoin) {
+            ((GameEngine*)this->scene())->incrementCoins();
+            ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
+        }
+    }
 }
 
 void MainCharacter::jump() {
