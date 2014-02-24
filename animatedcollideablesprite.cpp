@@ -89,23 +89,43 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                 this->collisionOccurred(collisions, side);
                 for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
 
-                    AnimatedCollideableSprite *first = (AnimatedCollideableSprite*)((Collision)(*itr)).firstSprite;
-                    AnimatedCollideableSprite *second = (AnimatedCollideableSprite*)((Collision)(*itr)).secondSprite;
+                    Collision col = ((Collision)(*itr));
+                    AnimatedCollideableSprite *first = (AnimatedCollideableSprite*)(col).firstSprite;
+                    AnimatedCollideableSprite *second = (AnimatedCollideableSprite*)(col).secondSprite;
                     Side locSide = (*itr).firstSide;
 
                     if (this->isSolid() && second->isSolid()) {
                         if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
                         if (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0)) newVel.setX(0);
-
-                        if ((side & Bottom) || (this->pos().x() <= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() < 0) ||
-                            (this->pos().x() >= ((Collision)(*itr)).secondSprite->pos().x() && ((Collision)(*itr)).normalVector.x() > 0)) {
-                            //newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
-                            relativeVel.setX(((Collision)(*itr)).secondSprite->getVelocity().x());
+                        switch (locSide) {
+                            case Top:
+                                this->setY(col.overlapDistance.y());
+                                qDebug() << "Top";
+                                break;
+                            case Right:
+                                this->setX(col.overlapDistance.x() - this->boundingRect().width());
+                                qDebug() << "Right";
+                                break;
+                            case Bottom:
+                                qDebug() << "Mario: " << this->pos();
+                                this->setY(col.overlapDistance.y() - this->boundingRect().height()+1);
+                                qDebug() << "Bottom";
+                                break;
+                            case Left:
+                                this->setX(col.overlapDistance.x());
+                                qDebug() << "Left";
+                                break;
                         }
-                        if ((this->pos().y() <= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() < 0) ||
-                            (this->pos().y() >= ((Collision)(*itr)).secondSprite->pos().y() && ((Collision)(*itr)).normalVector.y() > 0)) {
+
+                        if ((side & Bottom) || (this->pos().x() <= col.secondSprite->pos().x() && col.normalVector.x() < 0) ||
+                            (this->pos().x() >= col.secondSprite->pos().x() && col.normalVector.x() > 0)) {
+                            //newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
+                            relativeVel.setX(col.secondSprite->getVelocity().x());
+                        }
+                        if ((this->pos().y() <= col.secondSprite->pos().y() && col.normalVector.y() < 0) ||
+                            (this->pos().y() >= col.secondSprite->pos().y() && col.normalVector.y() > 0)) {
                             //newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
-                            relativeVel.setY(((Collision)(*itr)).secondSprite->getVelocity().y());
+                            relativeVel.setY(col.secondSprite->getVelocity().y());
 //                            qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
                         }
                     }
@@ -116,9 +136,15 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
 
             m_velocity = newVel;
 
-            QPointF oldPos = this->pos();
-
+            if (relativeVel.x() > 0) {
+                qDebug() << "Rel Vel: " << relativeVel.x();
+                qDebug() << this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep;
+                qDebug() << this->pos() + ((m_velocity + oldVel) * 0.5) * timeStep;
+            }
             this->setPos(this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep);
+            if (relativeVel.x() > 0) {
+                qDebug() << this->pos();
+            }
         }
 
         if (this->usesStack()) {
@@ -168,7 +194,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.normalVector = collidee->getVelocity();
             col.firstSide = Top;
             col.secondSide = Top;
-            col.overlapDistance = QPointF(0, 0);
+            col.overlapDistance = collidee->mapToScene(0, collidee->boundingRect().height());
             collisions.append(col);
         }
         if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
@@ -177,7 +203,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.normalVector = collidee2->getVelocity();
             col.firstSide = Top;
             col.secondSide = Top;
-            col.overlapDistance = QPointF(0, 0);
+            col.overlapDistance = collidee2->mapToScene(0, collidee2->boundingRect().height());
             collisions.append(col);
         }
     }
@@ -199,7 +225,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.normalVector = collidee->getVelocity();
             col.firstSide = Right;
             col.secondSide = Right;
-            col.overlapDistance = QPointF(0, 0);
+            col.overlapDistance = collidee->mapToScene(QPointF(0, 0));
             collisions.append(col);
         }
         if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
@@ -208,7 +234,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.normalVector = collidee2->getVelocity();
             col.firstSide = Right;
             col.secondSide = Right;
-            col.overlapDistance = QPointF(0, 0);
+            col.overlapDistance = collidee2->mapToScene(QPointF(0, 0));
             collisions.append(col);
         }
     }
@@ -229,7 +255,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.normalVector = collidee->getVelocity();
             col.firstSide = Bottom;
             col.secondSide = Bottom;
-            col.overlapDistance = QPointF(0, 0);
+            col.overlapDistance = collidee->mapToScene(QPointF(0, 0));
             collisions.append(col);
         }
         if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
@@ -238,7 +264,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.normalVector = collidee2->getVelocity();
             col.firstSide = Bottom;
             col.secondSide = Bottom;
-            col.overlapDistance = QPointF(0, 0);
+            col.overlapDistance = collidee2->mapToScene(QPointF(0, 0));
             collisions.append(col);
         }
     }
@@ -260,7 +286,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.normalVector = collidee->getVelocity();
             col.firstSide = Left;
             col.secondSide = Left;
-            col.overlapDistance = QPointF(0, 0);
+            col.overlapDistance = collidee->mapToScene(QPointF(collidee->boundingRect().width(), 0));
             collisions.append(col);
         }
         if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
@@ -269,7 +295,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.normalVector = collidee2->getVelocity();
             col.firstSide = Left;
             col.secondSide = Left;
-            col.overlapDistance = QPointF(0, 0);
+            col.overlapDistance = collidee2->mapToScene(QPointF(collidee2->boundingRect().width(), 0));
             collisions.append(col);
         }
     }

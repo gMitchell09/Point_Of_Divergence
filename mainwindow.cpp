@@ -92,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    // Hackish
 
     Level *level = new Level("://Levels/LevelTest.tmx", 0);
-    level->setPos(QPointF(0, 1200 - level->getLevelHeight()));
+    level->setPos(QPointF(0, gameEngine->sceneRect().height() - level->getLevelHeight()));
     gameEngine->addItem(level);
     gameEngine->displayBackground(bkgImg);
 
@@ -105,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
     gameEngine->addHUDText(gameTime);
 
     gameEngine->addSprite(object1);
-    gameEngine->addSprite(goomba); // Add our goomba
+    //gameEngine->addSprite(goomba); // Add our goomba
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
