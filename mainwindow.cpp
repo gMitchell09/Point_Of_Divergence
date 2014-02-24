@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainChar->setSolid(true);
 
     goomba = new Enemy1(20, 18);
-    goomba->setPos(200 , 1020);
+    goomba->setPos(1200, 1020);
 
     floater = new MovingPlatform(48, 64);
     floater->setPixmap(QPixmap(":Simple_Sprite/1.png"));
@@ -105,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent) :
     gameEngine->addHUDText(gameTime);
 
     gameEngine->addSprite(object1);
-    //gameEngine->addSprite(goomba); // Add our goomba
+    gameEngine->addSprite(goomba); // Add our goomba
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
