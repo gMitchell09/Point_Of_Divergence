@@ -87,37 +87,45 @@ void Level::parseTileSet(QDomNode tileset) {
 void Level::parseLayer(QDomNode layer) {
     QDomNode child = layer.firstChild().firstChild(); // ugly
     int currentTile = 0;
+    int validTiles = 0;
+    int firstElement = 0;
     while (!child.isNull()) {
         int gid;
         if ((gid = child.toElement().attribute("gid", "0").toInt()) != 0) {
             auto itr = m_tileSets.lowerBound(gid);
-            if (true) {
-                TileMap* tileMap = *itr;
-                QPointF pos = this->getTilePos(gid);
-                // Normalize our tile index by getting our tile index relative to
-                //  our current tilemap.
-                int idx = 5;
-                QPixmap tileImage = tileMap->copyCellAt(idx);
-                Tile *tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), this);
 
-                qDebug() << "Idx: " << idx << "\nTile: " << tileImage;
+            if (itr == m_tileSets.begin()) firstElement = 0;
+            else firstElement = (itr-1).key();
 
-                tile->setPixmap(tileImage);
-                tile->setSolid(true);
-                tile->setBlockType(ItemType::kBlock);
-                tile->setPos(pos);
+            TileMap* tileMap = *itr;
+            QPointF pos = this->getTilePos(currentTile);
+            // Normalize our tile index by getting our tile index relative to
+            //  our current tilemap.
+            int idx = gid - firstElement;
+            QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx - 1);
+            Tile *tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), this);
 
-                this->addToGroup(tile);
-            }
+            qDebug() << "Idx: " << idx << "\nTile: " << tileImage << "Pos: " << pos;
+
+            tile->setPixmap(tileImage);
+            tile->setSolid(true);
+            tile->setBlockType(ItemType::kBlock);
+            tile->setPos(pos);
+            tile->setShapeMode(Tile::BoundingRectShape);
+
+            this->addToGroup(tile);
+            validTiles++;
         }
         currentTile++;
         child = child.nextSibling();
     }
+    qDebug() << "nTiles = " << currentTile;
+    qDebug() << "nValid = " << validTiles;
 }
 
 QPointF Level::getTilePos(int tileNum) const {
     int x = tileNum % m_levelWidth;
-    int y = tileNum / m_levelHeight;
+    int y = tileNum / m_levelWidth;
 
     return QPointF(m_tileWidth * x, m_tileHeight * y);
 }

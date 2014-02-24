@@ -24,6 +24,13 @@ QPixmap TileMap::copyCellAt(unsigned int i, unsigned int j) const {
      -----------------------------
      ...
      */
+    QPixmap copyPix = this->copyCellAtWithoutMask(i, j);
+    copyPix.setMask(copyPix.createHeuristicMask(true));
+
+    return copyPix;
+}
+
+QPixmap TileMap::copyCellAtWithoutMask(unsigned int i, unsigned int j) const {
     int boxLeft, boxTop, boxWidth, boxHeight;
 
     boxLeft = i * m_cellWidth + i * m_dividerWidth;
@@ -31,12 +38,13 @@ QPixmap TileMap::copyCellAt(unsigned int i, unsigned int j) const {
     boxTop = j * m_cellHeight + j * m_dividerHeight;
     boxHeight = m_cellHeight;
 
-    QPixmap copyPix = this->copy(boxLeft, boxTop, boxWidth, boxHeight);
-    copyPix.setMask(copyPix.createHeuristicMask(true));
-
-    return copyPix;
+    return this->copy(boxLeft, boxTop, boxWidth, boxHeight);
 }
 
 QPixmap TileMap::copyCellAt(unsigned int idx) const {
     return this->copyCellAt(idx % m_tilesWide, idx / m_tilesHigh);
+}
+
+QPixmap TileMap::copyCellAtWithoutMask(unsigned int idx) const {
+    return this->copyCellAtWithoutMask(idx % m_tilesWide, idx / m_tilesHigh);
 }

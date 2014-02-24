@@ -57,7 +57,10 @@ public:
     /// \return QPixmap item which has a transparent background (based on corner color)
     ///
     QPixmap copyCellAt(unsigned int i, unsigned int j) const;
+    QPixmap copyCellAtWithoutMask(unsigned int i, unsigned int j) const;
+
     QPixmap copyCellAt(unsigned int idx) const;
+    QPixmap copyCellAtWithoutMask(unsigned int idx) const;
 
     inline unsigned int getCellWidth() const { return m_cellWidth; }
     inline unsigned int getCellHeight() const { return m_cellHeight; }
