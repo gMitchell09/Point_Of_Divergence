@@ -140,7 +140,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
 
-        m_jumping = true;
+        m_jumping = false;
         m_upPressed = true;
     }
 
@@ -251,8 +251,7 @@ void MainCharacter::step(qint64 time, long delta) {
 /* Possible User Input:
  * Left - Walk and then run left
  * Right - Walk and then run right
- * Left -> Ri/        if((*itr)==1
-//                this->m_jumping_double=false;ght - (Moving) left, Brake_Left, Walk_Right, Run_Right
+ * Left -> Right - (Moving) left, Brake_Left, Walk_Right, Run_Right
  * Up (Moving Left) Jump_Left animation
  * Up (Moving Right) Jump_Right animation
 */
@@ -264,9 +263,16 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
     }
 
     for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
-        if ((((Collision)(*itr)).secondSprite)->blockType() == ItemType::kCoin) {
+        switch ((((Collision)(*itr)).secondSprite)->blockType()) {
+        case ItemType::kCoin:
             ((GameEngine*)this->scene())->incrementCoins();
             ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
+            break;
+        case ItemType::kTime_Lever:
+            // ...
+            break;
+        default:
+            break;
         }
     }
 }

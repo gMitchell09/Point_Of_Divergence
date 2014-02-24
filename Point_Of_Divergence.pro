@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui xml
 CONFIG   += c++11
 
 # Silly warning
@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     mainwindow.cpp \
     tile.cpp \
     hud.cpp \
-    menubutton.cpp
+    menubutton.cpp \
+    level.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -50,7 +51,8 @@ HEADERS  += mainwindow.h \
     tile.h \
     global.h \
     hud.h \
-    menubutton.h
+    menubutton.h \
+    level.h
 
 FORMS    += mainwindow.ui
 
@@ -60,6 +62,8 @@ RESOURCES += \
     MarioSprites.qrc \
     Goomba.qrc \
     Life.qrc \
-    Items.qrc
+    Items.qrc \
+    LevelTest.qrc
 
-OTHER_FILES +=
+OTHER_FILES += \
+    ../../Desktop/Game Assets/LevelTest.tmx

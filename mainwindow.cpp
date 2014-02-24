@@ -80,17 +80,20 @@ MainWindow::MainWindow(QWidget *parent) :
     gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
     gameTime->setPos(QPointF(630, 15));
 
-    bkgPix.setMask(bkgMask.createMaskFromColor(QColor(0, 0, 0, 0)));
+//    bkgPix.setMask(bkgMask.createMaskFromColor(QColor(0, 0, 0, 0)));
 
-    // Hackish code
-    bkg = new StaticBackground(QPoint(0, 0));
-    bkg->setPixmap(bkgPix);
-    bkg->setPos(0, 0);
-    bkg->setShapeMode(QGraphicsPixmapItem::HeuristicMaskShape);
-    bkg->setCollideable(true);
-    gameEngine->addItem(bkg);
-    // Hackish
+//    // Hackish code
+//    bkg = new StaticBackground(QPoint(0, 0));
+//    bkg->setPixmap(bkgPix);
+//    bkg->setPos(0, 0);
+//    bkg->setShapeMode(QGraphicsPixmapItem::HeuristicMaskShape);
+//    bkg->setCollideable(true);
+//    gameEngine->addItem(bkg);
+//    // Hackish
 
+    Level *level = new Level("://Levels/LevelTest.tmx", 0);
+    level->setPos(QPointF(0, 1200 - level->getLevelHeight()));
+    gameEngine->addItem(level);
     gameEngine->displayBackground(bkgImg);
 
     gameEngine->addSprite(mainChar, true);

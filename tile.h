@@ -10,6 +10,8 @@
 
 class Tile : public AnimatedCollideableSprite
 {
+private:
+    ItemType m_kind;
 public:
     explicit Tile(int width, int height, QGraphicsItem *parent);
 
@@ -21,6 +23,9 @@ public:
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 
     virtual QString className() { return "Tile"; }
+
+    virtual ItemType blockType() { return m_kind; }
+    void setBlockType(ItemType kind) { m_kind = kind; }
 
 };
 

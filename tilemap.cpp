@@ -3,15 +3,20 @@
  */
 
 #include "tilemap.h"
-
-TileMap::TileMap(int cellWidth, int cellHeight, int dividerWidth, int dividerHeight, QString pixmapInit) :
+#include <QDebug>
+TileMap::TileMap(int cellWidth, int cellHeight, int dividerWidth, int dividerHeight, QString pixmapInit,
+                 int tilesWide, int tilesHigh) :
     QPixmap(pixmapInit),
     m_cellWidth(cellWidth),
     m_cellHeight(cellHeight),
     m_dividerWidth(dividerWidth),
-    m_dividerHeight(dividerHeight) { }
+    m_dividerHeight(dividerHeight),
+    m_tilesWide(tilesWide),
+    m_tilesHigh(tilesHigh) {
+    qDebug() << "TileMap: " << this->size();
+}
 
-QPixmap TileMap::copyCellAt(unsigned int i, unsigned int j) {
+QPixmap TileMap::copyCellAt(unsigned int i, unsigned int j) const {
     /* Here is an example image:
      01234567890123456789012345678901
      [0 0]|[0 0]|[0 0]|[0 0]|[_ _]|[^ ^]
@@ -30,4 +35,8 @@ QPixmap TileMap::copyCellAt(unsigned int i, unsigned int j) {
     copyPix.setMask(copyPix.createHeuristicMask(true));
 
     return copyPix;
+}
+
+QPixmap TileMap::copyCellAt(unsigned int idx) const {
+    return this->copyCellAt(idx % m_tilesWide, idx / m_tilesHigh);
 }

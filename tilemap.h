@@ -32,7 +32,13 @@ class TileMap : public QPixmap
 {
 private:
     unsigned int m_cellWidth, m_cellHeight, m_dividerWidth, m_dividerHeight;
+    unsigned int m_tilesWide, m_tilesHigh;
 public:
+    TileMap() : m_cellWidth(0),
+    m_cellHeight(0),
+    m_dividerWidth(0),
+    m_dividerHeight(0) {}
+
     ///
     /// \brief TileMap
     /// \param cellWidth - Width of cells
@@ -41,7 +47,8 @@ public:
     /// \param dividerHeight - height of divider (space) (usually 1)
     /// \param pixmapInit - QString passed onto QPixmap constructor
     ///
-    TileMap(int cellWidth, int cellHeight, int dividerWidth, int dividerHeight, QString pixmapInit);
+    TileMap(int cellWidth, int cellHeight, int dividerWidth, int dividerHeight, QString pixmapInit,
+            int tilesHigh = 0, int tilesWide = 0);
 
     ///
     /// \brief copyCellAt will return the specified cell in the Tile Map
@@ -49,7 +56,11 @@ public:
     /// \param j - vertical index of cell
     /// \return QPixmap item which has a transparent background (based on corner color)
     ///
-    QPixmap copyCellAt(unsigned int i, unsigned int j);
+    QPixmap copyCellAt(unsigned int i, unsigned int j) const;
+    QPixmap copyCellAt(unsigned int idx) const;
+
+    inline unsigned int getCellWidth() const { return m_cellWidth; }
+    inline unsigned int getCellHeight() const { return m_cellHeight; }
 };
 
 #endif // TILEMAP_H

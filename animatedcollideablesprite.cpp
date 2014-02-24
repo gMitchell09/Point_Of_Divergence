@@ -5,6 +5,7 @@
 
 #include "animatedcollideablesprite.h"
 #include "sprite.h"
+#include "level.h"
 
 AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent) :
     AnimatedSprite(width, height, parent)

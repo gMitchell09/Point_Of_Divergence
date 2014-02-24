@@ -17,6 +17,7 @@
 #include "enemy1.h"
 #include "objectitem.h"
 #include "global.h"
+#include "level.h"
 
 namespace Ui {
 class MainWindow;

@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Levels/LevelTest.tmx</file>
+        <file>Levels/PlatformTiles_brownNature_ByEris_0/Tiles 32x32/Tiles_32x32.png</file>
+    </qresource>
+</RCC>
