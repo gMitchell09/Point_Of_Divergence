@@ -140,7 +140,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
 
-        m_jumping = false;
+        m_jumping = true;
         m_upPressed = true;
     }
 
@@ -257,7 +257,7 @@ void MainCharacter::step(qint64 time, long delta) {
 */
 
 void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    if (side & Bottom && this->getVelocity().y() >= 0) {
+    if (side & Bottom && this->getVelocity().y() >= 0 && collisions.at(0).secondSprite->isSolid()) {
         m_jumping_double = false;
         m_jumping = false;
     }
@@ -268,8 +268,9 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
             ((GameEngine*)this->scene())->incrementCoins();
             ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
             break;
-        case ItemType::kTime_Lever:
-            // ...
+        case ItemType::kBox:
+            if ((side & Left && m_leftPressed) || (side & Right && m_rightPressed))
+                qDebug() << "PUSH THE BOX";
             break;
         default:
             break;

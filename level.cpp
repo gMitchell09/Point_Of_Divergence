@@ -61,7 +61,12 @@ void Level::parseTileSet(QDomNode tileset) {
             tileMapWidth = child.toElement().attribute("width", "0").toInt();
             tileMapHeight = child.toElement().attribute("height", "0").toInt();
 
-        } else { qDebug() << "Eh..."; }
+        } else if (child.toElement().tagName() == "tile" ) {
+            // This tile has special properties... let's see what they are!!
+            this->parseTile(child);
+        } else { qDebug() << "Eh..." << child.toElement().tagName(); }
+
+        // Now let's check the next child object
         child = child.nextSibling();
     }
 
@@ -72,8 +77,8 @@ void Level::parseTileSet(QDomNode tileset) {
 
     int lastGID = firstGID + tiles_wide * tiles_high - 1;
 
-    qDebug() << "Tile Map Path: " << ":/Levels/" + tilemapPath;
-    qDebug() << "Should be: " << "://Levels/PlatformTiles_brownNature_ByEris_0/Tiles 32x32/Tiles_32x32.png";
+//    qDebug() << "Tile Map Path: " << ":/Levels/" + tilemapPath;
+//    qDebug() << "Should be: " << "://Levels/PlatformTiles_brownNature_ByEris_0/Tiles 32x32/Tiles_32x32.png";
 
     TileMap *tileMap = new TileMap(cellWidth, cellHeight,
                                    dividerWidth, dividerHeight,
@@ -88,13 +93,13 @@ void Level::parseLayer(QDomNode layer) {
     QDomNode child = layer.firstChild().firstChild(); // ugly
     int currentTile = 0;
     int validTiles = 0;
-    int firstElement = 0;
+    int firstElement = 1;
     while (!child.isNull()) {
-        int gid;
-        if ((gid = child.toElement().attribute("gid", "0").toInt()) != 0) {
+        int gid = child.toElement().attribute("gid", "0").toInt();
+        if (gid != 0) {
             auto itr = m_tileSets.lowerBound(gid);
 
-            if (itr == m_tileSets.begin()) firstElement = 0;
+            if (itr == m_tileSets.begin()) firstElement = 1;
             else firstElement = (itr-1).key();
 
             TileMap* tileMap = *itr;
@@ -102,17 +107,24 @@ void Level::parseLayer(QDomNode layer) {
             // Normalize our tile index by getting our tile index relative to
             //  our current tilemap.
             int idx = gid - firstElement;
-            QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx - 1);
+            QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
             Tile *tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), this);
 
-            qDebug() << "Idx: " << idx << "\nTile: " << tileImage << "Pos: " << pos;
 
             tile->setPixmap(tileImage);
-            tile->setSolid(true);
-            tile->setBlockType(ItemType::kBlock);
+            if (m_tileProperties.contains(idx)) {
+                qDebug() << "Idx: " << idx << "\nTile: " << tileImage << "Pos: " << pos;
+                TileProperties tp = m_tileProperties[idx];
+                tile->setSolid(tp.solid);
+                tile->setBlockType(tp.kind);
+                qDebug() << "Solid: " << tp.solid;
+                qDebug() << "Kind: " << tp.kind;
+            } else {
+                tile->setSolid(true);
+                tile->setBlockType(ItemType::kBlock);
+            }
             tile->setPos(pos);
             tile->setShapeMode(Tile::BoundingRectShape);
-
             this->addToGroup(tile);
             validTiles++;
         }
@@ -121,6 +133,33 @@ void Level::parseLayer(QDomNode layer) {
     }
     qDebug() << "nTiles = " << currentTile;
     qDebug() << "nValid = " << validTiles;
+}
+
+void Level::parseTile(QDomNode tile) {
+    int id = tile.toElement().attribute("id", "0").toInt();
+    if (m_tileProperties.contains(id)) return;
+
+    TileProperties tp;
+
+    QDomNode child = tile.firstChild();
+    if (child.toElement().tagName() == "properties") child = child.firstChild();
+    else { qDebug() << "Fuck"; return; }
+
+    while (!child.isNull()) {
+        QDomElement property = child.toElement();
+        if (property.tagName() == "property") {
+            if (property.attribute("name") == "solid") {
+                tp.solid = property.attribute("value", "1").toInt() != 0;
+            } else if (property.attribute("name") == "type") {
+                tp.kind = (ItemType) property.attribute("value", "0").toInt();
+            } else qDebug() << "Unknown property: " << property.attribute("name");
+            qDebug() << "id: " << id;
+            qDebug() << "Solid: " << tp.solid;
+            qDebug() << "Kind: " << tp.kind;
+        }
+        child = child.nextSibling();
+    }
+    m_tileProperties.insert(id, tp);
 }
 
 QPointF Level::getTilePos(int tileNum) const {

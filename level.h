@@ -16,7 +16,11 @@
 class Level : public QGraphicsItemGroup
 {
 private:
+    // m_tileSets maps THE UPPER GID contained within the tilemap to the tilemap itself
     QMap<int, TileMap*> m_tileSets;
+
+    // m_tileProperties maps a set of properties to a tile gid
+    QMap<int, TileProperties> m_tileProperties;
 
     // Width, Height in # tiles
     int m_levelWidth, m_levelHeight;
@@ -32,7 +36,7 @@ private:
 public:
     explicit Level(QString filePath, QGraphicsItem *parent = 0);
 
-    // Overrides
+    // Overrides to fix QT collision stupidity
     virtual QRectF boundingRect() const {
         return QRectF(0, 0, 0, 0);
     }
@@ -41,6 +45,7 @@ public:
         return QPainterPath();
     }
 
+    // getLevel* returns level size in PIXELS
     int getLevelHeight() { return m_levelHeight * m_tileHeight; }
     int getLevelWidth() { return m_levelWidth * m_tileWidth; }
 

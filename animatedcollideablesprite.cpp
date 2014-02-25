@@ -105,10 +105,11 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                 this->setX(col.overlapDistance.x() - this->boundingRect().width());
                                 break;
                             case Bottom:
-                                qDebug() << "Mario: " << this->pos();
                                 this->setY(col.overlapDistance.y() - this->boundingRect().height()+1);
                                 break;
                             case Left:
+                                qDebug() << "Left";
+                                // EUREKA MOMENT!!! THERE ISN'T A LEFT COLLISION IF MARIO ISN'T MOVING LEFT!!!  Need minimum whisker length.
                                 this->setX(col.overlapDistance.x());
                                 break;
                         }

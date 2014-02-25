@@ -8,6 +8,18 @@
 #include "animatedcollideablesprite.h"
 #include "tilemap.h"
 
+struct TileProperties {
+    bool solid;
+    ItemType kind;
+    bool placeholderTile;
+
+    TileProperties() {
+        solid = true;
+        kind = ItemType::kBlock;
+        placeholderTile = false;
+    }
+};
+
 class Tile : public AnimatedCollideableSprite
 {
 private:

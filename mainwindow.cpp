@@ -15,12 +15,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-    gameEngine = new GameEngine(ui->graphicsView->width(), ui->graphicsView->height());
-    gameEngine->setSceneRect(0, 0, 3840, 1200);
-
-    ui->graphicsView->setScene(gameEngine);
-    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
     //
     mainChar = new MainCharacter(16, 32);
@@ -56,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     testSprite2 = new StaticPlatform(48, 64);
     testSprite2->addAnimation(pixmapList2, Loop);
-    testSprite2->setPos(gameEngine->sceneRect().width()/2 - 48, 1020);
+    testSprite2->setPos(800, 1020);
     testSprite2->setVelocity(QPointF(0, 0));
     testSprite2->setAcceleration(QPointF(0, 0));
     testSprite2->triggerAnimation(0);
@@ -81,21 +75,16 @@ MainWindow::MainWindow(QWidget *parent) :
     gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
     gameTime->setPos(QPointF(630, 15));
 
-//    bkgPix.setMask(bkgMask.createMaskFromColor(QColor(0, 0, 0, 0)));
-
-//    // Hackish code
-//    bkg = new StaticBackground(QPoint(0, 0));
-//    bkg->setPixmap(bkgPix);
-//    bkg->setPos(0, 0);
-//    bkg->setShapeMode(QGraphicsPixmapItem::HeuristicMaskShape);
-//    bkg->setCollideable(true);
-//    gameEngine->addItem(bkg);
-//    // Hackish
-
     Level *level = new Level("://Levels/LevelTest.tmx", 0);
     level->setPos(QPointF(0, 0));
 
+    gameEngine = new GameEngine(ui->graphicsView->width(), ui->graphicsView->height());
     gameEngine->setSceneRect(0, 0, level->getLevelWidth(), level->getLevelHeight());
+
+    ui->graphicsView->setScene(gameEngine);
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
     gameEngine->addItem(level);
     gameEngine->displayBackground(bkgImg);
 
