@@ -95,23 +95,31 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                     Side locSide = (*itr).firstSide;
 
                     if (this->isSolid() && second->isSolid()) {
-                        if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
-                        if (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0)) newVel.setX(0);
-                        switch (locSide) {
-                            case Top:
-                                this->setY(col.overlapDistance.y());
-                                break;
-                            case Right:
-                                this->setX(col.overlapDistance.x() - this->boundingRect().width());
-                                break;
-                            case Bottom:
-                                this->setY(col.overlapDistance.y() - this->boundingRect().height()+1);
-                                break;
-                            case Left:
-                                qDebug() << "Left";
-                                // EUREKA MOMENT!!! THERE ISN'T A LEFT COLLISION IF MARIO ISN'T MOVING LEFT!!!  Need minimum whisker length.
-                                this->setX(col.overlapDistance.x());
-                                break;
+                        if (1 || !second->isSlope()) {
+                            if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
+                            if (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0)) newVel.setX(0);
+
+                            switch (locSide) {
+                                case Top:
+                                    this->setY(col.overlapDistance.y());
+                                    break;
+                                case Right:
+                                    this->setX(col.overlapDistance.x() - this->boundingRect().width());
+                                    break;
+                                case Bottom:
+                                    this->setY(col.overlapDistance.y() - this->boundingRect().height()+1);
+                                    break;
+                                case Left:
+                                    qDebug() << "Left";
+                                    // EUREKA MOMENT!!! THERE ISN'T A LEFT COLLISION IF MARIO ISN'T MOVING LEFT!!!  Need minimum whisker length.
+                                    this->setX(col.overlapDistance.x());
+                                    break;
+                            }
+
+                        } else {
+                            if (second->is30()) qDebug() << "30";
+                            else if (second->is60()) qDebug() << "60";
+                            else if (second->is45()) qDebug() << "45";
                         }
 
                         if ((side & Bottom) || (this->pos().x() <= col.secondSprite->pos().x() && col.normalVector.x() < 0) ||

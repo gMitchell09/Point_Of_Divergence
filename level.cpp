@@ -110,7 +110,6 @@ void Level::parseLayer(QDomNode layer) {
             QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
             Tile *tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), this);
 
-
             tile->setPixmap(tileImage);
             if (m_tileProperties.contains(idx)) {
                 qDebug() << "Idx: " << idx << "\nTile: " << tileImage << "Pos: " << pos;

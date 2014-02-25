@@ -68,11 +68,30 @@ public:
 
     virtual ItemType blockType() { return ItemType::kBlock; }
 
-    
-signals:
-    
-public slots:
-    
+    bool isSlope() {
+        ItemType t = this->blockType();
+        return t == kSlope30Right ||
+               t == kSlope30Left ||
+               t == kSlope45Right ||
+               t == kSlope45Left ||
+               t == kSlope60Right ||
+               t == kSlope60Left;
+    }
+
+    bool is45() {
+        ItemType t = this->blockType();
+        return t == kSlope45Right || t == kSlope45Left;
+    }
+
+    bool is30() {
+        ItemType t = this->blockType();
+        return t == kSlope30Right || t == kSlope30Left;
+    }
+
+    bool is60() {
+        ItemType t = this->blockType();
+        return t == kSlope60Right || t == kSlope60Left;
+    }
 };
 
 #endif // SPRITE_H
