@@ -1,22 +1,22 @@
 #include "menubutton.h"
 
-MenuButton::MenuButton(QPixmap up, QPixmap down, QPixmap highlight, QGraphicsItem *parent) :
+MenuButton::MenuButton(QPixmap *up, QPixmap *down, QGraphicsItem *parent) :
     Sprite(parent),
     m_upGraphic(up),
-    m_downGraphic(down),
-    m_highlightGraphic(highlight) {
+    m_downGraphic(down) {
+    this->setPixmap(*m_upGraphic);
 
 }
 
 void MenuButton::mousePressEvent(QGraphicsSceneMouseEvent *ev) {
     this->m_pressed = true;
 
-    this->setPixmap(m_downGraphic);
+    this->setPixmap(*m_downGraphic);
 }
 
 void MenuButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) {
     if (m_pressed) {
-        this->setPixmap(m_upGraphic);
+        this->setPixmap(*m_upGraphic);
         m_pressed = false;
 
         this->clicked();
@@ -24,7 +24,14 @@ void MenuButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) {
 }
 
 void MenuButton::mouseMoveEvent(QGraphicsSceneMouseEvent *ev) {
-    if (!m_pressed) {
-        this->setPixmap(m_highlightGraphic);
+    if (!this->contains(ev->pos())) {
+        m_pressed = false;
+        this->setPixmap(*m_upGraphic);
     }
+}
+
+
+MenuButton::~MenuButton() {
+    delete m_upGraphic;
+    delete m_downGraphic;
 }

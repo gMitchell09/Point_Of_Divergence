@@ -18,6 +18,7 @@
 #include "objectitem.h"
 #include "global.h"
 #include "level.h"
+#include "menubutton.h"
 
 namespace Ui {
 class MainWindow;

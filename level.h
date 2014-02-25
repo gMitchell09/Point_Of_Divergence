@@ -19,16 +19,13 @@ private:
     // m_tileSets maps THE UPPER GID contained within the tilemap to the tilemap itself
     QMap<int, TileMap*> m_tileSets;
 
-    // m_tileProperties maps a set of properties to a tile gid
-    QMap<int, TileProperties> m_tileProperties;
-
     // Width, Height in # tiles
     int m_levelWidth, m_levelHeight;
     int m_tileWidth, m_tileHeight;
 
     void parseMap(QDomElement map);
     void parseTileSet(QDomNode tileset);
-    void parseTile(QDomNode tile);
+    void parseTile(QDomNode tile, QMap<int, TileProperties> &tileProperties);
     void parseLayer(QDomNode layer);
 
     QPointF getTilePos(int tileNum) const;

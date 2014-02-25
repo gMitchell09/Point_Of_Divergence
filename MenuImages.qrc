@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/Buttons">
+        <file alias="button_highlighted.png">Sprites/button_highlighted.png</file>
+        <file alias="button_normal.png">Sprites/button_normal.png</file>
+        <file alias="button_pressed.png">Sprites/button_pressed.png</file>
+    </qresource>
+</RCC>

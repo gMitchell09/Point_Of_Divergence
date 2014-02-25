@@ -8,6 +8,10 @@
 #include <QPixmap>
 #include <QBitmap>
 
+#include "tile.h"
+
+struct TileProperties;
+
 /*!
     \class TileMap
     \brief The TileMap class represents a vector or vertex in 3D space.
@@ -33,6 +37,7 @@ class TileMap : public QPixmap
 private:
     unsigned int m_cellWidth, m_cellHeight, m_dividerWidth, m_dividerHeight;
     unsigned int m_tilesWide, m_tilesHigh;
+
 public:
     TileMap() : m_cellWidth(0),
     m_cellHeight(0),
@@ -64,6 +69,10 @@ public:
 
     inline unsigned int getCellWidth() const { return m_cellWidth; }
     inline unsigned int getCellHeight() const { return m_cellHeight; }
+
+    // m_tileProperties used when loading levels to store tile data.
+    // Making public because I'm lazy.
+    QMap<int, TileProperties> m_tileProperties;
 };
 
 #endif // TILEMAP_H

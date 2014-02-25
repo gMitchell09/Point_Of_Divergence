@@ -63,7 +63,8 @@ RESOURCES += \
     Goomba.qrc \
     Life.qrc \
     Items.qrc \
-    LevelTest.qrc
+    LevelTest.qrc \
+    MenuImages.qrc
 
 OTHER_FILES += \
     ../../Desktop/Game Assets/LevelTest.tmx

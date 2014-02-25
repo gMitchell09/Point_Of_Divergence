@@ -42,6 +42,7 @@ void Level::parseMap(QDomElement map) {
 void Level::parseTileSet(QDomNode tileset) {
     QString tilemapName = tileset.toElement().attribute("name", "");
     QString tilemapPath;
+    QMap<int, TileProperties> tp;
     int cellWidth, cellHeight, dividerWidth, dividerHeight, tileMapWidth, tileMapHeight;
 
     QDomElement tileElement = tileset.toElement();
@@ -63,7 +64,7 @@ void Level::parseTileSet(QDomNode tileset) {
 
         } else if (child.toElement().tagName() == "tile" ) {
             // This tile has special properties... let's see what they are!!
-            this->parseTile(child);
+            this->parseTile(child, tp);
         } else { qDebug() << "Eh..." << child.toElement().tagName(); }
 
         // Now let's check the next child object
@@ -77,12 +78,11 @@ void Level::parseTileSet(QDomNode tileset) {
 
     int lastGID = firstGID + tiles_wide * tiles_high - 1;
 
-//    qDebug() << "Tile Map Path: " << ":/Levels/" + tilemapPath;
-//    qDebug() << "Should be: " << "://Levels/PlatformTiles_brownNature_ByEris_0/Tiles 32x32/Tiles_32x32.png";
-
     TileMap *tileMap = new TileMap(cellWidth, cellHeight,
                                    dividerWidth, dividerHeight,
                                    ":/Levels/" + tilemapPath, tiles_wide, tiles_high);
+
+    tileMap->m_tileProperties = tp;
 
     // This is so evil.  Do it this way so we can use ::lower_bound() to
     //  determine correct tileset for range of tiles
@@ -100,7 +100,9 @@ void Level::parseLayer(QDomNode layer) {
             auto itr = m_tileSets.lowerBound(gid);
 
             if (itr == m_tileSets.begin()) firstElement = 1;
-            else firstElement = (itr-1).key();
+            else firstElement = (itr-1).key() + 1;
+            // For line above:  We add one because the keys are the final index held
+            //  in the mapped spritesheet
 
             TileMap* tileMap = *itr;
             QPointF pos = this->getTilePos(currentTile);
@@ -111,9 +113,9 @@ void Level::parseLayer(QDomNode layer) {
             Tile *tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), this);
 
             tile->setPixmap(tileImage);
-            if (m_tileProperties.contains(idx)) {
+            if (tileMap->m_tileProperties.contains(idx)) {
                 qDebug() << "Idx: " << idx << "\nTile: " << tileImage << "Pos: " << pos;
-                TileProperties tp = m_tileProperties[idx];
+                TileProperties tp = tileMap->m_tileProperties[idx];
                 tile->setSolid(tp.solid);
                 tile->setBlockType(tp.kind);
                 qDebug() << "Solid: " << tp.solid;
@@ -134,9 +136,9 @@ void Level::parseLayer(QDomNode layer) {
     qDebug() << "nValid = " << validTiles;
 }
 
-void Level::parseTile(QDomNode tile) {
+void Level::parseTile(QDomNode tile, QMap<int, TileProperties> &tileProperties) {
     int id = tile.toElement().attribute("id", "0").toInt();
-    if (m_tileProperties.contains(id)) return;
+    if (tileProperties.contains(id)) return;
 
     TileProperties tp;
 
@@ -158,7 +160,7 @@ void Level::parseTile(QDomNode tile) {
         }
         child = child.nextSibling();
     }
-    m_tileProperties.insert(id, tp);
+    tileProperties.insert(id, tp);
 }
 
 QPointF Level::getTilePos(int tileNum) const {
