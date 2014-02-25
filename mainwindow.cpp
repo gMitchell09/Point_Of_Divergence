@@ -60,6 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     testSprite2->setVelocity(QPointF(0, 0));
     testSprite2->setAcceleration(QPointF(0, 0));
     testSprite2->triggerAnimation(0);
+    testSprite2->setSolid(true);
 
     life1 = new Sprite();
     life1->setPos(QPointF(25, 25));
@@ -92,7 +93,9 @@ MainWindow::MainWindow(QWidget *parent) :
 //    // Hackish
 
     Level *level = new Level("://Levels/LevelTest.tmx", 0);
-    level->setPos(QPointF(0, gameEngine->sceneRect().height() - level->getLevelHeight()));
+    level->setPos(QPointF(0, 0));
+
+    gameEngine->setSceneRect(0, 0, level->getLevelWidth(), level->getLevelHeight());
     gameEngine->addItem(level);
     gameEngine->displayBackground(bkgImg);
 

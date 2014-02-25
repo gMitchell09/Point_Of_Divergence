@@ -100,20 +100,16 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                         switch (locSide) {
                             case Top:
                                 this->setY(col.overlapDistance.y());
-                                qDebug() << "Top";
                                 break;
                             case Right:
                                 this->setX(col.overlapDistance.x() - this->boundingRect().width());
-                                qDebug() << "Right";
                                 break;
                             case Bottom:
                                 qDebug() << "Mario: " << this->pos();
                                 this->setY(col.overlapDistance.y() - this->boundingRect().height()+1);
-                                qDebug() << "Bottom";
                                 break;
                             case Left:
                                 this->setX(col.overlapDistance.x());
-                                qDebug() << "Left";
                                 break;
                         }
 
@@ -136,15 +132,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
 
             m_velocity = newVel;
 
-            if (relativeVel.x() > 0) {
-                qDebug() << "Rel Vel: " << relativeVel.x();
-                qDebug() << this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep;
-                qDebug() << this->pos() + ((m_velocity + oldVel) * 0.5) * timeStep;
-            }
             this->setPos(this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep);
-            if (relativeVel.x() > 0) {
-                qDebug() << this->pos();
-            }
         }
 
         if (this->usesStack()) {
