@@ -8,13 +8,17 @@
 #include "level.h"
 
 double LUT_SLOPE45[32] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
-double LUT_SLOPE30[32] = {0.5773502691896256, 1.1547005383792512, 1.7320508075688767, 2.3094010767585025, 2.886751345948128, 3.4641016151377535, 4.04145188432738, 4.618802153517005, 5.19615242270663, 5.773502691896256, 6.350852961085882, 6.928203230275507, 7.505553499465133, 8.08290376865476, 8.660254037844384, 9.23760430703401, 9.814954576223636, 10.39230484541326, 10.969655114602887, 11.547005383792513, 12.124355652982137, 12.701705922171763, 13.27905619136139, 13.856406460551014, 14.43375672974064, 15.011106998930266, 15.588457268119893, 16.16580753730952, 16.74315780649914, 17.320508075688767, 17.897858344878394, 18.47520861406802};
-double LUT_SLOPE60[32] = {19.052558883257646, 19.629909152447272, 20.2072594216369, 20.78460969082652, 21.361959960016147, 21.939310229205773, 22.5166604983954, 23.094010767585026, 23.671361036774652, 24.248711305964274, 24.8260615751539, 25.403411844343527, 25.980762113533153, 26.55811238272278, 27.135462651912405, 27.712812921102028, 28.290163190291654, 28.86751345948128, 29.444863728670907, 30.022213997860533, 30.59956426705016, 31.176914536239785, 31.754264805429408, 32.33161507461904, 32.90896534380866, 33.48631561299828, 34.06366588218791, 34.641016151377535, 35.218366420567165, 35.79571668975679, 36.37306695894642, 36.95041722813604};
-
+double LUT_SLOPE30[32] = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16};
+double LUT_SLOPE60[32] = {17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31, 31, 32, 32};
+#define SLOPE45_VERTICAL_OFFSET 0
+#define SLOPE30_VERTICAL_OFFSET 0
+#define SLOPE60_VERTICAL_OFFSET 0
 
 AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent) :
     AnimatedSprite(width, height, parent)
 {
+    m_onLeftSlope = m_onRightSlope = false;
+
     // Top
     m_collisionPoints[0][0] = QPoint(width/3, 0);
     m_collisionPoints[0][1] = QPoint((2*width)/3, 0);
@@ -95,45 +99,109 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                 for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
 
                     Collision col = ((Collision)(*itr));
-                    AnimatedCollideableSprite *first = (AnimatedCollideableSprite*)(col).firstSprite;
                     AnimatedCollideableSprite *second = (AnimatedCollideableSprite*)(col).secondSprite;
+                    //if (this->className() == "MainCharacter") qDebug() << "Time: " << time << "This: " << this->className() << " Other: " << second->blockType();
                     Side locSide = (*itr).firstSide;
 
                     if (this->isSolid() && second->isSolid()) {
-                        if (1 || !second->isSlope()) {
-                            if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
-                            if (!second->isSlope() && (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0))) newVel.setX(0);
-
-                            if (second->isSlope()) {
-                                /* Picture to help:
-                                 *        _______
-                                 *      M/
-                                 * ____/
-                                 */
+                        if (second->isSlope()) {
+                            if (side && Bottom) {
+                                switch (second->blockType()) {
+                                    case kSlope30Left: case kSlope45Left: case kSlope60Left:
+                                        m_onLeftSlope = true;
+                                        break;
+                                    case kSlope30Right: case kSlope45Right: case kSlope60Right:
+                                        m_onRightSlope = true;
+                                        break;
+                                }
                             }
-
-                            switch (locSide) {
-                                case Top:
-                                    this->setY(col.overlapDistance.y());
-                                    break;
-                                case Bottom:
-                                    this->setY(col.overlapDistance.y() - this->boundingRect().height()+1);
-                                    break;
-                                case Right:
-                                    if (!second->isSlope()) this->setX(col.overlapDistance.x() - this->boundingRect().width());
-                                    break;
-                                case Left:
-                                    qDebug() << "Left";
-                                    // EUREKA MOMENT!!! THERE ISN'T A LEFT COLLISION IF MARIO ISN'T MOVING LEFT!!!  Need minimum whisker length.
-                                    if (!second->isSlope()) this->setX(col.overlapDistance.x());
-                                    break;
+                            if (m_velocity.y() >= 0) {
+                                // We want the point that touches the slope to be the bottom-center of our player
+                                int index = (int)(((this->pos().x() + 0.5*this->boundingRect().width()) - second->pos().x()));
+                                double lut_value;
+                                switch (second->blockType()) {
+                                    case kSlope45Left:
+                                        if (index >= 0 && index < 32) {
+                                            lut_value = LUT_SLOPE45[32 - index] + SLOPE45_VERTICAL_OFFSET;
+                                        }
+                                        else if (index < 0) {
+                                            lut_value = 33;
+                                        } else {
+                                            lut_value = 0;
+                                        }
+                                        break;
+                                    case kSlope30Left:
+                                        if (index >= 0 && index < 32) {
+                                            lut_value = LUT_SLOPE30[32 - index] + SLOPE30_VERTICAL_OFFSET;
+                                        }
+                                        else if (index < 0) {
+                                            lut_value = 17;
+                                        } else {
+                                            lut_value = 0;
+                                        }
+                                        break;
+                                    case kSlope60Left:
+                                        if (index >= 0 && index < 32) {
+                                            lut_value = LUT_SLOPE60[32 - index] + SLOPE60_VERTICAL_OFFSET;
+                                        }
+                                        else if (index < 0) {
+                                            lut_value = 33;
+                                        } else {
+                                            lut_value = 17;
+                                        }
+                                        break;
+                                    case kSlope45Right:
+                                        if (index >= 0 && index < 32) {
+                                            lut_value = LUT_SLOPE45[index] + SLOPE45_VERTICAL_OFFSET;
+                                        }
+                                        else if (index < 0) {
+                                            lut_value = 0;
+                                        } else {
+                                            lut_value = 33;
+                                        }
+                                        break;
+                                    case kSlope30Right:
+                                        if (index >= 0 && index < 32) {
+                                            lut_value = LUT_SLOPE30[index] + SLOPE30_VERTICAL_OFFSET;
+                                        }
+                                        else if (index < 0) {
+                                            lut_value = 0;
+                                        } else {
+                                            lut_value = 17;
+                                        }
+                                        break;
+                                    case kSlope60Right:
+                                        if (index >= 0 && index < 32) {
+                                            lut_value = LUT_SLOPE60[index] + SLOPE60_VERTICAL_OFFSET;
+                                        }
+                                        else if (index < 0) {
+                                            lut_value = 17;
+                                        } else {
+                                            lut_value = 33;
+                                        }
+                                        break;
+                                }
+                                this->setPos(this->x(), second->pos().y() - this->boundingRect().height() + second->boundingRect().height() - lut_value);
                             }
+                        } else if (side && Bottom) m_onLeftSlope = m_onRightSlope = false;
 
-                        } else {
-                            if (second->is30()) qDebug() << "30";
-                            else if (second->is60()) qDebug() << "60";
-                            else if (second->is45()) qDebug() << "45";
+                        switch (locSide) {
+                            case Top:
+                                this->setY(col.overlapDistance.y());
+                                break;
+                            case Bottom:
+                                if (!second->isSlope()) this->setY(col.overlapDistance.y() - this->boundingRect().height()+1);
+                                break;
+                            case Right:
+                                if (!second->isSlope()) this->setX(col.overlapDistance.x() - this->boundingRect().width());
+//                                    else qDebug() << this->mapToItem(second, this->pos());
+                                break;
+                            case Left:
+                                // EUREKA MOMENT!!! THERE ISN'T A LEFT COLLISION IF MARIO ISN'T MOVING LEFT!!!  Need minimum whisker length.
+                                if (!second->isSlope()) this->setX(col.overlapDistance.x());
+                                break;
                         }
+
 
                         if ((side & Bottom) || (this->pos().x() <= col.secondSprite->pos().x() && col.normalVector.x() < 0) ||
                             (this->pos().x() >= col.secondSprite->pos().x() && col.normalVector.x() > 0)) {
@@ -146,6 +214,10 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                             relativeVel.setY(col.secondSprite->getVelocity().y());
 //                            qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
                         }
+
+                        if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
+                        if (!second->isSlope() && !(this->isOnLeftSlope() || this->isOnRightSlope()) && (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0))) newVel.setX(0);
+
                     }
                     //newPos += ((Collision)(*itr)).normalVector * timeStep;
                 }
@@ -218,6 +290,36 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
         }
     }
 
+    // Check bottom points for collision
+    collidee = spriteWithinWhisker(bottomWhiskerRight);
+    collidee2 = spriteWithinWhisker(bottomWhiskerLeft);
+    if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
+            (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
+        cBottom = true;
+        side |= Bottom;
+        Collision col;
+        if (collidee != NULL && collidee != this) {
+//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
+            // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
+            col.firstSprite = this;
+            col.secondSprite = collidee;
+            col.normalVector = collidee->getVelocity();
+            col.firstSide = Bottom;
+            col.secondSide = Bottom;
+            col.overlapDistance = collidee->mapToScene(QPointF(0, 0));
+            collisions.append(col);
+        }
+        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
+            col.firstSprite = this;
+            col.secondSprite = collidee2;
+            col.normalVector = collidee2->getVelocity();
+            col.firstSide = Bottom;
+            col.secondSide = Bottom;
+            col.overlapDistance = collidee2->mapToScene(QPointF(0, 0));
+            collisions.append(col);
+        }
+    }
+
     // Check right points for collision
     collidee = spriteWithinWhisker(rightWhiskerTop);
     collidee2 = spriteWithinWhisker(rightWhiskerBottom);
@@ -244,36 +346,6 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             col.normalVector = collidee2->getVelocity();
             col.firstSide = Right;
             col.secondSide = Right;
-            col.overlapDistance = collidee2->mapToScene(QPointF(0, 0));
-            collisions.append(col);
-        }
-    }
-
-    // Check bottom points for collision
-    collidee = spriteWithinWhisker(bottomWhiskerRight);
-    collidee2 = spriteWithinWhisker(bottomWhiskerLeft);
-    if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
-            (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
-        cBottom = true;
-        side |= Bottom;
-        Collision col;
-        if (collidee != NULL && collidee != this) {
-//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
-            // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
-            col.firstSprite = this;
-            col.secondSprite = collidee;
-            col.normalVector = collidee->getVelocity();
-            col.firstSide = Bottom;
-            col.secondSide = Bottom;
-            col.overlapDistance = collidee->mapToScene(QPointF(0, 0));
-            collisions.append(col);
-        }
-        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
-            col.firstSprite = this;
-            col.secondSprite = collidee2;
-            col.normalVector = collidee2->getVelocity();
-            col.firstSide = Bottom;
-            col.secondSide = Bottom;
             col.overlapDistance = collidee2->mapToScene(QPointF(0, 0));
             collisions.append(col);
         }
@@ -310,16 +382,13 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
         }
     }
 
-    if ((cTop && cBottom) || (cLeft && cRight)) qDebug() << "SQUISH -- " << side;
+//    if ((cTop && cBottom) || (cLeft && cRight)) qDebug() << "SQUISH -- " << side;
 
     return side;
 }
 
 Sprite* AnimatedCollideableSprite::spriteWithinWhisker(QRectF whisker, Side side) {
     QList<QGraphicsItem *> items = this->scene()->items(whisker, Qt::IntersectsItemShape, Qt::DescendingOrder, this->transform());
-
-    // Following stolen from QGraphicsScene.cpp
-    Sprite* a = (items.size() > 0) ? dynamic_cast<Sprite*>(items.at(0)) : 0;
 
     for (auto itr = items.begin(); itr != items.end(); itr++) {
         if (((Sprite*)(*itr))->isCollideable() && (*itr) != this) {

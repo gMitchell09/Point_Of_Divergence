@@ -61,7 +61,7 @@ void Enemy1::collisionOccurred(QList<Collision> &collisions, unsigned char side)
     if (side & Left) {
         this->getAcceleration().setX(m_rightAccel);
     }
-    if (side & Top) {
+    if (0 && side & Top) {
         m_currentState = Goomba::Squish;
         this->triggerAnimation(m_currentState);
     }

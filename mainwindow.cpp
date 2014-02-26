@@ -98,28 +98,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     gameEngine->addSprite(object1);
     gameEngine->addSprite(goomba); // Add our goomba
-
-    heartbeat = new QTimer(this);
-    connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
-    heartbeat->start(1); // 20fps
-}
-
-void MainWindow::invalidateTimer() {
-    qint64 nMS = QDateTime::currentMSecsSinceEpoch();
-    gameEngine->step(nMS);
-    if (mainChar->pos().x() > gameEngine->width()) mainChar->setPos(-60, mainChar->pos().y());
-    else if (mainChar->pos().x() < -60) mainChar->setPos(gameEngine->sceneRect().width(), mainChar->pos().y());
-
-    if (mainChar->pos().y() > gameEngine->sceneRect().height()) {
-        mainChar->setVelocity(QPointF(mainChar->getVelocity().x(), 0));
-        mainChar->setPos(mainChar->pos().x(), 1020);
-    }
-
-    if (floater->pos().x() > gameEngine->width()) {
-        floater->setPos(-60, floater->pos().y());
-    } else if (floater->pos().x() < -60) {
-        floater->setPos(gameEngine->sceneRect().width(), floater->pos().y());
-    }
 }
 
 MainWindow::~MainWindow() {

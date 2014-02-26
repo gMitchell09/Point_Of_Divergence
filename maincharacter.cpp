@@ -19,6 +19,7 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
     m_jumpStartVel = -500;
     m_gravity = 2000;
     m_brakeAccel = 800;
+    m_brakeAccelSliding = m_brakeAccel / 4;
 
     TileMap * playerTiles = new TileMap(16, 33, 1, 1, ":MarioRight/MarioMovement.png");
 
@@ -96,7 +97,11 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 #endif
 
     if (keyEvent->key() == Qt::Key_Down) {
-        this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
+        if ((this->isOnLeftSlope() && this->getVelocity().x() > 0) ||
+                (this->isOnRightSlope() && this->getVelocity().x() < 0))
+            this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccelSliding, this->getAcceleration().y()));
+        else
+            this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
         this->setBrake(true);
 
         m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
@@ -273,24 +278,24 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
             if ((side & Left && m_leftPressed) || (side & Right && m_rightPressed))
                 qDebug() << "PUSH THE BOX";
             break;
-        case ItemType::kSlope30Left:
-            qDebug() << "kSlope30Left";
-            break;
-        case ItemType::kSlope45Left:
-            qDebug() << "kSlope45Left";
-            break;
-        case ItemType::kSlope60Left:
-            qDebug() << "kSlope60Left";
-            break;
-        case ItemType::kSlope30Right:
-            qDebug() << "kSlope30Right";
-            break;
-        case ItemType::kSlope45Right:
-            qDebug() << "kSlope45Right";
-            break;
-        case ItemType::kSlope60Right:
-            qDebug() << "kSlope60Right";
-            break;
+//        case ItemType::kSlope30Left:
+//            qDebug() << "kSlope30Left";
+//            break;
+//        case ItemType::kSlope45Left:
+//            qDebug() << "kSlope45Left";
+//            break;
+//        case ItemType::kSlope60Left:
+//            qDebug() << "kSlope60Left";
+//            break;
+//        case ItemType::kSlope30Right:
+//            qDebug() << "kSlope30Right";
+//            break;
+//        case ItemType::kSlope45Right:
+//            qDebug() << "kSlope45Right";
+//            break;
+//        case ItemType::kSlope60Right:
+//            qDebug() << "kSlope60Right";
+//            break;
         default:
             break;
         }

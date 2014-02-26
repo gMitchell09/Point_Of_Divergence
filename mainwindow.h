@@ -4,8 +4,6 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 
-#include <QTimer>
-
 #include "gameengine.h"
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
@@ -45,11 +43,7 @@ private:
 
     GameEngine *gameEngine;
 
-    QTimer *heartbeat;
     MovingPlatform *floater;
-
-private slots:
-    void invalidateTimer();
 };
 
 #endif // MAINWINDOW_H

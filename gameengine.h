@@ -5,6 +5,7 @@
  * Use Case: *
  */
 
+#include <QObject>
 #include <functional>
 #include <vector>
 #include <QGraphicsScene>
@@ -16,6 +17,8 @@
 #include <QBrush>
 #include <QColor>
 #include <QPixmap>
+#include <QTimer>
+#include <QDateTime>
 
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
@@ -27,6 +30,7 @@
 class MainCharacter;
 class GameEngine : public QGraphicsScene
 {
+    Q_OBJECT
 private:
     /* Arbitrary Constants, chosen by fair dice roll */
     static const int m_gravity = -5; // The enemy's gate is down.
@@ -37,6 +41,9 @@ private:
     static const int m_windowXTolerance = 40;
     static const int m_windowYTolerance = 120;
     /* --- Arbitrary Constants End */
+
+    double m_timeDivider;
+    bool m_gamePaused;
 
     qint64 m_prevTime;
     qint64 m_gameTime;
@@ -58,11 +65,13 @@ private:
 
     int m_coinCount;
 
+    QTimer *heartbeat;
+
     void removeDeletedItems();
 
 public:
-    GameEngine();
-    GameEngine(int width, int height);
+    explicit GameEngine(QObject *parent = 0);
+    GameEngine(int width, int height, QObject *parent = 0);
 
     /* Iterate over m_stepHandlerVector and call each object so that they may update
      * 0. Calculate dt and update m_prevTime
@@ -111,9 +120,14 @@ public:
 
     virtual void incrementCoins() { m_coinCount++; }
 
+    virtual ~GameEngine() {}
+
 protected:
     virtual void keyPressEvent(QKeyEvent * keyEvent);
     virtual void keyReleaseEvent(QKeyEvent * keyEvent);
+
+private slots:
+    void invalidateTimer();
 };
 
 #endif // GAMEENGINE_H

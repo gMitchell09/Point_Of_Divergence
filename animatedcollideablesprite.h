@@ -35,6 +35,8 @@ private:
     QRectF topWhiskerLeft, topWhiskerRight, rightWhiskerTop, rightWhiskerBottom, bottomWhiskerRight, bottomWhiskerLeft, leftWhiskerBottom, leftWhiskerTop;
     void updateWhiskers(QPointF offset);
 
+    bool m_onLeftSlope, m_onRightSlope;
+
 public:
     explicit AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent = 0);
 
@@ -53,6 +55,9 @@ public:
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 
     virtual QString className() { return "AnimatedCollideableSprite"; }
+
+    bool isOnLeftSlope() { return m_onLeftSlope; }
+    bool isOnRightSlope() { return m_onRightSlope; }
 
 
 protected:

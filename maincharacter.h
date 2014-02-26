@@ -28,7 +28,7 @@ private:
     // nextState is if you are running right and then pressed the left key... it is for mapping between states
 //    MovementState m_nextState;
 
-    int m_brakeAccel;
+    float m_brakeAccel, m_brakeAccelSliding;
     float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
 
     bool m_upPressed, m_downPressed, m_leftPressed, m_rightPressed;
