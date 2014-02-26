@@ -7,6 +7,11 @@
 #include "sprite.h"
 #include "level.h"
 
+double LUT_SLOPE45[32] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
+double LUT_SLOPE30[32] = {0.5773502691896256, 1.1547005383792512, 1.7320508075688767, 2.3094010767585025, 2.886751345948128, 3.4641016151377535, 4.04145188432738, 4.618802153517005, 5.19615242270663, 5.773502691896256, 6.350852961085882, 6.928203230275507, 7.505553499465133, 8.08290376865476, 8.660254037844384, 9.23760430703401, 9.814954576223636, 10.39230484541326, 10.969655114602887, 11.547005383792513, 12.124355652982137, 12.701705922171763, 13.27905619136139, 13.856406460551014, 14.43375672974064, 15.011106998930266, 15.588457268119893, 16.16580753730952, 16.74315780649914, 17.320508075688767, 17.897858344878394, 18.47520861406802};
+double LUT_SLOPE60[32] = {19.052558883257646, 19.629909152447272, 20.2072594216369, 20.78460969082652, 21.361959960016147, 21.939310229205773, 22.5166604983954, 23.094010767585026, 23.671361036774652, 24.248711305964274, 24.8260615751539, 25.403411844343527, 25.980762113533153, 26.55811238272278, 27.135462651912405, 27.712812921102028, 28.290163190291654, 28.86751345948128, 29.444863728670907, 30.022213997860533, 30.59956426705016, 31.176914536239785, 31.754264805429408, 32.33161507461904, 32.90896534380866, 33.48631561299828, 34.06366588218791, 34.641016151377535, 35.218366420567165, 35.79571668975679, 36.37306695894642, 36.95041722813604};
+
+
 AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent) :
     AnimatedSprite(width, height, parent)
 {
@@ -97,22 +102,30 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                     if (this->isSolid() && second->isSolid()) {
                         if (1 || !second->isSlope()) {
                             if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
-                            if (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0)) newVel.setX(0);
+                            if (!second->isSlope() && (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0))) newVel.setX(0);
+
+                            if (second->isSlope()) {
+                                /* Picture to help:
+                                 *        _______
+                                 *      M/
+                                 * ____/
+                                 */
+                            }
 
                             switch (locSide) {
                                 case Top:
                                     this->setY(col.overlapDistance.y());
                                     break;
-                                case Right:
-                                    this->setX(col.overlapDistance.x() - this->boundingRect().width());
-                                    break;
                                 case Bottom:
                                     this->setY(col.overlapDistance.y() - this->boundingRect().height()+1);
+                                    break;
+                                case Right:
+                                    if (!second->isSlope()) this->setX(col.overlapDistance.x() - this->boundingRect().width());
                                     break;
                                 case Left:
                                     qDebug() << "Left";
                                     // EUREKA MOMENT!!! THERE ISN'T A LEFT COLLISION IF MARIO ISN'T MOVING LEFT!!!  Need minimum whisker length.
-                                    this->setX(col.overlapDistance.x());
+                                    if (!second->isSlope()) this->setX(col.overlapDistance.x());
                                     break;
                             }
 
