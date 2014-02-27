@@ -32,7 +32,7 @@ void MenuButton::mouseMoveEvent(QGraphicsSceneMouseEvent *ev) {
 
 void MenuButton::clicked() {
     if (m_clickedCallback) {
-        m_clickedCallback->startSinglePlayer();
+        m_clickedCallback();
     }
 }
 

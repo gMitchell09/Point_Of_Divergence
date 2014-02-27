@@ -53,6 +53,7 @@ private:
 
     double m_timeDivider;
     bool m_gamePaused;
+    bool m_gamePausedDueToDamage;
 
     qint64 m_prevTime;
     qint64 m_gameTime;

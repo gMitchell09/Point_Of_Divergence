@@ -19,7 +19,8 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_timeReversed(false),
     m_hud(0),
     m_timeDivider(1),
-    m_gamePaused(true){
+    m_gamePaused(true),
+    m_gamePausedDueToDamage(false) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 
     heartbeat = new QTimer(this);
@@ -43,7 +44,9 @@ void GameEngine::step(qint64 time) {
 
 
     m_prevTime = time;
-    if (!m_gamePaused) {
+    if (m_gamePausedDueToDamage) this->setForegroundBrush(QColor(200, 0, 0, 127));
+    if (m_gamePaused) this->setForegroundBrush(QColor(0, 0, 0, 127));
+    if (!m_gamePaused && !m_gamePausedDueToDamage) {
         // This is what we will timestamp all history events with so we can have a definite point-of-reference
         //   to accurately play back events.
         m_gameTime += deltaTime;
@@ -75,9 +78,9 @@ void GameEngine::step(qint64 time) {
 
 void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
-        if (m_gamePaused) m_gamePaused = false;
+        if (m_gamePaused || m_gamePausedDueToDamage)
+            m_gamePaused = m_gamePausedDueToDamage = false;
         m_timeReversed = true;
-        displayBackground(QColor(120, 255, 120, 120));
     } else if (keyEvent->key() == Qt::Key_1) {
         m_timeDivider = 2;
     } else if (keyEvent->key() == Qt::Key_2) {
@@ -96,7 +99,6 @@ void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
 void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
         m_timeReversed = false;
-        displayBackground(QColor(210, 210, 255, 255));
     } else if (keyEvent->key() == Qt::Key_1 || keyEvent->key() == Qt::Key_2 || keyEvent->key() == Qt::Key_3 || keyEvent->key() == Qt::Key_4) {
         m_timeDivider = 1;
     } else if (m_mainActor != NULL) {
@@ -151,7 +153,8 @@ void GameEngine::displayInitMenu() {
     m_ssp->setPos(this->width()/2-m_ssp->boundingRect().width()/2, this->height()/4-m_ssp->boundingRect().height()/2);
     this->addSprite(m_ssp);
 
-    m_ssp->setCallback(this);
+    std::function<void(void)> func = std::bind(&GameEngine::startSinglePlayer, this);
+    m_ssp->setCallback(func);
 }
 
 void GameEngine::startSinglePlayer() {
@@ -240,8 +243,11 @@ void GameEngine::startSinglePlayer() {
 
     this->addSprite(object1);
     this->addSprite(goomba); // Add our goomba
+
+    m_gamePaused = false;
 }
 
 void GameEngine::characterDamaged() {
-    m_gamePaused = !m_gamePaused;
+    m_gamePausedDueToDamage = true;
+    this->setForegroundBrush(QColor(200, 0, 0, 127));
 }

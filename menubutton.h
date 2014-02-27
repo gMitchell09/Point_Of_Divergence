@@ -16,7 +16,7 @@ private:
     bool m_pressed;
     QPixmap *m_upGraphic, *m_downGraphic, *m_highlightGraphic;
 
-    GameEngine* m_clickedCallback;
+    std::function<void(void)> m_clickedCallback;
 
 public:
     explicit MenuButton(QPixmap *up, QPixmap *down, QGraphicsItem *parent = 0);
@@ -25,7 +25,7 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *ev);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *ev);
 
-    inline void setCallback(GameEngine* callback) {
+    inline void setCallback(std::function<void(void)> callback) {
         m_clickedCallback = callback;
     }
 
