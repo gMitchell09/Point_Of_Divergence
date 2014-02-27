@@ -32,18 +32,11 @@ public:
     
 private:
     Ui::MainWindow *ui;
-    StaticPlatform *testSprite, *testSprite2;
-    StaticBackground *bkg;
-    Sprite *life1, *life2, *life3;
-    QGraphicsSimpleTextItem *gameTime;
-    ObjectItem *object1;
 
-    MainCharacter *mainChar;
-    Enemy1 *goomba;
 
     GameEngine *gameEngine;
 
-    MovingPlatform *floater;
+
 };
 
 #endif // MAINWINDOW_H

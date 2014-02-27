@@ -27,9 +27,16 @@
 #include "global.h"
 #include "hud.h"
 #include "level.h"
+#include "menubutton.h"
+#include "movingplatform.h"
+#include "objectitem.h"
+#include "staticplatform.h"
+#include "enemy1.h"
 
 class Level;
 class MainCharacter;
+class MenuButton;
+
 class GameEngine : public QGraphicsScene
 {
     Q_OBJECT
@@ -52,6 +59,8 @@ private:
 
     MainCharacter * m_mainActor;
     StaticBackground *bkg;
+
+    MenuButton * m_ssp;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
 
@@ -84,6 +93,8 @@ public:
     void step(qint64 time);
     void displayBackground(QColor mycolor);
     void displayBackground(QPixmap &bkgPix);
+    void displayInitMenu();
+    void startSinglePlayer();
 
     inline void addHandler(std::function<void(long)> callback) {
         m_stepHandlerVector.push_back(callback);

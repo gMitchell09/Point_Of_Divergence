@@ -30,6 +30,12 @@ void MenuButton::mouseMoveEvent(QGraphicsSceneMouseEvent *ev) {
     }
 }
 
+void MenuButton::clicked() {
+    if (m_clickedCallback) {
+        m_clickedCallback->startSinglePlayer();
+    }
+}
+
 
 MenuButton::~MenuButton() {
     delete m_upGraphic;

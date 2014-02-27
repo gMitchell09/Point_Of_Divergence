@@ -19,7 +19,7 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_timeReversed(false),
     m_hud(0),
     m_timeDivider(1),
-    m_gamePaused(true) {
+    m_gamePaused(true){
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 
     heartbeat = new QTimer(this);
@@ -105,7 +105,7 @@ void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
 }
 
 bool GameEngine::event(QEvent *event) {
-    if (event->type() == QEvent::MetaCall) {
+    if (m_hud != NULL && event->type() == QEvent::MetaCall) {
         m_hud->step(0, 0);
     }
     return QGraphicsScene::event(event);
@@ -143,6 +143,103 @@ void GameEngine::displayBackground(QPixmap &bkgPix) {
     bkg->setCollideable(false);
     bkg->setZValue(-1001);
     this->addItem(bkg);
+}
+
+void GameEngine::displayInitMenu() {
+    QPixmap *one = new QPixmap(":/Buttons/button_normal.png"), *two = new QPixmap(":/Buttons/button_pressed.png");
+    m_ssp = new MenuButton(one, two);
+    m_ssp->setPos(this->width()/2-m_ssp->boundingRect().width()/2, this->height()/4-m_ssp->boundingRect().height()/2);
+    this->addSprite(m_ssp);
+
+    m_ssp->setCallback(this);
+}
+
+void GameEngine::startSinglePlayer() {
+    StaticPlatform *testSprite, *testSprite2;
+    StaticBackground *bkg;
+    Sprite *life1, *life2, *life3;
+    QGraphicsSimpleTextItem *gameTime;
+    ObjectItem *object1;
+    MovingPlatform *floater;
+
+    MainCharacter *mainChar;
+    Enemy1 *goomba;
+    mainChar = new MainCharacter(16, 32);
+    mainChar->setPos(120 , 1020);
+    mainChar->setSolid(true);
+
+    goomba = new Enemy1(20, 18);
+    goomba->setPos(1200, 1020);
+
+    floater = new MovingPlatform(48, 64);
+    floater->setPixmap(QPixmap(":Simple_Sprite/1.png"));
+    floater->setPos(300, 900);
+    floater->setVelocity(QPointF(200, 0));
+    floater->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
+    floater->setSolid(true);
+
+    QPixmap myPix1(":Simple_Sprite/1.png");
+    QPixmap myPix2(":Simple_Sprite/2.png");
+    QPixmap myPix3(":Simple_Sprite/3.png");
+    QPixmap myPix4(":Simple_Sprite/4.png");
+    QPixmap myPix5(":Simple_Sprite/5.png");
+
+    QPixmap bkgPix(":Backgrounds/background.jpg");
+    QPixmap bkgImg(":Backgrounds/sky2.jpg");
+    QPixmap bkgMask(":Backgrounds/background_mask.png");
+
+    std::vector<QPixmap> pixmapList2;
+    pixmapList2.push_back(myPix1);
+    pixmapList2.push_back(myPix2);
+    pixmapList2.push_back(myPix3);
+    pixmapList2.push_back(myPix4);
+    pixmapList2.push_back(myPix5);
+
+    testSprite2 = new StaticPlatform(48, 64);
+    testSprite2->addAnimation(pixmapList2, Loop);
+    testSprite2->setPos(800, 1020);
+    testSprite2->setVelocity(QPointF(0, 0));
+    testSprite2->setAcceleration(QPointF(0, 0));
+    testSprite2->triggerAnimation(0);
+    testSprite2->setSolid(true);
+
+    life1 = new Sprite();
+    life1->setPos(QPointF(25, 25));
+    life1->setPixmap(QPixmap(":Life/HeartContainer.png"));
+
+    life2 = new Sprite();
+    life2->setPos(QPointF(50, 25));
+    life2->setPixmap(QPixmap(":Life/HeartContainer.png"));
+
+    life3 = new Sprite();
+    life3->setPos(QPointF(75, 25));
+    life3->setPixmap(QPixmap(":Life/HeartContainer.png"));
+
+    object1 = new ObjectItem(16, 16);
+    object1->setPos(700, 1020);
+    object1->setSolid(false);
+
+    gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
+    gameTime->setPos(QPointF(630, 15));
+
+    Level *level = new Level("://Levels/LevelTest.tmx", 0);
+    level->setPos(QPointF(0, 0));\
+
+    this->setSceneRect(0, 0, level->getLevelWidth(), level->getLevelHeight());
+
+    this->addLevel(level);
+    this->displayBackground(bkgImg);
+
+    this->addSprite(mainChar, true);
+    this->addSprite(testSprite2);
+    this->addSprite(floater);
+    this->addHUD(life1);
+    this->addHUD(life2);
+    this->addHUD(life3);
+    this->addHUDText(gameTime);
+
+    this->addSprite(object1);
+    this->addSprite(goomba); // Add our goomba
 }
 
 void GameEngine::characterDamaged() {
