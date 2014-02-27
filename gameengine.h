@@ -35,7 +35,7 @@ class GameEngine : public QGraphicsScene
     Q_OBJECT
 private:
     /* Arbitrary Constants, chosen by fair dice roll */
-    static const float m_gravity = 2000; // The enemy's gate is down.
+    static const float m_gravity; // The enemy's gate is down.
 
     /* This is the minimum character distance from the edge of the screen before
      *  the viewport will start following the character.
@@ -129,6 +129,8 @@ public:
     virtual void removeItem(Sprite *item);
 
     virtual void incrementCoins() { m_coinCount++; }
+
+    virtual void characterDamaged();
 
     virtual ~GameEngine() {}
 

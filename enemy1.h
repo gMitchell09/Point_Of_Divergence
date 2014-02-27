@@ -26,6 +26,8 @@ public:
 
     virtual QString className() { return "Enemy1"; }
 
+    virtual Side damagesChar() { return (Side)(Left|Right|Top); }
+
 protected:
     virtual bool usesStack() { return true; }
 };

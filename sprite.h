@@ -13,6 +13,9 @@
 ///
 /// \brief The Sprite class is an abstract base class for all other sprites in engine
 ///
+
+enum Side { Top = 1, Right = 2, Bottom = 4, Left = 8 };
+
 class Sprite : public QGraphicsPixmapItem
 {
 private:
@@ -67,6 +70,8 @@ public:
     virtual QString className() { return "Sprite"; }
 
     virtual ItemType blockType() { return ItemType::kBlock; }
+
+    virtual Side damagesChar() { return (Side)0; }
 
     bool isSlope() {
         ItemType t = this->blockType();

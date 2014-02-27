@@ -268,6 +268,9 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
             m_jumping_double = false;
             m_jumping = false;
         }
+        if (side & other->damagesChar()) {
+            ((GameEngine*)this->scene())->characterDamaged();
+        }
         switch (other->blockType()) {
         case ItemType::kBlock: break;
         case ItemType::kCoin:

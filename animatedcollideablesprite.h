@@ -11,8 +11,6 @@
 #include <QDebug>
 #include <stack>
 
-enum Side { Top = 1, Right = 2, Bottom = 4, Left = 8 };
-
 struct PositionState { QPointF pos; qint64 timestamp; };
 
 struct Collision {

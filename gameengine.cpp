@@ -75,6 +75,7 @@ void GameEngine::step(qint64 time) {
 
 void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
+        if (m_gamePaused) m_gamePaused = false;
         m_timeReversed = true;
         displayBackground(QColor(120, 255, 120, 120));
     } else if (keyEvent->key() == Qt::Key_1) {
@@ -142,4 +143,8 @@ void GameEngine::displayBackground(QPixmap &bkgPix) {
     bkg->setCollideable(false);
     bkg->setZValue(-1001);
     this->addItem(bkg);
+}
+
+void GameEngine::characterDamaged() {
+    m_gamePaused = !m_gamePaused;
 }
