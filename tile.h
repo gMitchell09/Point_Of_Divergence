@@ -4,6 +4,7 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 
+#include "gameengine.h"
 #include "sprite.h"
 #include "animatedcollideablesprite.h"
 #include "tilemap.h"
@@ -37,7 +38,12 @@ public:
     virtual QString className() { return "Tile"; }
 
     virtual ItemType blockType() { return m_kind; }
-    void setBlockType(ItemType kind) { m_kind = kind; }
+    void setBlockType(ItemType kind) {
+        m_kind = kind;
+        //if (m_kind == kBox) this->setAcceleration(QPointF(0, 200));
+    }
+
+    virtual void step(qint64 time, long delta);
 
 };
 

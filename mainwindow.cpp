@@ -85,7 +85,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    gameEngine->addItem(level);
+    gameEngine->addLevel(level);
     gameEngine->displayBackground(bkgImg);
 
     gameEngine->addSprite(mainChar, true);

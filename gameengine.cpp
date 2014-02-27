@@ -52,6 +52,10 @@ void GameEngine::step(qint64 time) {
             (*itr)->step(m_gameTime, deltaTime);
         }
 
+        for(auto itr = m_levels.begin(); itr != m_levels.end(); itr++) {
+            (*itr)->step(m_gameTime, deltaTime);
+        }
+
         if (m_mainActor != NULL) {
             this->views()[0]->ensureVisible(m_mainActor, 200, 200);
         }

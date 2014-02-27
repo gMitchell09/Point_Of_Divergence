@@ -169,3 +169,9 @@ QPointF Level::getTilePos(int tileNum) const {
 
     return QPointF(m_tileWidth * x, m_tileHeight * y);
 }
+
+void Level::step(qint64 time, long delta) {
+    for (int i = 0; i < this->childItems().size(); i++) {
+        ((Tile*)this->childItems()[i])->step(time, delta);
+    }
+}

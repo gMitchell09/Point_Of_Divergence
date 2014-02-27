@@ -13,6 +13,8 @@
 #include "tilemap.h"
 #include "tile.h"
 
+class TileMap;
+struct TileProperties;
 class Level : public QGraphicsItemGroup
 {
 private:
@@ -45,6 +47,8 @@ public:
     // getLevel* returns level size in PIXELS
     int getLevelHeight() { return m_levelHeight * m_tileHeight; }
     int getLevelWidth() { return m_levelWidth * m_tileWidth; }
+
+    virtual void step(qint64 time, long delta);
 
 };
 

@@ -26,14 +26,16 @@
 #include "staticbackground.h"
 #include "global.h"
 #include "hud.h"
+#include "level.h"
 
+class Level;
 class MainCharacter;
 class GameEngine : public QGraphicsScene
 {
     Q_OBJECT
 private:
     /* Arbitrary Constants, chosen by fair dice roll */
-    static const int m_gravity = -5; // The enemy's gate is down.
+    static const float m_gravity = 2000; // The enemy's gate is down.
 
     /* This is the minimum character distance from the edge of the screen before
      *  the viewport will start following the character.
@@ -56,6 +58,7 @@ private:
     // This is a vector of sprites that can be interacted with
     std::vector<Sprite*> m_spriteArray;
     std::vector<Sprite*> m_deletedItems;
+    std::vector<Level*> m_levels;
 
     HUD* m_hud;
     QGraphicsSimpleTextItem* m_hudGameTime;
@@ -113,6 +116,13 @@ public:
         m_spriteArray.push_back(sprite);
         return m_spriteArray.size();
     }
+
+    inline void addLevel(Level* level) {
+        m_levels.push_back(level);
+        this->addItem((QGraphicsItemGroup*)level);
+    }
+
+    float getGravity() { return m_gravity; }
 
     virtual bool event(QEvent *event);
     virtual void removeItem(QGraphicsItem *item);

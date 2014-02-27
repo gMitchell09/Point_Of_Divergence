@@ -262,21 +262,26 @@ void MainCharacter::step(qint64 time, long delta) {
 */
 
 void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-
     for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
-        if (side & Bottom && this->getVelocity().y() >= 0 && (*itr).secondSprite->isSolid() && (((Collision)(*itr)).secondSprite)->y() > this->y()) {
+        Sprite* other = ((Collision)(*itr)).secondSprite;
+        if (side & Bottom && this->getVelocity().y() >= 0 && other->isSolid() && other->y() > this->y()) {
             m_jumping_double = false;
             m_jumping = false;
         }
-        switch ((((Collision)(*itr)).secondSprite)->blockType()) {
+        switch (other->blockType()) {
         case ItemType::kBlock: break;
         case ItemType::kCoin:
             ((GameEngine*)this->scene())->incrementCoins();
             ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
             break;
         case ItemType::kBox:
-            if ((side & Left && m_leftPressed) || (side & Right && m_rightPressed))
+            if ((side & Left && m_leftPressed) || (side & Right && m_rightPressed)) {
                 qDebug() << "PUSH THE BOX";
+                if (side & Left && m_leftPressed)
+                    other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
+                else if (side & Right && m_rightPressed)
+                    other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
+            }
             break;
 //        case ItemType::kSlope30Left:
 //            qDebug() << "kSlope30Left";
