@@ -28,7 +28,7 @@ private:
 
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset, bool timeReversed);
     void resolveCollision(Collision collision);
-    Sprite* spriteWithinWhisker(QRectF whisker, Side side = Top);
+    bool spriteWithinWhisker(QRectF whisker, QList<Sprite *> &collisions);
 
     QRectF topWhiskerLeft, topWhiskerRight, rightWhiskerTop, rightWhiskerBottom, bottomWhiskerRight, bottomWhiskerLeft, leftWhiskerBottom, leftWhiskerTop;
     void updateWhiskers(QPointF offset);

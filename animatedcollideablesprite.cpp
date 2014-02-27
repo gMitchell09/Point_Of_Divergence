@@ -10,9 +10,12 @@
 double LUT_SLOPE45[32] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
 double LUT_SLOPE30[32] = {1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15, 16, 16};
 double LUT_SLOPE60[32] = {17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23, 24, 24, 25, 25, 26, 26, 27, 27, 28, 28, 29, 29, 30, 30, 31, 31, 32, 32};
-#define SLOPE45_VERTICAL_OFFSET 0
-#define SLOPE30_VERTICAL_OFFSET 0
-#define SLOPE60_VERTICAL_OFFSET 0
+#define SLOPE45_VERTICAL_OFFSET 4
+#define SLOPE30_VERTICAL_OFFSET 2
+#define SLOPE60_VERTICAL_OFFSET 2
+
+#define MIN_WHISKER 1.
+#define MIN_WHISKER_LR 2.
 
 AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent) :
     AnimatedSprite(width, height, parent)
@@ -34,25 +37,45 @@ AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGra
 }
 
 void AnimatedCollideableSprite::updateWhiskers(QPointF offset) {
-    QPointF offsetPos = this->pos() + offset;
+    QSize bottomWhiskerSize = QSize(2, MAX(abs(offset.y()), MIN_WHISKER));
+    QSize rightWhiskerSize = QSize(MAX(abs(offset.x()), MIN_WHISKER_LR), 2);
+    QSize topWhiskerSize = QSize(2, -MAX(abs(offset.y()), MIN_WHISKER));
+    QSize leftWhiskerSize = QSize(-MAX(abs(offset.x()), MIN_WHISKER_LR), 2);
 
-    QPointF wideWhisker = QPointF(2, 0);
-    QPointF tallWhisker = QPointF(0, 2);
+    // For top: height = topBottomWhiskerSize * QSize(1, -1);
+    // For left: width = leftRightWhiskerSize * QSize(-1, 1);
 
-    QPointF offsetX = QPointF(offsetPos.x(), offsetPos.y()) + tallWhisker;
-    QPointF offsetY = QPointF(offsetPos.x(), offsetPos.y()) + wideWhisker;
+//    QPointF offsetPos = this->pos() + offset;
 
-    topWhiskerLeft = QRectF(m_collisionPoints[0][0] + offsetY, m_collisionPoints[0][0] + this->pos());
-    topWhiskerRight = QRectF(m_collisionPoints[0][1] + offsetY, m_collisionPoints[0][1] + this->pos());
+//    QPointF wideWhisker = QPointF(2, 0);
+//    QPointF tallWhisker = QPointF(0, 2);
 
-    rightWhiskerTop = QRectF(m_collisionPoints[1][0] + offsetX, m_collisionPoints[1][0] + this->pos());
-    rightWhiskerBottom = QRectF(m_collisionPoints[1][1] + offsetX, m_collisionPoints[1][1] + this->pos());
+//    QPointF offsetX = QPointF(offsetPos.x(), offsetPos.y()) + tallWhisker;
+//    QPointF offsetY = QPointF(offsetPos.x(), offsetPos.y()) + wideWhisker;
 
-    bottomWhiskerRight = QRectF(m_collisionPoints[2][0] + offsetY, m_collisionPoints[2][0] + this->pos());
-    bottomWhiskerLeft = QRectF(m_collisionPoints[2][1] + offsetY, m_collisionPoints[2][1] + this->pos());
+//    topWhiskerLeft = QRectF(m_collisionPoints[0][0] + offsetY, m_collisionPoints[0][0] + this->pos());
+//    topWhiskerRight = QRectF(m_collisionPoints[0][1] + offsetY, m_collisionPoints[0][1] + this->pos());
 
-    leftWhiskerBottom = QRectF(m_collisionPoints[3][0] + offsetX, m_collisionPoints[3][0] + this->pos());
-    leftWhiskerTop = QRectF(m_collisionPoints[3][1] + offsetX, m_collisionPoints[3][1] + this->pos());
+//    rightWhiskerTop = QRectF(m_collisionPoints[1][0] + offsetX, m_collisionPoints[1][0] + this->pos());
+//    rightWhiskerBottom = QRectF(m_collisionPoints[1][1] + offsetX, m_collisionPoints[1][1] + this->pos());
+
+//    bottomWhiskerRight = QRectF(m_collisionPoints[2][0] + offsetY, m_collisionPoints[2][0] + this->pos());
+//    bottomWhiskerLeft = QRectF(m_collisionPoints[2][1] + offsetY, m_collisionPoints[2][1] + this->pos());
+
+//    leftWhiskerBottom = QRectF(m_collisionPoints[3][0] + offsetX, m_collisionPoints[3][0] + this->pos());
+//    leftWhiskerTop = QRectF(m_collisionPoints[3][1] + offsetX, m_collisionPoints[3][1] + this->pos());
+
+    topWhiskerLeft = QRectF(m_collisionPoints[0][0] + this->pos() - QPointF(MIN_WHISKER/2, 0), topWhiskerSize);
+    topWhiskerRight = QRectF(m_collisionPoints[0][1] + this->pos() - QPointF(MIN_WHISKER/2, 0), topWhiskerSize);
+
+    rightWhiskerTop = QRectF(m_collisionPoints[1][0] + this->pos() - QPointF(0, MIN_WHISKER/2), rightWhiskerSize);
+    rightWhiskerBottom = QRectF(m_collisionPoints[1][1] + this->pos() - QPointF(0, MIN_WHISKER/2), rightWhiskerSize);
+
+    bottomWhiskerRight = QRectF(m_collisionPoints[2][0] + this->pos() - QPointF(MIN_WHISKER/2, 0), bottomWhiskerSize);
+    bottomWhiskerLeft = QRectF(m_collisionPoints[2][1] + this->pos() - QPointF(MIN_WHISKER/2, 0), bottomWhiskerSize);
+
+    leftWhiskerBottom = QRectF(m_collisionPoints[3][1] + this->pos() - QPointF(0, MIN_WHISKER/2), leftWhiskerSize);
+    leftWhiskerTop = QRectF(m_collisionPoints[3][0] + this->pos() - QPointF(0, MIN_WHISKER/2), leftWhiskerSize);
 }
 
 void AnimatedCollideableSprite::step(qint64 time, long delta) {
@@ -90,6 +113,8 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
         m_velocity += m_acceleration * timeStep;
         newVel = m_velocity;
 
+        bool wasOnSlope = (this->isOnLeftSlope() || this->isOnRightSlope());
+
         if (!this->isStatic()) {
             unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep, timeReversed);
 
@@ -102,6 +127,9 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                     AnimatedCollideableSprite *second = (AnimatedCollideableSprite*)(col).secondSprite;
                     //if (this->className() == "MainCharacter") qDebug() << "Time: " << time << "This: " << this->className() << " Other: " << second->blockType();
                     Side locSide = (*itr).firstSide;
+                    if (this->className() == "MainCharacter" && second->className() == "Enemy1") {
+                        qDebug() << "Time: " << time << "This Side: " << side << " Other Side: " << locSide;
+                    }
 
                     if (this->isSolid() && second->isSolid()) {
                         if (second->isSlope()) {
@@ -194,10 +222,8 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                 break;
                             case Right:
                                 if (!second->isSlope()) this->setX(col.overlapDistance.x() - this->boundingRect().width());
-//                                    else qDebug() << this->mapToItem(second, this->pos());
                                 break;
                             case Left:
-                                // EUREKA MOMENT!!! THERE ISN'T A LEFT COLLISION IF MARIO ISN'T MOVING LEFT!!!  Need minimum whisker length.
                                 if (!second->isSlope()) this->setX(col.overlapDistance.x());
                                 break;
                         }
@@ -216,10 +242,18 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                         }
 
                         if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
-                        if (!second->isSlope() && !(this->isOnLeftSlope() || this->isOnRightSlope()) && (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0))) newVel.setX(0);
+
+                        //  If we aren't on a slope then set our y-velocity to zero since we are standing on a solid platform
+                        if (!second->isSlope() &&
+                                !(this->isOnLeftSlope() || this->isOnRightSlope() || wasOnSlope) &&
+                                (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0))) {
+                            newVel.setX(0);
+                            qDebug() << "On Slope: " << (int)(this->isOnLeftSlope() || this->isOnRightSlope() || wasOnSlope);
+                            qDebug() << "velocity: " << this->getVelocity().x();
+                            qDebug() << "Side: " << side << " Loc Side: " << locSide;
+                        }
 
                     }
-                    //newPos += ((Collision)(*itr)).normalVector * timeStep;
                 }
                 this->setPos(this->pos() + newPos);
             }
@@ -241,7 +275,9 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
 unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& collisions, QPointF offset, bool timeReversed) {
     bool cTop=0, cRight=0, cBottom=0, cLeft=0;
     unsigned char side = 0;
-    Sprite *collidee, *collidee2;
+    bool isCol, isCol2;
+
+    QList<Sprite *> solidCollisionList;
 
     this->updateWhiskers(offset);
 
@@ -260,126 +296,103 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
      *        [         ]
      */
 
-    collidee = spriteWithinWhisker(topWhiskerLeft);
-    collidee2 = spriteWithinWhisker(topWhiskerRight);
+    isCol = spriteWithinWhisker(topWhiskerLeft, solidCollisionList);
+    isCol2 = spriteWithinWhisker(topWhiskerRight, solidCollisionList);
 
-    if ((collidee != NULL) || (collidee2 != NULL)) {
+    if (isCol || isCol2) {
         cTop = true;
-        side |= Top;
 
         Collision col;
-        if (collidee != NULL && collidee != this) {
-//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
-            // CAN'T USE LINE ABOVE BECAUSE MSVS SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
-            col.firstSprite = this;
-            col.secondSprite = collidee;
-            col.normalVector = collidee->getVelocity();
-            col.firstSide = Top;
-            col.secondSide = Top;
-            col.overlapDistance = collidee->mapToScene(0, collidee->boundingRect().height());
-            collisions.append(col);
+
+        for (auto itr = solidCollisionList.begin(); itr != solidCollisionList.end(); itr++) {
+            Sprite* spr = dynamic_cast<Sprite*>(*itr);
+            if (spr->isSolid()) side |= Top;
+            if (spr != this) {
+    //            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
+                // CAN'T USE LINE ABOVE BECAUSE MSVS SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
+                col.firstSprite = this;
+                col.secondSprite = spr;
+                col.normalVector = spr->getVelocity();
+                col.firstSide = Top;
+                col.secondSide = Top;
+                col.overlapDistance = spr->mapToScene(0, spr->boundingRect().height());
+                collisions.append(col);
+            }
         }
-        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
-            col.firstSprite = this;
-            col.secondSprite = collidee2;
-            col.normalVector = collidee2->getVelocity();
-            col.firstSide = Top;
-            col.secondSide = Top;
-            col.overlapDistance = collidee2->mapToScene(0, collidee2->boundingRect().height());
-            collisions.append(col);
-        }
+        solidCollisionList.clear();
     }
 
     // Check bottom points for collision
-    collidee = spriteWithinWhisker(bottomWhiskerRight);
-    collidee2 = spriteWithinWhisker(bottomWhiskerLeft);
-    if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
-            (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
+    isCol = spriteWithinWhisker(bottomWhiskerRight, solidCollisionList);
+    isCol2 = spriteWithinWhisker(bottomWhiskerLeft, solidCollisionList);
+
+    if (isCol || isCol2) {
         cBottom = true;
-        side |= Bottom;
         Collision col;
-        if (collidee != NULL && collidee != this) {
-//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
-            // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
-            col.firstSprite = this;
-            col.secondSprite = collidee;
-            col.normalVector = collidee->getVelocity();
-            col.firstSide = Bottom;
-            col.secondSide = Bottom;
-            col.overlapDistance = collidee->mapToScene(QPointF(0, 0));
-            collisions.append(col);
+
+        for (auto itr = solidCollisionList.begin(); itr != solidCollisionList.end(); itr++) {
+            Sprite* spr = dynamic_cast<Sprite*>(*itr);
+            if (spr->isSolid()) side |= Bottom;
+            if (spr != this) {
+                col.firstSprite = this;
+                col.secondSprite = spr;
+                col.normalVector = spr->getVelocity();
+                col.firstSide = Bottom;
+                col.secondSide = Bottom;
+                col.overlapDistance = spr->mapToScene(QPointF(0, 0));
+                collisions.append(col);
+            }
         }
-        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
-            col.firstSprite = this;
-            col.secondSprite = collidee2;
-            col.normalVector = collidee2->getVelocity();
-            col.firstSide = Bottom;
-            col.secondSide = Bottom;
-            col.overlapDistance = collidee2->mapToScene(QPointF(0, 0));
-            collisions.append(col);
-        }
+        solidCollisionList.clear();
     }
 
     // Check right points for collision
-    collidee = spriteWithinWhisker(rightWhiskerTop);
-    collidee2 = spriteWithinWhisker(rightWhiskerBottom);
-    if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
-            (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
+    isCol = spriteWithinWhisker(rightWhiskerTop, solidCollisionList);
+    isCol2 = spriteWithinWhisker(rightWhiskerBottom, solidCollisionList);
+    if (isCol || isCol2) {
         cRight = true;
-        side |= Right;
 
         Collision col;
-        if (collidee != NULL && collidee != this) {
-//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
-            // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
-            col.firstSprite = this;
-            col.secondSprite = collidee;
-            col.normalVector = collidee->getVelocity();
-            col.firstSide = Right;
-            col.secondSide = Right;
-            col.overlapDistance = collidee->mapToScene(QPointF(0, 0));
-            collisions.append(col);
+
+        for (auto itr = solidCollisionList.begin(); itr != solidCollisionList.end(); itr++) {
+            Sprite* spr = dynamic_cast<Sprite*>(*itr);
+            if (spr->isSolid()) side |= Right;
+            if (spr != this) {
+                col.firstSprite = this;
+                col.secondSprite = spr;
+                col.normalVector = spr->getVelocity();
+                col.firstSide = Right;
+                col.secondSide = Right;
+                col.overlapDistance = spr->mapToScene(QPointF(0, 0));
+                collisions.append(col);
+            }
         }
-        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
-            col.firstSprite = this;
-            col.secondSprite = collidee2;
-            col.normalVector = collidee2->getVelocity();
-            col.firstSide = Right;
-            col.secondSide = Right;
-            col.overlapDistance = collidee2->mapToScene(QPointF(0, 0));
-            collisions.append(col);
-        }
+        solidCollisionList.clear();
     }
 
     // Check left points for collision
-    collidee = spriteWithinWhisker(leftWhiskerBottom);
-    collidee2 = spriteWithinWhisker(leftWhiskerTop);
-    if ((collidee != NULL && collidee != this && collidee->isCollideable()) ||
-            (collidee2 != NULL && collidee2 != this && collidee2->isCollideable())) {
+    isCol = spriteWithinWhisker(leftWhiskerBottom, solidCollisionList);
+    isCol2 = spriteWithinWhisker(leftWhiskerTop, solidCollisionList);
+
+    if (isCol || isCol2) {
         cLeft = true;
-        side |= Left;
 
         Collision col;
-        if (collidee != NULL && collidee != this) {
-//            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
-            // CAN'T USE LINE ABOVE BECAUSE MSVC++ SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
-            col.firstSprite = this;
-            col.secondSprite = collidee;
-            col.normalVector = collidee->getVelocity();
-            col.firstSide = Left;
-            col.secondSide = Left;
-            col.overlapDistance = collidee->mapToScene(QPointF(collidee->boundingRect().width(), 0));
-            collisions.append(col);
+
+        for (auto itr = solidCollisionList.begin(); itr != solidCollisionList.end(); itr++) {
+            Sprite* spr = dynamic_cast<Sprite*>(*itr);
+            if (spr->isSolid()) side |= Left;
+            if (spr != this) {
+                col.firstSprite = this;
+                col.secondSprite = spr;
+                col.normalVector = spr->getVelocity();
+                col.firstSide = Left;
+                col.secondSide = Left;
+                col.overlapDistance = spr->mapToScene(QPointF(spr->boundingRect().width(), 0));
+                collisions.append(col);
+            }
         }
-        if (collidee2 != NULL && collidee2 != collidee && collidee2 != this) {
-            col.firstSprite = this;
-            col.secondSprite = collidee2;
-            col.normalVector = collidee2->getVelocity();
-            col.firstSide = Left;
-            col.secondSide = Left;
-            col.overlapDistance = collidee2->mapToScene(QPointF(collidee2->boundingRect().width(), 0));
-            collisions.append(col);
-        }
+        solidCollisionList.clear();
     }
 
 //    if ((cTop && cBottom) || (cLeft && cRight)) qDebug() << "SQUISH -- " << side;
@@ -387,16 +400,15 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     return side;
 }
 
-Sprite* AnimatedCollideableSprite::spriteWithinWhisker(QRectF whisker, Side side) {
+bool AnimatedCollideableSprite::spriteWithinWhisker(QRectF whisker, QList<Sprite *> &collisions) {
     QList<QGraphicsItem *> items = this->scene()->items(whisker, Qt::IntersectsItemShape, Qt::DescendingOrder, this->transform());
 
     for (auto itr = items.begin(); itr != items.end(); itr++) {
         if (((Sprite*)(*itr))->isCollideable() && (*itr) != this) {
-//            qDebug() << "This: " << this->className() << "Them: " << ((Sprite*)(*itr))->className();
-            return dynamic_cast<Sprite*>(*itr);
+            collisions.push_back(dynamic_cast<Sprite*>(*itr));
         }
     }
-    return 0;
+    return !items.empty();
 }
 
 void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
