@@ -21,6 +21,9 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
     m_brakeAccel = 800;
     m_brakeAccelSliding = m_brakeAccel / 4;
 
+    m_boxPushAcceleration = 100;
+    m_boxPushVelocity = 100;
+
     TileMap * playerTiles = new TileMap(16, 33, 1, 1, ":MarioRight/MarioMovement.png");
 
     std::vector<QPixmap> standRight;
@@ -268,7 +271,7 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
             m_jumping_double = false;
             m_jumping = false;
         }
-        if (side & other->damagesChar()) {
+        if (((Collision)(*itr)).firstSide & other->damagesChar()) {
             ((GameEngine*)this->scene())->characterDamaged();
         }
         switch (other->blockType()) {
@@ -281,9 +284,11 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
             if ((side & Left && m_leftPressed) || (side & Right && m_rightPressed)) {
                 qDebug() << "PUSH THE BOX";
                 if (side & Left && m_leftPressed)
-                    other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
+                    other->setVelocity(QPointF(-m_boxPushVelocity, other->getVelocity().y()));
+                    //other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
                 else if (side & Right && m_rightPressed)
-                    other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
+                    other->setVelocity(QPointF(m_boxPushVelocity, other->getVelocity().y()));
+                    //other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
             }
             break;
 //        case ItemType::kSlope30Left:

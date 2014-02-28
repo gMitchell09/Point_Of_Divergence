@@ -30,6 +30,7 @@ private:
 
     float m_brakeAccel, m_brakeAccelSliding;
     float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
+    float m_boxPushVelocity, m_boxPushAcceleration;
 
     bool m_upPressed, m_downPressed, m_leftPressed, m_rightPressed;
 

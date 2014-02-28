@@ -15,7 +15,7 @@ double LUT_SLOPE60[32] = {17, 17, 18, 18, 19, 19, 20, 20, 21, 21, 22, 22, 23, 23
 #define SLOPE60_VERTICAL_OFFSET 2
 
 #define MIN_WHISKER 1.
-#define MIN_WHISKER_LR 2.
+#define MIN_WHISKER_LR 4.
 
 AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent) :
     AnimatedSprite(width, height, parent)
@@ -218,13 +218,17 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                 this->setY(col.overlapDistance.y());
                                 break;
                             case Bottom:
-                                if (!second->isSlope()) this->setY(col.overlapDistance.y() - this->boundingRect().height()+1);
+                                if (!second->isSlope()) this->setY(col.overlapDistance.y() - this->boundingRect().height() + 1);
                                 break;
                             case Right:
-                                if (!second->isSlope()) this->setX(col.overlapDistance.x() - this->boundingRect().width());
+                                // Only reposition the player if they are (not on a slope) and moving in the direction of the collision.  This prevents that weird
+                                //   suction bug.
+                                if (!second->isSlope() && this->getVelocity().x() > 0) this->setX(col.overlapDistance.x() - this->boundingRect().width());
                                 break;
                             case Left:
-                                if (!second->isSlope()) this->setX(col.overlapDistance.x());
+                                // Only reposition the player if they are (not on a slope) and moving in the direction of the collision.  This prevents that weird
+                                //   suction bug.
+                                if (!second->isSlope() && this->getVelocity().x() < 0) this->setX(col.overlapDistance.x());
                                 break;
                         }
 
@@ -248,9 +252,11 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                 !(this->isOnLeftSlope() || this->isOnRightSlope() || wasOnSlope) &&
                                 (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0))) {
                             newVel.setX(0);
-                            qDebug() << "On Slope: " << (int)(this->isOnLeftSlope() || this->isOnRightSlope() || wasOnSlope);
-                            qDebug() << "velocity: " << this->getVelocity().x();
-                            qDebug() << "Side: " << side << " Loc Side: " << locSide;
+                            if (this->className() == "MainCharacter") {
+                                qDebug() << "On Slope: " << (int)(this->isOnLeftSlope() || this->isOnRightSlope() || wasOnSlope);
+                                qDebug() << "velocity: " << this->getVelocity().x();
+                                qDebug() << "Side: " << side << " Loc Side: " << locSide;
+                            }
                         }
 
                     }
@@ -310,6 +316,9 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
             if (spr != this) {
     //            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
                 // CAN'T USE LINE ABOVE BECAUSE MSVS SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
+                QPointF bottomRight = spr->mapToScene(spr->boundingRect().bottomRight());
+                float penetrationDepth = bottomRight.y() - topWhiskerLeft.top();
+                qDebug() << "penetrationDepth: " << penetrationDepth;
                 col.firstSprite = this;
                 col.secondSprite = spr;
                 col.normalVector = spr->getVelocity();

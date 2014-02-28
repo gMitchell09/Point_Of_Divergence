@@ -25,10 +25,11 @@ class Tile : public AnimatedCollideableSprite
 {
 private:
     ItemType m_kind;
+    bool m_isStatic;
 public:
     explicit Tile(int width, int height, QGraphicsItem *parent);
 
-    virtual bool isStatic() { return true; }
+    virtual bool isStatic() { return m_isStatic; }
     virtual bool isAnimated() { return true; }
     virtual bool isCollideable() { return true; }
     virtual bool isBackground() { return false; }
@@ -40,7 +41,10 @@ public:
     virtual ItemType blockType() { return m_kind; }
     void setBlockType(ItemType kind) {
         m_kind = kind;
-        //if (m_kind == kBox) this->setAcceleration(QPointF(0, 200));
+        if (m_kind == kBox) {
+            this->setAcceleration(QPointF(0, 200));
+            m_isStatic = false;
+        }
     }
 
     virtual void step(qint64 time, long delta);
