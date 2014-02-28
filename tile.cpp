@@ -8,6 +8,7 @@ Tile::Tile(int width, int height, QGraphicsItem *parent) :
     this->setVelocity(QPointF(0, 0));
     this->setAcceleration(QPointF(0, 0));
     m_isStatic = true;
+    m_usesStack = false;
 }
 
 void Tile::collisionOccurred(QList<Collision> &collisions, unsigned char side) {

@@ -26,6 +26,7 @@ class Tile : public AnimatedCollideableSprite
 private:
     ItemType m_kind;
     bool m_isStatic;
+    bool m_usesStack;
 
     qreal m_rotation;
 public:
@@ -46,8 +47,12 @@ public:
         if (m_kind == kBox) {
             this->setAcceleration(QPointF(0, 2000));
             m_isStatic = false;
+            m_usesStack = true;
+            this->setZValue(100);
         }
     }
+
+    virtual bool usesStack() { return m_usesStack; }
 
     virtual void step(qint64 time, long delta);
 

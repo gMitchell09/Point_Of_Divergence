@@ -313,6 +313,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
 
         for (auto itr = solidCollisionList.begin(); itr != solidCollisionList.end(); itr++) {
             Sprite* spr = dynamic_cast<Sprite*>(*itr);
+            if (!spr) continue;
             if (spr->isSolid()) side |= Top;
             if (spr != this) {
     //            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
@@ -342,6 +343,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
 
         for (auto itr = solidCollisionList.begin(); itr != solidCollisionList.end(); itr++) {
             Sprite* spr = dynamic_cast<Sprite*>(*itr);
+            if (!spr) continue;
             if (spr->isSolid()) side |= Bottom;
             if (spr != this) {
                 col.firstSprite = this;
@@ -366,6 +368,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
 
         for (auto itr = solidCollisionList.begin(); itr != solidCollisionList.end(); itr++) {
             Sprite* spr = dynamic_cast<Sprite*>(*itr);
+            if (!spr) continue;
             if (spr->isSolid()) side |= Right;
             if (spr != this) {
                 col.firstSprite = this;
@@ -391,6 +394,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
 
         for (auto itr = solidCollisionList.begin(); itr != solidCollisionList.end(); itr++) {
             Sprite* spr = dynamic_cast<Sprite*>(*itr);
+            if (!spr) continue;
             if (spr->isSolid()) side |= Left;
             if (spr != this) {
                 col.firstSprite = this;
