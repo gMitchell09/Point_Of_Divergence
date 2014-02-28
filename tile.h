@@ -26,6 +26,8 @@ class Tile : public AnimatedCollideableSprite
 private:
     ItemType m_kind;
     bool m_isStatic;
+
+    qreal m_rotation;
 public:
     explicit Tile(int width, int height, QGraphicsItem *parent);
 
@@ -42,7 +44,7 @@ public:
     void setBlockType(ItemType kind) {
         m_kind = kind;
         if (m_kind == kBox) {
-            this->setAcceleration(QPointF(0, 200));
+            this->setAcceleration(QPointF(0, 2000));
             m_isStatic = false;
         }
     }

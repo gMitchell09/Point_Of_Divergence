@@ -267,11 +267,13 @@ void MainCharacter::step(qint64 time, long delta) {
 void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
     for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
         Sprite* other = ((Collision)(*itr)).secondSprite;
-        if (side & Bottom && this->getVelocity().y() >= 0 && other->isSolid() && other->y() > this->y()) {
+        Side locSide = ((Collision)(*itr)).firstSide;
+
+        if (locSide & Bottom && this->getVelocity().y() >= 0 && other->isSolid() && other->y() > this->y()) {
             m_jumping_double = false;
             m_jumping = false;
         }
-        if (((Collision)(*itr)).firstSide & other->damagesChar()) {
+        if (locSide & other->damagesChar()) {
             ((GameEngine*)this->scene())->characterDamaged();
         }
         switch (other->blockType()) {
@@ -281,14 +283,18 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
             ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
             break;
         case ItemType::kBox:
-            if ((side & Left && m_leftPressed) || (side & Right && m_rightPressed)) {
+            if ((locSide & Left && m_leftPressed) || (locSide & Right && m_rightPressed)) {
                 qDebug() << "PUSH THE BOX";
-                if (side & Left && m_leftPressed)
+                if (locSide & Left && m_leftPressed) {
                     other->setVelocity(QPointF(-m_boxPushVelocity, other->getVelocity().y()));
+                    qDebug() << "Push Left";
                     //other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
-                else if (side & Right && m_rightPressed)
+                }
+                else if (locSide & Right && m_rightPressed) {
                     other->setVelocity(QPointF(m_boxPushVelocity, other->getVelocity().y()));
+                    qDebug() << "Push Right";
                     //other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
+                }
             }
             break;
 //        case ItemType::kSlope30Left:

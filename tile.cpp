@@ -11,6 +11,36 @@ Tile::Tile(int width, int height, QGraphicsItem *parent) :
 }
 
 void Tile::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
+    if (this->blockType() == kBox &&  (this->isOnLeftSlope() || this->isOnRightSlope())) {
+        for (auto itr = collisions.begin(); itr != collisions.end(); ++itr) {
+            if (((Collision)(*itr)).firstSide == Bottom) {
+                Sprite* spr = dynamic_cast<Sprite*>(((Collision)(*itr)).secondSprite);
+                switch (spr->blockType()) {
+                    case kSlope30Left:
+                        this->setRotation(30);
+                        break;
+                    case kSlope30Right:
+                        this->setRotation(-30);
+                        break;
+                    case kSlope60Left:
+                        this->setRotation(30);
+                        break;
+                    case kSlope60Right:
+                        this->setRotation(-30);
+                        break;
+                    case kSlope45Left:
+                        this->setRotation(45);
+                        break;
+                    case kSlope45Right:
+                        this->setRotation(-45);
+                        break;
+                    default:
+                        this->setRotation(0);
+                        break;
+                }
+            }
+        }
+    }
 }
 
 void Tile::step(qint64 time, long delta) {

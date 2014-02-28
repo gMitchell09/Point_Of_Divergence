@@ -223,12 +223,12 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                             case Right:
                                 // Only reposition the player if they are (not on a slope) and moving in the direction of the collision.  This prevents that weird
                                 //   suction bug.
-                                if (!second->isSlope() && this->getVelocity().x() > 0) this->setX(col.overlapDistance.x() - this->boundingRect().width());
+                                if (!second->isSlope() && this->getVelocity().x() > 0) this->setX(col.overlapDistance.x() - this->boundingRect().width() - 4);
                                 break;
                             case Left:
                                 // Only reposition the player if they are (not on a slope) and moving in the direction of the collision.  This prevents that weird
                                 //   suction bug.
-                                if (!second->isSlope() && this->getVelocity().x() < 0) this->setX(col.overlapDistance.x());
+                                if (!second->isSlope() && this->getVelocity().x() < 0) this->setX(col.overlapDistance.x() + 4);
                                 break;
                         }
 
@@ -250,6 +250,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                         //  If we aren't on a slope then set our y-velocity to zero since we are standing on a solid platform
                         if (!second->isSlope() &&
                                 !(this->isOnLeftSlope() || this->isOnRightSlope() || wasOnSlope) &&
+                                // !(second->isOnLeftSlope() || second->isOnRightSlope()) &&
                                 (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0))) {
                             newVel.setX(0);
                             if (this->className() == "MainCharacter") {
@@ -318,7 +319,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
                 // CAN'T USE LINE ABOVE BECAUSE MSVS SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
                 QPointF bottomRight = spr->mapToScene(spr->boundingRect().bottomRight());
                 float penetrationDepth = bottomRight.y() - topWhiskerLeft.top();
-                qDebug() << "penetrationDepth: " << penetrationDepth;
+                //qDebug() << "penetrationDepth: " << penetrationDepth;
                 col.firstSprite = this;
                 col.secondSprite = spr;
                 col.normalVector = spr->getVelocity();
