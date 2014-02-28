@@ -28,6 +28,7 @@
 #include "hud.h"
 #include "level.h"
 #include "menubutton.h"
+#include "optionbutton.h"
 #include "movingplatform.h"
 #include "objectitem.h"
 #include "staticplatform.h"
@@ -36,6 +37,7 @@
 class Level;
 class MainCharacter;
 class MenuButton;
+class OptionButton;
 
 class GameEngine : public QGraphicsScene
 {
@@ -61,7 +63,13 @@ private:
     MainCharacter * m_mainActor;
     StaticBackground *bkg;
 
-    MenuButton * m_ssp;
+    MenuButton * m_testButton;
+    MenuButton * m_newgameButton;
+    MenuButton * m_loadgameButton;
+    MenuButton * m_optionsButton;
+    MenuButton * m_quitButton;
+    OptionButton * m_musicButton;
+    MenuButton * m_mainmenuButton;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
 
@@ -95,7 +103,12 @@ public:
     void displayBackground(QColor mycolor);
     void displayBackground(QPixmap &bkgPix);
     void displayInitMenu();
+    void displayLoadMenu();
+    void displayOptionsMenu();
+    void displayMainMenu_load();
+    void displayMainMenu_option();
     void startSinglePlayer();
+    void QuitGame();
 
     inline void addHandler(std::function<void(long)> callback) {
         m_stepHandlerVector.push_back(callback);

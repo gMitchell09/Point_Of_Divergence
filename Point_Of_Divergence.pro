@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     tile.cpp \
     hud.cpp \
     menubutton.cpp \
-    level.cpp
+    level.cpp \
+    optionbutton.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -52,7 +53,8 @@ HEADERS  += mainwindow.h \
     global.h \
     hud.h \
     menubutton.h \
-    level.h
+    level.h \
+    optionbutton.h
 
 FORMS    += mainwindow.ui
 

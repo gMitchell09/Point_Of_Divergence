@@ -1,33 +1,41 @@
 #include "menubutton.h"
 
-MenuButton::MenuButton(QPixmap *up, QPixmap *down, QGraphicsItem *parent) :
+MenuButton::MenuButton(QPixmap *up, QPixmap *down, QPixmap *hover, QGraphicsItem *parent) :
     Sprite(parent),
     m_upGraphic(up),
-    m_downGraphic(down) {
+    m_downGraphic(down),
+    m_hoverGraphic(hover) {
     this->setPixmap(*m_upGraphic);
-
+    this->setAcceptHoverEvents(true);
 }
 
 void MenuButton::mousePressEvent(QGraphicsSceneMouseEvent *ev) {
     this->m_pressed = true;
-
     this->setPixmap(*m_downGraphic);
 }
 
 void MenuButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) {
-    if (m_pressed) {
+    if (m_hovered) {
+        this->setPixmap(*m_hoverGraphic);
+        this->m_pressed = false;
+        this->clicked();
+    }
+    else if(m_pressed) {
         this->setPixmap(*m_upGraphic);
-        m_pressed = false;
-
+        this->m_pressed = false;
         this->clicked();
     }
 }
 
-void MenuButton::mouseMoveEvent(QGraphicsSceneMouseEvent *ev) {
-    if (!this->contains(ev->pos())) {
-        m_pressed = false;
-        this->setPixmap(*m_upGraphic);
-    }
+void MenuButton::hoverEnterEvent(QGraphicsSceneHoverEvent *ev) {
+        this->m_hovered = true;
+        this->setPixmap(*m_hoverGraphic);
+}
+
+void MenuButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *ev) {
+    this->m_hovered = false;
+
+    this->setPixmap(*m_upGraphic);
 }
 
 void MenuButton::clicked() {
@@ -36,8 +44,8 @@ void MenuButton::clicked() {
     }
 }
 
-
 MenuButton::~MenuButton() {
     delete m_upGraphic;
     delete m_downGraphic;
+    delete m_hoverGraphic;
 }

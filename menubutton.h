@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsSceneHoverEvent>
 #include <QDebug>
 #include <functional>
 
@@ -13,17 +14,18 @@ class GameEngine;
 class MenuButton : public Sprite
 {
 private:
-    bool m_pressed;
-    QPixmap *m_upGraphic, *m_downGraphic, *m_highlightGraphic;
+    bool m_pressed, m_hovered;
+    QPixmap *m_upGraphic, *m_downGraphic, *m_hoverGraphic;
 
     std::function<void(void)> m_clickedCallback;
 
 public:
-    explicit MenuButton(QPixmap *up, QPixmap *down, QGraphicsItem *parent = 0);
+    explicit MenuButton(QPixmap *up, QPixmap *down, QPixmap *hover, QGraphicsItem *parent = 0);
 
     void mousePressEvent(QGraphicsSceneMouseEvent *ev);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *ev);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *ev);
+    void hoverEnterEvent(QGraphicsSceneHoverEvent *ev);
+    void hoverLeaveEvent(QGraphicsSceneHoverEvent *ev);
 
     inline void setCallback(std::function<void(void)> callback) {
         m_clickedCallback = callback;
@@ -31,6 +33,7 @@ public:
 
     virtual void clicked();
     virtual ~MenuButton();
+
 };
 
 #endif // MENUBUTTON_H

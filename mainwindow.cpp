@@ -15,19 +15,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-
-    //
-
-
     gameEngine = new GameEngine(ui->graphicsView->width(), ui->graphicsView->height());
-    gameEngine->setSceneRect(0, 0, 1275, 643);//ui->graphicsView->width(), ui->graphicsView->height());
+    gameEngine->setSceneRect(0, 0, 1275, 643);
     gameEngine->displayInitMenu();
 
     ui->graphicsView->setScene(gameEngine);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-
 }
 
 MainWindow::~MainWindow() {
