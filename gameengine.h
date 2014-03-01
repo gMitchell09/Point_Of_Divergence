@@ -19,6 +19,7 @@
 #include <QPixmap>
 #include <QTimer>
 #include <QDateTime>
+#include <QtSql>
 
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
@@ -33,6 +34,7 @@
 #include "objectitem.h"
 #include "staticplatform.h"
 #include "enemy1.h"
+#include "databasecontroller.h"
 
 class Level;
 class MainCharacter;
@@ -70,6 +72,8 @@ private:
     MenuButton * m_quitButton;
     OptionButton * m_musicButton;
     MenuButton * m_mainmenuButton;
+
+    DatabaseController * m_table;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
 

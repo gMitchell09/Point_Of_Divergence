@@ -233,6 +233,26 @@ void GameEngine::displayLoadMenu() {
     this->addSprite(m_mainmenuButton);
     std::function<void(void)> func = std::bind(&GameEngine::displayMainMenu_load, this);
     m_mainmenuButton->setCallback(func);
+
+    m_table = new DatabaseController();
+    m_table->buildTables();
+
+    m_table->deleteTable();
+
+    m_table->addVals("save_table", "name", "score", "Jesse", 200);
+    m_table->addVals("save_table", "name", "score", "Atley", 199);
+    m_table->addVals("save_table", "name", "score", "George", 400);
+    m_table->addVals("save_table", "name", "score", "jesse2", 1);
+    m_table->addVals("save_table", "name", "score", "atley2", 2);
+    m_table->addVals("save_table", "name", "score", "george2", 3);
+
+    m_table->readVals("*", "save_table");
+
+    m_table->deleteVals("save_table", "score < 400");
+
+    qDebug() << "------------------------------------------------------";
+
+    m_table->readVals("*", "save_table");
 }
 
 void GameEngine::displayOptionsMenu() {

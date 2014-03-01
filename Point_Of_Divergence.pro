@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml
+QT       += core gui xml sql
 CONFIG   += c++11
 
 # Silly warning
@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     hud.cpp \
     menubutton.cpp \
     level.cpp \
-    optionbutton.cpp
+    optionbutton.cpp \
+    databasecontroller.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -54,7 +55,8 @@ HEADERS  += mainwindow.h \
     hud.h \
     menubutton.h \
     level.h \
-    optionbutton.h
+    optionbutton.h \
+    databasecontroller.h
 
 FORMS    += mainwindow.ui
 
