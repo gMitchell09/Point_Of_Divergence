@@ -23,24 +23,31 @@ AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, QGra
     m_onLeftSlope = m_onRightSlope = false;
 
     // Top
-    m_collisionPoints[0][0] = QPoint(width/3, 0);
-    m_collisionPoints[0][1] = QPoint((2*width)/3, 0);
+    m_collisionPoints[0][0] = QPointF(width/3, 0);
+    m_collisionPoints[0][1] = QPointF((2*width)/3, 0);
     // Right
-    m_collisionPoints[1][0] = QPoint(width, height/3);
-    m_collisionPoints[1][1] = QPoint(width, (2*height)/3);
+    m_collisionPoints[1][0] = QPointF(width, height/3);
+    m_collisionPoints[1][1] = QPointF(width, (2*height)/3);
     // Bottom
-    m_collisionPoints[2][0] = QPoint(width/3, height);
-    m_collisionPoints[2][1] = QPoint((2*width)/3, height);
+    m_collisionPoints[2][0] = QPointF(width/3, height);
+    m_collisionPoints[2][1] = QPointF((2*width)/3, height);
     // Left
-    m_collisionPoints[3][0] = QPoint(0, height/3);
-    m_collisionPoints[3][1] = QPoint(0, (2*height)/3);
+    m_collisionPoints[3][0] = QPointF(0, height/3);
+    m_collisionPoints[3][1] = QPointF(0, (2*height)/3);
 }
 
 void AnimatedCollideableSprite::updateWhiskers(QPointF offset) {
-    QSize bottomWhiskerSize = QSize(2, MAX(abs(offset.y()), MIN_WHISKER));
-    QSize rightWhiskerSize = QSize(MAX(abs(offset.x()), MIN_WHISKER_LR), 2);
-    QSize topWhiskerSize = QSize(2, -MAX(abs(offset.y()), MIN_WHISKER));
-    QSize leftWhiskerSize = QSize(-MAX(abs(offset.x()), MIN_WHISKER_LR), 2);
+    QSizeF bottomWhiskerSize = QSizeF(2, MAX(abs(offset.y()), MIN_WHISKER));
+    QSizeF rightWhiskerSize = QSizeF(MAX(abs(offset.x()), MIN_WHISKER_LR), 2);
+    QSizeF topWhiskerSize = QSizeF(2, -MAX(abs(offset.y()), MIN_WHISKER));
+    QSizeF leftWhiskerSize = QSizeF(-MAX(abs(offset.x()), MIN_WHISKER_LR), 2);
+
+    if (this->className() == "MainCharacter") {
+        qDebug() << "Bottom: " << bottomWhiskerSize;
+        qDebug() << "Right: " << rightWhiskerSize;
+        qDebug() << "Top: " << topWhiskerSize;
+        qDebug() << "Left: " << leftWhiskerSize;
+    }
 
     // For top: height = topBottomWhiskerSize * QSize(1, -1);
     // For left: width = leftRightWhiskerSize * QSize(-1, 1);
@@ -65,17 +72,54 @@ void AnimatedCollideableSprite::updateWhiskers(QPointF offset) {
 //    leftWhiskerBottom = QRectF(m_collisionPoints[3][0] + offsetX, m_collisionPoints[3][0] + this->pos());
 //    leftWhiskerTop = QRectF(m_collisionPoints[3][1] + offsetX, m_collisionPoints[3][1] + this->pos());
 
-    topWhiskerLeft = QRectF(m_collisionPoints[0][0] + this->pos() - QPointF(MIN_WHISKER/2, 0), topWhiskerSize);
-    topWhiskerRight = QRectF(m_collisionPoints[0][1] + this->pos() - QPointF(MIN_WHISKER/2, 0), topWhiskerSize);
+    QRectF tl(m_collisionPoints[0][0] + this->pos() - QPointF(MIN_WHISKER/2, 0), topWhiskerSize),
+            tr(m_collisionPoints[0][1] + this->pos() - QPointF(MIN_WHISKER/2, 0), topWhiskerSize),
+            rt(m_collisionPoints[1][0] + this->pos() - QPointF(0, MIN_WHISKER/2), rightWhiskerSize),
+            rb(m_collisionPoints[1][1] + this->pos() - QPointF(0, MIN_WHISKER/2), rightWhiskerSize),
+            br(m_collisionPoints[2][0] + this->pos() - QPointF(MIN_WHISKER/2, 0), bottomWhiskerSize),
+            bl(m_collisionPoints[2][1] + this->pos() - QPointF(MIN_WHISKER/2, 0), bottomWhiskerSize),
+            lb(m_collisionPoints[3][1] + this->pos() - QPointF(0, MIN_WHISKER/2), leftWhiskerSize),
+            lt(m_collisionPoints[3][0] + this->pos() - QPointF(0, MIN_WHISKER/2), leftWhiskerSize);
 
-    rightWhiskerTop = QRectF(m_collisionPoints[1][0] + this->pos() - QPointF(0, MIN_WHISKER/2), rightWhiskerSize);
-    rightWhiskerBottom = QRectF(m_collisionPoints[1][1] + this->pos() - QPointF(0, MIN_WHISKER/2), rightWhiskerSize);
+    // Translate to center of rectangles
+    tr.translate(tr.width()/2, tr.height()/2);
+    tl.translate(tl.width()/2, tl.height()/2);
 
-    bottomWhiskerRight = QRectF(m_collisionPoints[2][0] + this->pos() - QPointF(MIN_WHISKER/2, 0), bottomWhiskerSize);
-    bottomWhiskerLeft = QRectF(m_collisionPoints[2][1] + this->pos() - QPointF(MIN_WHISKER/2, 0), bottomWhiskerSize);
+    rt.translate(rt.width()/2, rt.height()/2);
+    rb.translate(rb.width()/2, rb.height()/2);
 
-    leftWhiskerBottom = QRectF(m_collisionPoints[3][1] + this->pos() - QPointF(0, MIN_WHISKER/2), leftWhiskerSize);
-    leftWhiskerTop = QRectF(m_collisionPoints[3][0] + this->pos() - QPointF(0, MIN_WHISKER/2), leftWhiskerSize);
+    br.translate(br.width()/2, br.height()/2);
+    bl.translate(bl.width()/2, bl.height()/2);
+
+    lb.translate(lb.width()/2, lb.height()/2);
+    lt.translate(lt.width()/2, lt.height()/2);
+
+    // Rotate
+    topWhiskerLeft = this->transform().map(QPolygonF(tl));
+    topWhiskerRight = this->transform().map(QPolygonF(tr));
+
+    rightWhiskerTop = this->transform().map(QPolygonF(rt));
+    rightWhiskerBottom = this->transform().map(QPolygonF(rb));
+
+    bottomWhiskerRight = this->transform().map(QPolygonF(br));
+    bottomWhiskerLeft = this->transform().map(QPolygonF(bl));
+
+    leftWhiskerBottom = this->transform().map(QPolygonF(lb));
+    leftWhiskerTop = this->transform().map(QPolygonF(lt));
+
+    // Now to translate back to our origin
+    topWhiskerLeft.translate(-tr.width()/2, -tr.height()/2);
+    topWhiskerRight.translate(-tl.width()/2, -tl.height()/2);
+
+    rightWhiskerTop.translate(-rt.width()/2, -rt.height()/2);
+    rightWhiskerBottom.translate(-rb.width()/2, -rb.height()/2);
+
+    bottomWhiskerRight.translate(-br.width()/2, -br.height()/2);
+    bottomWhiskerLeft.translate(-bl.width()/2, -bl.height()/2);
+
+    leftWhiskerBottom.translate(-lb.width()/2, -lb.height()/2);
+    leftWhiskerTop.translate(-lt.width()/2, -lt.height()/2);
+
 }
 
 void AnimatedCollideableSprite::step(qint64 time, long delta) {
@@ -108,6 +152,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
 
         QPointF oldVel = m_velocity;
         QPointF newVel;
+        QPointF angularVelocity = QPointF(1, 1);
         QPointF relativeVel = QPointF(0, 0);
 
         m_velocity += m_acceleration * timeStep;
@@ -157,6 +202,9 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                         } else {
                                             lut_value = 0;
                                         }
+
+                                        angularVelocity.setX(cos(M_PI * 45.0 / 180));
+                                        angularVelocity.setY(sin(M_PI * 45.0 / 180));
                                         break;
                                     case kSlope30Left:
                                         if (index >= 0 && index < 32) {
@@ -167,6 +215,8 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                         } else {
                                             lut_value = 0;
                                         }
+                                        angularVelocity.setX(cos(M_PI * 30.0 / 180));
+                                        angularVelocity.setY(sin(M_PI * 30.0 / 180));
                                         break;
                                     case kSlope60Left:
                                         if (index >= 0 && index < 32) {
@@ -177,6 +227,8 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                         } else {
                                             lut_value = 17;
                                         }
+                                        angularVelocity.setX(cos(M_PI * 30.0 / 180));
+                                        angularVelocity.setY(sin(M_PI * 30.0 / 180));
                                         break;
                                     case kSlope45Right:
                                         if (index >= 0 && index < 32) {
@@ -187,6 +239,8 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                         } else {
                                             lut_value = 33;
                                         }
+                                        angularVelocity.setX(cos(M_PI * 45.0 / 180));
+                                        angularVelocity.setY(sin(M_PI * 45.0 / 180));
                                         break;
                                     case kSlope30Right:
                                         if (index >= 0 && index < 32) {
@@ -197,6 +251,8 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                         } else {
                                             lut_value = 17;
                                         }
+                                        angularVelocity.setX(cos(M_PI * 30.0 / 180));
+                                        angularVelocity.setY(sin(M_PI * 30.0 / 180));
                                         break;
                                     case kSlope60Right:
                                         if (index >= 0 && index < 32) {
@@ -207,6 +263,8 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                         } else {
                                             lut_value = 33;
                                         }
+                                        angularVelocity.setX(cos(M_PI * 30.0 / 180));
+                                        angularVelocity.setY(sin(M_PI * 30.0 / 180));
                                         break;
                                 }
                                 this->setPos(this->x(), second->pos().y() - this->boundingRect().height() + second->boundingRect().height() - lut_value);
@@ -242,7 +300,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                             (this->pos().y() >= col.secondSprite->pos().y() && col.normalVector.y() > 0)) {
                             //newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
                             relativeVel.setY(col.secondSprite->getApparentVelocity().y());
-//                            qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
+                            qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
                         }
 
                         if (((locSide == Top) && m_velocity.y() < 0) || ((locSide == Bottom) && m_velocity.y() > 0)) newVel.setY(0);
@@ -267,7 +325,9 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
 
             m_velocity = newVel;
 
-            this->setPos(this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep);
+            QPointF tmpVel(angularVelocity.x() * ((m_velocity + oldVel) * 0.5 + relativeVel).x(),
+                           angularVelocity.y() * ((m_velocity + oldVel) * 0.5 + relativeVel).y());
+            this->setPos(this->pos() + tmpVel * timeStep);
             m_apparentVelocity = (m_velocity + oldVel) * 0.5 + relativeVel;
         }
 
@@ -320,7 +380,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     //            col = {this, collidee, collidee->getVelocity(), Left, Left, QPointF(0,0)};
                 // CAN'T USE LINE ABOVE BECAUSE MSVS SUCKS!!!!  OR SHOULD I SAY, MS* SUCKS.
                 QPointF bottomRight = spr->mapToScene(spr->boundingRect().bottomRight());
-                float penetrationDepth = bottomRight.y() - topWhiskerLeft.top();
+                //float penetrationDepth = bottomRight.y() - topWhiskerLeft.top();
                 //qDebug() << "penetrationDepth: " << penetrationDepth;
                 col.firstSprite = this;
                 col.secondSprite = spr;
@@ -415,7 +475,7 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     return side;
 }
 
-bool AnimatedCollideableSprite::spriteWithinWhisker(QRectF whisker, QList<Sprite *> &collisions) {
+bool AnimatedCollideableSprite::spriteWithinWhisker(QPolygonF whisker, QList<Sprite *> &collisions) {
     QList<QGraphicsItem *> items = this->scene()->items(whisker, Qt::IntersectsItemShape, Qt::DescendingOrder, this->transform());
 
     for (auto itr = items.begin(); itr != items.end(); itr++) {
@@ -428,5 +488,26 @@ bool AnimatedCollideableSprite::spriteWithinWhisker(QRectF whisker, QList<Sprite
 
 void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
     // Override this method in your subclasses if you want to be alerted when collisions occur.        
+}
+
+void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
+    AnimatedSprite::paint(painter, option, widget);
+    painter->setPen(Qt::red);
+    painter->setBrush(QColor(Qt::red));
+
+    painter->translate(-this->pos());
+
+    painter->drawPolygon(topWhiskerLeft);
+    painter->drawPolygon(topWhiskerRight);
+
+    painter->drawPolygon(rightWhiskerTop);
+    painter->drawPolygon(rightWhiskerBottom);
+
+    painter->drawPolygon(bottomWhiskerRight);
+    painter->drawPolygon(bottomWhiskerLeft);
+
+    painter->drawPolygon(leftWhiskerBottom);
+    painter->drawPolygon(leftWhiskerTop);
+
 }
 

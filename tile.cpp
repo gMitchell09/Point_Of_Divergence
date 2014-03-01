@@ -9,37 +9,39 @@ Tile::Tile(int width, int height, QGraphicsItem *parent) :
     this->setAcceleration(QPointF(0, 0));
     m_isStatic = true;
     m_usesStack = false;
+    this->setTransformOriginPoint(this->boundingRect().width()/2, this->boundingRect().height()/2);
 }
 
 void Tile::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    if (this->blockType() == kBox &&  (this->isOnLeftSlope() || this->isOnRightSlope())) {
-        for (auto itr = collisions.begin(); itr != collisions.end(); ++itr) {
-            if (((Collision)(*itr)).firstSide == Bottom) {
-                Sprite* spr = dynamic_cast<Sprite*>(((Collision)(*itr)).secondSprite);
-                switch (spr->blockType()) {
-                    case kSlope30Left:
-                        this->setRotation(30);
-                        break;
-                    case kSlope30Right:
-                        this->setRotation(-30);
-                        break;
-                    case kSlope60Left:
-                        this->setRotation(30);
-                        break;
-                    case kSlope60Right:
-                        this->setRotation(-30);
-                        break;
-                    case kSlope45Left:
-                        this->setRotation(45);
-                        break;
-                    case kSlope45Right:
-                        this->setRotation(-45);
-                        break;
-                    default:
-                        this->setRotation(0);
-                        break;
+    if (this->blockType() == kBox) {
+        if (this->isOnLeftSlope() || this->isOnRightSlope()) {
+            for (auto itr = collisions.begin(); itr != collisions.end(); ++itr) {
+                if (((Collision)(*itr)).firstSide == Bottom) {
+                    Sprite* spr = dynamic_cast<Sprite*>(((Collision)(*itr)).secondSprite);
+                    switch (spr->blockType()) {
+                        case kSlope30Left:
+                            this->setRotation(30);
+                            break;
+                        case kSlope30Right:
+                            this->setRotation(-30);
+                            break;
+                        case kSlope60Left:
+                            this->setRotation(30);
+                            break;
+                        case kSlope60Right:
+                            this->setRotation(-30);
+                            break;
+                        case kSlope45Left:
+                            this->setRotation(45);
+                            break;
+                        case kSlope45Right:
+                            this->setRotation(-45);
+                            break;
+                    }
                 }
             }
+        } else {
+            this->setRotation(0);
         }
     }
 }

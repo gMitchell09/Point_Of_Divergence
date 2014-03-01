@@ -23,14 +23,14 @@ struct Collision {
 class AnimatedCollideableSprite : public AnimatedSprite
 {
 private:
-    QPoint m_collisionPoints[4][2];
+    QPointF m_collisionPoints[4][2];
     std::stack<PositionState> m_positionStateStack;
 
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset, bool timeReversed);
     void resolveCollision(Collision collision);
-    bool spriteWithinWhisker(QRectF whisker, QList<Sprite *> &collisions);
+    bool spriteWithinWhisker(QPolygonF whisker, QList<Sprite *> &collisions);
 
-    QRectF topWhiskerLeft, topWhiskerRight, rightWhiskerTop, rightWhiskerBottom, bottomWhiskerRight, bottomWhiskerLeft, leftWhiskerBottom, leftWhiskerTop;
+    QPolygonF topWhiskerLeft, topWhiskerRight, rightWhiskerTop, rightWhiskerBottom, bottomWhiskerRight, bottomWhiskerLeft, leftWhiskerBottom, leftWhiskerTop;
     void updateWhiskers(QPointF offset);
 
     bool m_onLeftSlope, m_onRightSlope;
@@ -56,6 +56,8 @@ public:
 
     bool isOnLeftSlope() { return m_onLeftSlope; }
     bool isOnRightSlope() { return m_onRightSlope; }
+
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 
 protected:
