@@ -21,4 +21,5 @@ void MovingPlatform::step(qint64 time, long delta) {
 
     m_velocity += m_acceleration * timeStep;
     this->setPos(this->pos() + (m_velocity + oldVel) * 0.5 * timeStep);
+    m_apparentVelocity = m_velocity;
 }

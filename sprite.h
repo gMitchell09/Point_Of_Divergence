@@ -22,7 +22,7 @@ private:
     bool m_solid;
 
 protected:
-    QPointF m_acceleration, m_velocity;
+    QPointF m_acceleration, m_velocity, m_apparentVelocity;
 
     virtual bool usesStack() { return false; }
 
@@ -58,6 +58,8 @@ public:
 
     void setVelocity(QPointF velocity) { m_velocity = velocity; }
     QPointF& getVelocity() { return m_velocity; }
+
+    QPointF& getApparentVelocity() { return m_apparentVelocity; }
 
     virtual void step(qint64 time, long delta) {}
 

@@ -4,18 +4,28 @@
 
 #include "databasecontroller.h"
 
-DatabaseController::DatabaseController(QObject *parent) :
-    QObject(parent) {
+DatabaseController* DatabaseController::m_singleton = 0;
+
+DatabaseController::DatabaseController() {
 }
 
 void DatabaseController::buildTables() {
-    db = QSqlDatabase::addDatabase( "QSQLITE" );  //QMYSQL
     //for non-lab machines, use "pavelow.eng.uah.edu"
-    db.setHostName("pavelow");              //host name
-    db.setPort(3303);                       //port number
+    // No.  For ALL machines use pavelow.eng.uah.edu.
+    //  The lab machines are a special case.
+
+    /* DB Params:
+     * Server flavor: sqlite
+     * host name: pavelow
+     * port number: 3303
+     * database name: PoD_database.db
+     */
+    db = QSqlDatabase::addDatabase( "QSQLITE" );
+    db.setHostName("pavelow.eng.uah.edu");
+    db.setPort(3303);
 //    db.setUserName("team3");
 //    db.setPassword("hroluba");
-    db.setDatabaseName("PoD_database.db");   //database name
+    db.setDatabaseName("PoD_database.db");
 
     db.open();
 //    db.removeDatabase("PoD_database.db");

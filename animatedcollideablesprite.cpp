@@ -236,12 +236,12 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                         if ((side & Bottom) || (this->pos().x() <= col.secondSprite->pos().x() && col.normalVector.x() < 0) ||
                             (this->pos().x() >= col.secondSprite->pos().x() && col.normalVector.x() > 0)) {
                             //newPos.setX(newPos.x() + ((Collision)(*itr)).normalVector.x() * timeStep);
-                            relativeVel.setX(col.secondSprite->getVelocity().x());
+                            relativeVel.setX(col.secondSprite->getApparentVelocity().x());
                         }
                         if ((this->pos().y() <= col.secondSprite->pos().y() && col.normalVector.y() < 0) ||
                             (this->pos().y() >= col.secondSprite->pos().y() && col.normalVector.y() > 0)) {
                             //newPos.setY(newPos.y() + ((Collision)(*itr)).normalVector.y() * timeStep);
-                            relativeVel.setY(col.secondSprite->getVelocity().y());
+                            relativeVel.setY(col.secondSprite->getApparentVelocity().y());
 //                            qDebug() << "Normal Vector: " << ((Collision)(*itr)).normalVector.y();
                         }
 
@@ -268,6 +268,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
             m_velocity = newVel;
 
             this->setPos(this->pos() + ((m_velocity + oldVel) * 0.5 + relativeVel) * timeStep);
+            m_apparentVelocity = (m_velocity + oldVel) * 0.5 + relativeVel;
         }
 
         if (this->usesStack()) {

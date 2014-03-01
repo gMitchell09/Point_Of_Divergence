@@ -234,7 +234,7 @@ void GameEngine::displayLoadMenu() {
     std::function<void(void)> func = std::bind(&GameEngine::displayMainMenu_load, this);
     m_mainmenuButton->setCallback(func);
 
-    m_table = new DatabaseController();
+    DatabaseController* m_table = DatabaseController::Instance();
     m_table->buildTables();
 
     m_table->deleteTable();

@@ -73,8 +73,6 @@ private:
     OptionButton * m_musicButton;
     MenuButton * m_mainmenuButton;
 
-    DatabaseController * m_table;
-
     std::vector<std::function<void(long)>> m_stepHandlerVector;
 
     // This is a vector of sprites that can be interacted with

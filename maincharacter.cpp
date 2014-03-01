@@ -265,6 +265,7 @@ void MainCharacter::step(qint64 time, long delta) {
 */
 
 void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
+    bool hitCoin = false;
     for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
         Sprite* other = ((Collision)(*itr)).secondSprite;
         Side locSide = ((Collision)(*itr)).firstSide;
@@ -273,14 +274,19 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
             m_jumping_double = false;
             m_jumping = false;
         }
+
         if (locSide & other->damagesChar()) {
             ((GameEngine*)this->scene())->characterDamaged();
         }
+
         switch (other->blockType()) {
         case ItemType::kBlock: break;
         case ItemType::kCoin:
-            ((GameEngine*)this->scene())->incrementCoins();
-            ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
+            if (!hitCoin) {
+                ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
+                ((GameEngine*)this->scene())->incrementCoins();
+                hitCoin = true;
+            }
             break;
         case ItemType::kBox:
             if ((locSide & Left && m_leftPressed) || (locSide & Right && m_rightPressed)) {
