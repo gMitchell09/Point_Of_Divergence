@@ -159,6 +159,8 @@ public:
 
     virtual void characterDamaged();
 
+    virtual void render(QPainter * painter, const QRectF & target = QRectF(), const QRectF & source = QRectF(), Qt::AspectRatioMode aspectRatioMode = Qt::KeepAspectRatio);
+
     virtual ~GameEngine() {}
 
 protected:

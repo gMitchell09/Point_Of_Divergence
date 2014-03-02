@@ -36,17 +36,40 @@ void DatabaseController::buildTables() {
     }
     else {
         QSqlQuery build;
-        build.exec( QString("CREATE TABLE save_table"
-                            "(name TEXT,"
-                            "clocks INTEGER,"
-                            "score INTEGER,"
-                            "coins INTEGER,"
-                            "checkpoint INTEGER,"
-                            "powerups INTEGER,"
-                            "gametime INTEGER,"
-                            "items INTEGER)"));
-        m_state = true;
-        qDebug() << "database built";
+
+        build.exec("SELECT * FROM save_table");
+        if (!build.isActive()) {
+            qDebug() << "Save Table doesn't exist ... creating";
+
+            build.exec( QString("CREATE TABLE save_table"
+                                "(name TEXT,"
+                                "clocks INTEGER,"
+                                "score INTEGER,"
+                                "coins INTEGER,"
+                                "checkpoint INTEGER,"
+                                "powerups INTEGER,"
+                                "gametime INTEGER,"
+                                "items INTEGER)"));
+        } else {
+            qDebug() << "Database already exists... contains: ";
+            while(build.next()) {
+                qDebug() << build.value(0).toString();
+            }
+        }
+        build.exec("SELECT * FROM options_table");
+        if (!build.isActive()) {
+            build.exec( QString("CREATE TABLE options_table"
+                                "(name TEXT,"
+                                "sound BOOLEAN"
+                                "music BOOLEAN)"));
+            m_state = true;
+            qDebug() << "options database built";
+        } else {
+            qDebug() << "Database already exists... contains: ";
+            while(build.next()) {
+                qDebug() << build.value(0).toString();
+            }
+        }
     }
 }
 
@@ -78,8 +101,8 @@ void DatabaseController::deleteVals(QString where, QString modifier) {
 }
 
 void DatabaseController::deleteTable() {
-    QSqlQuery qdt("DELETE FROM save_table WHERE score > 0");
-    qDebug() << "table deleted";
+    //QSqlQuery qdt("DELETE FROM save_table WHERE score > 0");
+    //qDebug() << "table deleted";
 }
 
 

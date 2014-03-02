@@ -21,7 +21,7 @@ public:
     void deleteVals(QString where, QString modifier);
     void deleteTable();
 
-    virtual bool isOpen() { m_state; }
+    virtual bool isOpen() { return m_state; }
 
 private:
     DatabaseController();

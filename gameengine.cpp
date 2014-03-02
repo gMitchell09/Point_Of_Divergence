@@ -395,6 +395,11 @@ void GameEngine::characterDamaged() {
     this->setForegroundBrush(QColor(200, 0, 0, 127));
 }
 
+void GameEngine::render(QPainter *painter, const QRectF &target, const QRectF &source, Qt::AspectRatioMode aspectRatioMode) {
+    painter->setRenderHint(QPainter::Antialiasing, true);
+    QGraphicsScene::render(painter, target, source, aspectRatioMode);
+}
+
 void GameEngine::QuitGame() {
     exit(0);
 }
