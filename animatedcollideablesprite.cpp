@@ -42,13 +42,6 @@ void AnimatedCollideableSprite::updateWhiskers(QPointF offset) {
     QSizeF topWhiskerSize = QSizeF(2, -MAX(abs(offset.y()), MIN_WHISKER));
     QSizeF leftWhiskerSize = QSizeF(-MAX(abs(offset.x()), MIN_WHISKER_LR), 2);
 
-    if (this->className() == "MainCharacter") {
-        qDebug() << "Bottom: " << bottomWhiskerSize;
-        qDebug() << "Right: " << rightWhiskerSize;
-        qDebug() << "Top: " << topWhiskerSize;
-        qDebug() << "Left: " << leftWhiskerSize;
-    }
-
     // For top: height = topBottomWhiskerSize * QSize(1, -1);
     // For left: width = leftRightWhiskerSize * QSize(-1, 1);
 

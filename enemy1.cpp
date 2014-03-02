@@ -34,7 +34,7 @@ Enemy1::Enemy1(int width, int height, QGraphicsItem *parent) :
     this->setVelocity(QPointF(0, 0));
     this->setAcceleration(QPointF(0, 0));
 
-    m_currentState = Goomba::Stand;
+    m_currentState = Stand;
     this->triggerAnimation(m_currentState);
     this->setAcceleration(QPointF(m_rightAccel, m_gravity));
 }
@@ -45,7 +45,7 @@ void Enemy1::step(qint64 time, long delta) {
     if (this->getVelocity().x() > m_maxVelX) this->getVelocity().setX(m_maxVelX);
     if (this->getVelocity().y() > m_maxVelY) this->getVelocity().setY(m_maxVelY);
 
-    if (m_currentState == Goomba::Squish) {
+    if (m_currentState == Squish) {
         m_squishCtr += delta;
         if (m_squishCtr > 250) {
             ((GameEngine*)this->scene())->removeItem(this);
@@ -62,7 +62,7 @@ void Enemy1::collisionOccurred(QList<Collision> &collisions, unsigned char side)
         this->getAcceleration().setX(m_rightAccel);
     }
     if (0 && side & Top) {
-        m_currentState = Goomba::Squish;
+        m_currentState = Squish;
         this->triggerAnimation(m_currentState);
     }
 }

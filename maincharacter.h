@@ -14,16 +14,16 @@
 #include "global.h"
 #include "gameengine.h"
 
-enum MovementState { Stand_Right = 0, Stand_Left,
-                     Walk_Right, Walk_Left,
-                     Run_Right, Run_Left,
-                     Jump_Right, Jump_Left,
-                     Squat_Right, Squat_Left,
-                     Brake_Right, Brake_Left};
-
 class MainCharacter : public AnimatedCollideableSprite
 {
 private:
+    enum MovementState { Stand_Right = 0, Stand_Left,
+                         Walk_Right, Walk_Left,
+                         Run_Right, Run_Left,
+                         Jump_Right, Jump_Left,
+                         Squat_Right, Squat_Left,
+                         Brake_Right, Brake_Left};
+
     MovementState m_currentState;
     // nextState is if you are running right and then pressed the left key... it is for mapping between states
 //    MovementState m_nextState;
