@@ -5,6 +5,9 @@
 #include <QDebug>
 #include <QStringList>
 
+#include <map>
+#include <assert.h>
+
 class DatabaseController {
 public:
     static DatabaseController* Instance() {
@@ -17,7 +20,9 @@ public:
     void buildTables();
     void readVals(QString what, QString where);
     void readVals(QString what, QString where, QString modifier);
-    void addVals(QString where, QString str1, QString str2, QString str3, int int1);
+    void addVals(QString where, QString str1, QString str2, QString str3, QString int1);
+    void addSave(std::vector<QString> names, std::vector<QString> values, QString table = QString("save_table"));
+    void addOption(QString saveName, QString optionName, QString optionValue);
     void deleteVals(QString where, QString modifier);
     void deleteTable();
 

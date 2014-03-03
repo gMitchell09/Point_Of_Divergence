@@ -10,6 +10,7 @@
 #include <vector>
 #include <QGraphicsScene>
 #include <QGraphicsObject>
+#include <QGraphicsItemGroup>
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QMouseEvent>

@@ -61,8 +61,12 @@ void Enemy1::collisionOccurred(QList<Collision> &collisions, unsigned char side)
     if (side & Left) {
         this->getAcceleration().setX(m_rightAccel);
     }
-    if (0 && side & Top) {
-        m_currentState = Squish;
-        this->triggerAnimation(m_currentState);
+
+    for (auto itr = collisions.begin(); itr != collisions.end(); ++itr) {
+        Collision col = (*itr);
+        if (col.firstSide & Top && col.secondSprite->className() == "MainCharacter") {
+            m_currentState = Squish;
+            this->triggerAnimation(m_currentState);
+        }
     }
 }

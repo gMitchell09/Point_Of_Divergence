@@ -23,6 +23,12 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_gamePausedDueToDamage(false) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 
+//    QGraphicsItemGroup *initial = new QGraphicsItemGroup();
+//    MenuButton *btn0 = new MenuButton(asdfasdf);
+//    ...
+//    initial->addToGroup(btn0);
+//    initial->setPos(0, 0);
+
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
     heartbeat->start(1); // 20fps
@@ -239,12 +245,25 @@ void GameEngine::displayLoadMenu() {
 
     m_table->deleteTable();
 
-    m_table->addVals("save_table", "name", "score", "Jesse", 200);
-    m_table->addVals("save_table", "name", "score", "Atley", 199);
-    m_table->addVals("save_table", "name", "score", "George", 400);
-    m_table->addVals("save_table", "name", "score", "jesse2", 1);
-    m_table->addVals("save_table", "name", "score", "atley2", 2);
-    m_table->addVals("save_table", "name", "score", "george2", 3);
+//    m_table->addVals("save_table", "name", "score", "Jesse", QString::number(200));
+//    m_table->addVals("save_table", "name", "score", "Atley", QString::number(199));
+//    m_table->addVals("save_table", "name", "score", "George", QString::number(400));
+//    m_table->addVals("save_table", "name", "score", "jesse2", QString::number(1));
+//    m_table->addVals("save_table", "name", "score", "atley2", QString::number(2));
+//    m_table->addVals("save_table", "name", "score", "george2", QString::number(3));
+
+    std::vector<QString> names, values;
+    names.push_back("name");
+    names.push_back("score");
+
+    values.push_back("Jesse");
+    values.push_back("1000");
+    m_table->addSave(names, values);
+    values.clear();
+
+    values.push_back("Atley");
+    values.push_back("2000");
+    m_table->addSave(names, values);
 
     m_table->readVals("*", "save_table");
 

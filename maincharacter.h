@@ -1,4 +1,4 @@
-#ifndef MAINCHARACTER_H
+ #ifndef MAINCHARACTER_H
 #define MAINCHARACTER_H
 
 /* Author: George Mitchell

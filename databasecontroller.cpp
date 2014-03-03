@@ -91,9 +91,60 @@ void DatabaseController::readVals(QString what, QString where) {
                  << "| Score: " << qr.value(2).toInt();
 }
 
-void DatabaseController::addVals(QString where, QString str1, QString str2, QString str3, int int1) {
-    QSqlQuery qr("INSERT INTO " + where + " (" + str1 + ", " + str2 +
-            ") VALUES ('" + str3 + "', " + QString::number(int1) + ")");
+void DatabaseController::addVals(QString where, QString str1, QString str2, QString str3, QString int1) {
+    QSqlQuery test("SELECT * FROM " + where + " WHERE name='" + str1 + "'");
+    if (test.size() <= 0) {
+        QSqlQuery qr("INSERT INTO " + where + " (" + str1 + ", " + str2 +
+                ") VALUES ('" + str3 + "', " + int1 + ")");
+    } else {
+        QSqlQuery qr("UPDATE (" + str1 + ", " + str2 + ") FROM " + where + " SET "+str2+"='"+int1+"'");
+    }
+}
+
+/*
+ INSERT INTO table (name1, name2, name3, name4) VALUES (val1, val2, val3)
+*/
+
+void DatabaseController::addSave(std::vector<QString> names, std::vector<QString> values, QString table) {
+    QString strNames, strValues;
+
+
+    for (int i=0; i < names.size(); i++) {
+        strNames += names.at(i);
+        if (i != names.size() - 1) {
+            strNames += ", ";
+        }
+    }
+
+    for (int i=0; i < values.size(); i++) {
+        strValues += "'" + values.at(i) + "'";
+        if (i != values.size() - 1) {
+            strValues += ", ";
+        }
+    }
+
+    assert(names.at(0) == "name");
+    QSqlQuery test("SELECT * FROM "+ table +" WHERE name='" + values.at(0) + "'");
+    if (test.size() <= 0) {
+        QSqlQuery qr("INSERT INTO "+table+" ("+strNames+") VALUES (" + strValues + ")");
+    } else {
+        QSqlQuery qr("UPDATE (" + strNames + ") FROM "+table+" SET " + strValues + ")");
+    }
+
+    if(db.isOpenError()) {
+        qDebug() << "FUCK";
+    }
+}
+
+void DatabaseController::addOption(QString saveName, QString optionName, QString optionValue) {
+    QSqlQuery test("SELECT * FROM options_table WHERE name=" + saveName);
+    if (test.size() <= 0) {
+        qDebug() << "Name doesn't exist in DB... adding: ";
+        QSqlQuery qr("INSERT INTO option_table (name, value) VALUES ('"+optionName+"', '"+optionValue+"')");
+    } else {
+        qDebug() << "Name exists, updating";
+        QSqlQuery qr("UPDATE name, value FROM options_table WHERE name="+optionName+" SET value=" + optionValue);
+    }
 }
 
 void DatabaseController::deleteVals(QString where, QString modifier) {
