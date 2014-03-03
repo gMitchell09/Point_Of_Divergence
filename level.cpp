@@ -18,6 +18,8 @@ Level::Level(QString filePath, QGraphicsItem *parent) :
         QDomElement root = levelXML.documentElement();
         this->parseMap(root);
     }
+
+    this->setHandlesChildEvents(false);
 }
 
 void Level::parseMap(QDomElement map) {

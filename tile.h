@@ -3,6 +3,7 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
 
 #include "gameengine.h"
 #include "sprite.h"
@@ -55,6 +56,8 @@ public:
     virtual bool usesStack() { return m_usesStack; }
 
     virtual void step(qint64 time, long delta);
+
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 };
 

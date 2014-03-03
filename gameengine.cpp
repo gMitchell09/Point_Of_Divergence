@@ -19,14 +19,49 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_timeReversed(false),
     m_hud(0),
     m_timeDivider(1),
+    m_gamePaused(false),
     m_audioSettings(true),
-    m_gamePaused(true),
     m_gamePausedDueToDamage(false) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
     heartbeat->start(1); // 20fps
+}
+
+GameEngine::~GameEngine() {
+    delete m_mainActor;
+    delete bkg;
+    delete initialMenu;
+    delete loadMenu;
+    delete optionsMenu;
+    delete m_testButton;
+    delete m_newgameButton;
+    delete m_loadgameButton;
+    delete m_optionsButton;
+    delete m_quitButton;
+    delete m_mainmenuButton;
+    delete m_saveButton;
+    delete m_cancelButton;
+    delete m_musicButton;
+
+    delete m_hud;
+    delete m_hudGameTime;
+    delete heartbeat;
+
+    for (auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); ++itr) {
+        this->removeItem(*itr);
+    }
+    m_spriteArray.clear();
+
+    for (auto itr = m_deletedItems.begin(); itr != m_deletedItems.end(); ++itr) {
+        delete *itr;
+    }
+
+    for (auto itr = m_levels.begin(); itr != m_levels.end(); ++itr) {
+        this->removeItem(*itr);
+    }
+    m_levels.clear();
 }
 
 void GameEngine::invalidateTimer() {
@@ -258,9 +293,6 @@ void GameEngine::displayLoadMenu() {
     this->addItem(loadMenu);
 
     DatabaseController* m_table = DatabaseController::Instance();//
-    m_table->buildTables();
-
-    m_table->deleteTable();
 
 //    m_table->addVals("save_table", "name", "score", "Jesse", QString::number(200));
 //    m_table->addVals("save_table", "name", "score", "Atley", QString::number(199));
@@ -401,20 +433,6 @@ void GameEngine::startSinglePlayer() {
 void GameEngine::characterDamaged() {
     m_gamePausedDueToDamage = true;
     this->setForegroundBrush(QColor(200, 0, 0, 127));
-}
-
-void GameEngine::render(QPainter *painter, const QRectF &target, const QRectF &source, Qt::AspectRatioMode aspectRatioMode) {
-//    if (painter->testRenderHint(QPainter::Antialiasing)) {
-//        painter->setRenderHint(QPainter::Antialiasing, true);
-//        qDebug() << "Antialising toggled on";
-//    } else {
-//        painter->setRenderHint(QPainter::Antialiasing, off);
-//        qDebug() << "Antialiasing toggled off";
-//    }
-//    QGraphicsScene::render(painter, target, source, aspectRatioMode);
-//------------------
-//    painter->setRenderHint(QPainter::Antialiasing, m_videoSettings);
-//    QGraphicsScene::render(painter, target, source, aspectRatioMode);
 }
 
 void GameEngine::toggleAudio() {

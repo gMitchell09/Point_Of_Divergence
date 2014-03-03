@@ -53,3 +53,7 @@ void Tile::step(qint64 time, long delta) {
         if (fabs(this->getVelocity().x()) < 0.1) this->setVelocity(QPointF(0, this->getVelocity().y()));
     }
 }
+
+void Tile::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    qDebug() << "Tile: " << this->blockType();
+}

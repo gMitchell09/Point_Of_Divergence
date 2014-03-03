@@ -7,6 +7,7 @@
 DatabaseController* DatabaseController::m_singleton = 0;
 
 DatabaseController::DatabaseController() {
+    this->buildTables();
 }
 
 void DatabaseController::buildTables() {
@@ -20,17 +21,14 @@ void DatabaseController::buildTables() {
      * port number: 3303
      * database name: PoD_database.db
      */
-    db = QSqlDatabase::addDatabase( "QSQLITE" );
+    db = QSqlDatabase::addDatabase( "QMYSQL" );
     db.setHostName("pavelow.eng.uah.edu");
     db.setPort(3303);
-//    db.setUserName("team3");
-//    db.setPassword("hroluba");
-    db.setDatabaseName("PoD_database.db");
+    db.setUserName("team3");
+//    db.setPassword("password");
+    db.setDatabaseName("PoD_database");
 
-    db.open();
-//    db.removeDatabase("PoD_database.db");
-//    db.close();
-    if (!db.isOpen()) {
+    if (!db.open()) {
         m_state = false;
         qDebug() << db.lastError() << "Error: unable to connect";
     }
@@ -51,7 +49,7 @@ void DatabaseController::buildTables() {
                                 "gametime INTEGER,"
                                 "items INTEGER)"));
         } else {
-            qDebug() << "Database already exists... contains: ";
+            qDebug() << "save_table already exists... contains: ";
             while(build.next()) {
                 qDebug() << build.value(0).toString();
             }
@@ -65,7 +63,7 @@ void DatabaseController::buildTables() {
             m_state = true;
             qDebug() << "options database built";
         } else {
-            qDebug() << "Database already exists... contains: ";
+            qDebug() << "options_table already exists... contains: ";
             while(build.next()) {
                 qDebug() << build.value(0).toString();
             }

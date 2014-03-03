@@ -26,7 +26,7 @@ private:
     QPointF m_collisionPoints[4][2];
     std::stack<PositionState> m_positionStateStack;
 
-    unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset, bool timeReversed);
+    unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset);
     void resolveCollision(Collision collision);
     bool spriteWithinWhisker(QPolygonF whisker, QList<Sprite *> &collisions);
 

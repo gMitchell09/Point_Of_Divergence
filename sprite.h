@@ -61,10 +61,10 @@ public:
 
     QPointF& getApparentVelocity() { return m_apparentVelocity; }
 
-    virtual void step(qint64 time, long delta) {}
+    virtual void step(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta); }
 
-    virtual void pushState(qint64 time, long delta) {}
-    virtual void popState(qint64 time, long delta) {}
+    virtual void pushState(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta); }
+    virtual void popState(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta); }
 
     void setSolid(bool solid = true) { m_solid = solid; }
     bool isSolid() { return m_solid; }

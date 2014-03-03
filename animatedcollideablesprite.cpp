@@ -154,7 +154,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
         bool wasOnSlope = (this->isOnLeftSlope() || this->isOnRightSlope());
 
         if (!this->isStatic()) {
-            unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep, timeReversed);
+            unsigned char side = this->checkForCollision(collisions, (m_velocity + oldVel) * 0.5 * timeStep);
 
             if (!collisions.empty()) {
                 QPointF newPos = QPointF(0,0);
@@ -262,7 +262,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                 }
                                 this->setPos(this->x(), second->pos().y() - this->boundingRect().height() + second->boundingRect().height() - lut_value);
                             }
-                        } else if (side && Bottom) m_onLeftSlope = m_onRightSlope = false;
+                        } else if (side & Bottom) m_onLeftSlope = m_onRightSlope = false;
 
                         switch (locSide) {
                             case Top:
@@ -305,8 +305,8 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                 (((locSide == Left) && m_velocity.x() < 0) || ((locSide == Right) && m_velocity.x() > 0))) {
                             newVel.setX(0);
                             if (this->className() == "MainCharacter") {
-                                qDebug() << "On Slope: " << (int)(this->isOnLeftSlope() || this->isOnRightSlope() || wasOnSlope);
-                                qDebug() << "velocity: " << this->getVelocity().x();
+                                qDebug() << "On Slope: " << ((this->isOnLeftSlope() || this->isOnRightSlope() || wasOnSlope) ? "YES" : "NO");
+                                qDebug() << "velocity: " << this->getVelocity();
                                 qDebug() << "Side: " << side << " Loc Side: " << locSide;
                             }
                         }
@@ -333,7 +333,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
     }
 }
 
-unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& collisions, QPointF offset, bool timeReversed) {
+unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& collisions, QPointF offset) {
     bool cTop=0, cRight=0, cBottom=0, cLeft=0;
     unsigned char side = 0;
     bool isCol, isCol2;
@@ -394,6 +394,12 @@ unsigned char AnimatedCollideableSprite::checkForCollision(QList<Collision>& col
     if (isCol || isCol2) {
         cBottom = true;
         Collision col;
+
+        if (isCol && isCol2 && solidCollisionList.size() > 1) {
+            if (solidCollisionList.at(0)->blockType() != solidCollisionList.at(1)->blockType()) {
+                //qDebug() << "UH-OH" << solidCollisionList.at(0)->blockType() << " : " << solidCollisionList.at(1)->blockType();
+            }
+        }
 
         for (auto itr = solidCollisionList.begin(); itr != solidCollisionList.end(); itr++) {
             Sprite* spr = dynamic_cast<Sprite*>(*itr);
@@ -480,7 +486,9 @@ bool AnimatedCollideableSprite::spriteWithinWhisker(QPolygonF whisker, QList<Spr
 }
 
 void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    // Override this method in your subclasses if you want to be alerted when collisions occur.        
+    // Override this method in your subclasses if you want to be alerted when collisions occur.
+    Q_UNUSED(collisions);
+    Q_UNUSED(side);
 }
 
 void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
