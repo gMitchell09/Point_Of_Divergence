@@ -66,13 +66,19 @@ private:
     MainCharacter * m_mainActor;
     StaticBackground *bkg;
 
+    QGraphicsItemGroup * initialMenu;
+    QGraphicsItemGroup * loadMenu;
+    QGraphicsItemGroup * optionsMenu;
+
     MenuButton * m_testButton;
     MenuButton * m_newgameButton;
     MenuButton * m_loadgameButton;
     MenuButton * m_optionsButton;
     MenuButton * m_quitButton;
-    OptionButton * m_musicButton;
     MenuButton * m_mainmenuButton;
+    MenuButton * m_saveButton;
+    MenuButton * m_cancelButton;
+    OptionButton * m_musicButton;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
 
@@ -105,7 +111,7 @@ public:
     void step(qint64 time);
     void displayBackground(QColor mycolor);
     void displayBackground(QPixmap &bkgPix);
-    void displayInitMenu();
+//    void displayInitMenu();
     void displayLoadMenu();
     void displayOptionsMenu();
     void displayMainMenu_load();

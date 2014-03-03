@@ -17,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     gameEngine = new GameEngine(ui->graphicsView->width(), ui->graphicsView->height());
     gameEngine->setSceneRect(0, 0, 1275, 643);
-    gameEngine->displayInitMenu();
+//    gameEngine->displayLoadMenu();//displayLoadMenu
 
     ui->graphicsView->setScene(gameEngine);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

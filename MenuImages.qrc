@@ -24,5 +24,11 @@
         <file alias="test_clicked.png">Sprites/menuButton_test_CLICKED.png</file>
         <file alias="test_hover.png">Sprites/menuButton_test_HOVER.png</file>
         <file alias="test_static.png">Sprites/menuButton_test_STATIC.png</file>
+        <file alias="cancel_clicked.png">Sprites/menuButton_cancel_CLICKED.png</file>
+        <file alias="cancel_hover.png">Sprites/menuButton_cancel_HOVER.png</file>
+        <file alias="cancel_static.png">Sprites/menuButton_cancel_STATIC.png</file>
+        <file alias="save_clicked.png">Sprites/menuButton_save_CLICKED.png</file>
+        <file alias="save_hover.png">Sprites/menuButton_save_HOVER.png</file>
+        <file alias="save_static.png">Sprites/menuButton_save_STATIC.png</file>
     </qresource>
 </RCC>
