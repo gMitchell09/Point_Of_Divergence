@@ -292,35 +292,31 @@ void GameEngine::displayLoadMenu() {
     this->removeItem(initialMenu);
     this->addItem(loadMenu);
 
-    DatabaseController* m_table = DatabaseController::Instance();//
-
-//    m_table->addVals("save_table", "name", "score", "Jesse", QString::number(200));
-//    m_table->addVals("save_table", "name", "score", "Atley", QString::number(199));
-//    m_table->addVals("save_table", "name", "score", "George", QString::number(400));
-//    m_table->addVals("save_table", "name", "score", "jesse2", QString::number(1));
-//    m_table->addVals("save_table", "name", "score", "atley2", QString::number(2));
-//    m_table->addVals("save_table", "name", "score", "george2", QString::number(3));
+    DatabaseController* m_table = DatabaseController::Instance();
 
     std::vector<QString> names, values;
     names.push_back("name");
     names.push_back("score");
 
-    values.push_back("Jesse");
-    values.push_back("1000");
+    values.push_back("Bob");
+    values.push_back("1001");
     m_table->addSave(names, values);
     values.clear();
 
-    values.push_back("Atley");
-    values.push_back("2000");
+    values.push_back("Smith");
+    values.push_back("1999");
     m_table->addSave(names, values);
 
     m_table->readVals("*", "save_table");
-
-    m_table->deleteVals("save_table", "score < 400");
 
     qDebug() << "------------------------------------------------------";
 
     m_table->readVals("*", "save_table");
+}
+
+void GameEngine::saveGame(std::vector<QString> values) {
+    std::vector<QString> names = {"name", "clocks", "score", "coins", "checkpoint", "powerups", "gametime", "items"};
+    DatabaseController::Instance()->addSave(names, values);
 }
 
 void GameEngine::displayOptionsMenu() {

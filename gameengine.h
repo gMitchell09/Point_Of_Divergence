@@ -172,6 +172,8 @@ public:
 
     virtual void characterDamaged();
 
+    void saveGame(std::vector<QString> values);
+
     virtual ~GameEngine();
 
 protected:
