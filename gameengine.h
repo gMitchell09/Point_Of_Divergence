@@ -22,6 +22,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QtSql>
+#include <QMessageBox>
 
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
@@ -118,6 +119,7 @@ public:
     void displayMainMenu_load();
     void displayMainMenu_option();
     void startSinglePlayer();
+    void saveSettings();
     void QuitGame();
     void modifiedOptionsWarning();
 

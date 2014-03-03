@@ -409,19 +409,24 @@ void GameEngine::modifiedOptionsWarning() {
     msgBox.setIcon(QMessageBox::Warning);
     msgBox.setText("The settings have been modified.");
     msgBox.setInformativeText("Do you want to save or discard your changes?");
-    msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard);
+    msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Discard);
     int ret = msgBox.exec();
     switch (ret) {
     case QMessageBox::Save:
         qDebug() << "The modified settings are saved.";
-        //...
+        this->saveSettings();
         break;
     case QMessageBox::Discard:
         qDebug() << "The modified settings are discarded.";
-        //...
+        this->displayMainMenu_option();
         break;
     }
+}
+
+void GameEngine::saveSettings() {
+    //...
+    this->displayMainMenu_option();
 }
 
 void GameEngine::QuitGame() {
