@@ -19,6 +19,7 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_timeReversed(false),
     m_hud(0),
     m_timeDivider(1),
+    m_audioSettings(true),
     m_gamePaused(true),
     m_gamePausedDueToDamage(false) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
@@ -208,6 +209,9 @@ void GameEngine::displayInitialMenu() {
     button_clicked = new QPixmap(":/Buttons/music_clicked.png");
     m_musicButton = new OptionButton(button_static, button_clicked);
     m_musicButton->setPos(this->width()/2-m_musicButton->boundingRect().width()/2, this->height()/3-m_musicButton->boundingRect().height()/2);
+    func = std::bind(&GameEngine::toggleAudio, this);
+    m_musicButton->setCallback(func);
+
 
     button_static = new QPixmap(":/Buttons/save_static.png");
     button_clicked = new QPixmap(":/Buttons/save_clicked.png");
@@ -400,8 +404,22 @@ void GameEngine::characterDamaged() {
 }
 
 void GameEngine::render(QPainter *painter, const QRectF &target, const QRectF &source, Qt::AspectRatioMode aspectRatioMode) {
-    painter->setRenderHint(QPainter::Antialiasing, true);
-    QGraphicsScene::render(painter, target, source, aspectRatioMode);
+//    if (painter->testRenderHint(QPainter::Antialiasing)) {
+//        painter->setRenderHint(QPainter::Antialiasing, true);
+//        qDebug() << "Antialising toggled on";
+//    } else {
+//        painter->setRenderHint(QPainter::Antialiasing, off);
+//        qDebug() << "Antialiasing toggled off";
+//    }
+//    QGraphicsScene::render(painter, target, source, aspectRatioMode);
+//------------------
+//    painter->setRenderHint(QPainter::Antialiasing, m_videoSettings);
+//    QGraphicsScene::render(painter, target, source, aspectRatioMode);
+}
+
+void GameEngine::toggleAudio() {
+    m_audioSettings = !m_audioSettings;
+    qDebug() << m_audioSettings;
 }
 
 void GameEngine::modifiedOptionsWarning() {
@@ -410,7 +428,7 @@ void GameEngine::modifiedOptionsWarning() {
     msgBox.setText("The settings have been modified.");
     msgBox.setInformativeText("Do you want to save or discard your changes?");
     msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-    msgBox.setDefaultButton(QMessageBox::Discard);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
     int ret = msgBox.exec();
     switch (ret) {
     case QMessageBox::Save:

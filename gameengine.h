@@ -61,6 +61,7 @@ private:
     double m_timeDivider;
     bool m_gamePaused;
     bool m_gamePausedDueToDamage;
+    bool m_audioSettings;
 
     qint64 m_prevTime;
     qint64 m_gameTime;
@@ -119,6 +120,7 @@ public:
     void displayMainMenu_load();
     void displayMainMenu_option();
     void startSinglePlayer();
+    void toggleAudio();
     void saveSettings();
     void QuitGame();
     void modifiedOptionsWarning();
