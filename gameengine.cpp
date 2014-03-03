@@ -120,8 +120,6 @@ bool GameEngine::event(QEvent *event) {
 //iterates through sprite array to remove deleted sprite
 void GameEngine::removeItem(QGraphicsItem *item) {
     QGraphicsScene::removeItem(item);
-
-    delete item;
 }
 
 void GameEngine::removeItem(Sprite *item) {
