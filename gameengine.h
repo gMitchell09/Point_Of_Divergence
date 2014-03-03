@@ -13,6 +13,7 @@
 #include <QGraphicsItemGroup>
 #include <QGraphicsView>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QKeyEvent>
 #include <QBrush>
@@ -118,6 +119,7 @@ public:
     void displayMainMenu_option();
     void startSinglePlayer();
     void QuitGame();
+    void modifiedOptionsWarning();
 
     inline void addHandler(std::function<void(long)> callback) {
         m_stepHandlerVector.push_back(callback);

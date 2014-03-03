@@ -220,6 +220,8 @@ void GameEngine::displayInitialMenu() {
     button_hover = new QPixmap(":/Buttons/cancel_hover.png");
     m_cancelButton = new MenuButton(button_static, button_clicked, button_hover);
     m_cancelButton->setPos(this->width()*2/3-m_cancelButton->boundingRect().width()/2, this->height()*2/3-m_cancelButton->boundingRect().height()/2);
+    func = std::bind(&GameEngine::modifiedOptionsWarning, this);
+    m_cancelButton->setCallback(func);
 
     optionsMenu->addToGroup(m_musicButton);
     optionsMenu->addToGroup(m_saveButton);
@@ -400,6 +402,26 @@ void GameEngine::characterDamaged() {
 void GameEngine::render(QPainter *painter, const QRectF &target, const QRectF &source, Qt::AspectRatioMode aspectRatioMode) {
     painter->setRenderHint(QPainter::Antialiasing, true);
     QGraphicsScene::render(painter, target, source, aspectRatioMode);
+}
+
+void GameEngine::modifiedOptionsWarning() {
+    QMessageBox msgBox;
+    msgBox.setIcon(QMessageBox::Warning);
+    msgBox.setText("The settings have been modified.");
+    msgBox.setInformativeText("Do you want to save or discard your changes?");
+    msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard);
+    msgBox.setDefaultButton(QMessageBox::Discard);
+    int ret = msgBox.exec();
+    switch (ret) {
+    case QMessageBox::Save:
+        qDebug() << "The modified settings are saved.";
+        //...
+        break;
+    case QMessageBox::Discard:
+        qDebug() << "The modified settings are discarded.";
+        //...
+        break;
+    }
 }
 
 void GameEngine::QuitGame() {
