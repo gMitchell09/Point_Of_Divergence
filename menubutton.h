@@ -2,6 +2,7 @@
 #define MENUBUTTON_H
 
 #include <QGraphicsItem>
+#include <QGraphicsItemGroup>
 #include <QGraphicsSceneMouseEvent>
 #include <QGraphicsSceneHoverEvent>
 #include <QDebug>

@@ -111,7 +111,7 @@ public:
     void step(qint64 time);
     void displayBackground(QColor mycolor);
     void displayBackground(QPixmap &bkgPix);
-//    void displayInitMenu();
+    void displayInitialMenu();
     void displayLoadMenu();
     void displayOptionsMenu();
     void displayMainMenu_load();

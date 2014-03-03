@@ -2,6 +2,7 @@
 #define OPTIONBUTTON_H
 
 #include <QGraphicsItem>
+#include <QGraphicsItemGroup>
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
 #include <functional>
