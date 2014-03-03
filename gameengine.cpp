@@ -294,17 +294,16 @@ void GameEngine::displayLoadMenu() {
 
     DatabaseController* m_table = DatabaseController::Instance();
 
-    std::vector<QString> names, values;
-    names.push_back("name");
-    names.push_back("score");
-
-    values.push_back("Bob");
-    values.push_back("1001");
+    std::vector<QString> names = {"name", "clocks", "score", "coins", "checkpoint", "powerups", "gametime", "items"};
+    std::vector<QString> values = {"Bob", "3", "1001", "20", "4", "255", "1208", "255"};
     m_table->addSave(names, values);
     values.clear();
 
-    values.push_back("Smith");
-    values.push_back("1999");
+    values = {"Atley", "7", "2000", "120", "44", "513", "321", "513"};
+    m_table->addSave(names, values);
+    values.clear();
+
+    values = {"Jesse", "7", "2000", "120", "44", "513", "321", "513"};
     m_table->addSave(names, values);
 
     m_table->readVals("*", "save_table");
