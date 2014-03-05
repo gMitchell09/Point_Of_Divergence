@@ -4,6 +4,7 @@
 
 #include <QDebug>
 #include <QPixmap>
+#include <QFile>
 #include "gameengine.h"
 GameEngine::GameEngine(QObject* parent) : QGraphicsScene(parent), m_mainActor(NULL), m_prevTime(0)
 {
@@ -27,6 +28,11 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
     heartbeat->start(1); // 20fps
+    QFile file("://Levels/LevelTest.tmx");
+    if (!file.exists()) {
+        QMessageBox *msg = new QMessageBox("Level not found!", "Level Not Found!!", QMessageBox::Critical, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
+        msg->show();
+    }
 }
 
 GameEngine::~GameEngine() {
