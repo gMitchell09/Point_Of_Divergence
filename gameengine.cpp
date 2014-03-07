@@ -6,6 +6,12 @@
 #include <QPixmap>
 #include <QFile>
 #include "gameengine.h"
+
+static const QString bgmPath = "./bgm/";
+static const QString sfxPath = "./sfx/";
+static const QString levelPath = "./levels/";
+static const QString spritePath = "./sprites/";
+
 GameEngine::GameEngine(QObject* parent) : QGraphicsScene(parent), m_mainActor(NULL), m_prevTime(0)
 {
 }
@@ -25,10 +31,10 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_gamePausedDueToDamage(false) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 
-    heartbeat = new QTimer(this);
-    connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
-    heartbeat->start(1); // 20fps
     QFile file("://Levels/LevelTest.tmx");
+
+    m_mediaPlayer = new QMediaPlayer(this);
+
     if (!file.exists()) {
         QMessageBox *msg = new QMessageBox("Level not found!", "Level Not Found!!", QMessageBox::Critical, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         msg->show();
@@ -342,6 +348,10 @@ void GameEngine::displayMainMenu_option() {
 void GameEngine::startSinglePlayer() {
     this->removeItem(initialMenu);
 
+    heartbeat = new QTimer(this);
+    connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
+    heartbeat->start(1); // 20fps
+
     StaticPlatform *testSprite, *testSprite2;
     StaticBackground *bkg;
     Sprite *life1, *life2, *life3;
@@ -427,6 +437,12 @@ void GameEngine::startSinglePlayer() {
 
     this->addSprite(object1);
     this->addSprite(goomba); // Add our goomba
+
+    if (level->getBGMPath() != "") {
+        m_mediaPlayer->setMedia(QUrl::fromLocalFile(level->getBGMPath()));
+        m_mediaPlayer->setVolume(100);
+        m_mediaPlayer->play();
+    }
 
     m_gamePaused = false;
 }

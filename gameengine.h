@@ -23,6 +23,7 @@
 #include <QDateTime>
 #include <QtSql>
 #include <QMessageBox>
+#include <QMediaPlayer>
 
 #include "animatedsprite.h"
 #include "animatedcollideablesprite.h"
@@ -62,6 +63,8 @@ private:
     bool m_gamePaused;
     bool m_gamePausedDueToDamage;
     bool m_audioSettings;
+
+    QMediaPlayer *m_mediaPlayer;
 
     qint64 m_prevTime;
     qint64 m_gameTime;

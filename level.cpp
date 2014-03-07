@@ -34,6 +34,14 @@ void Level::parseMap(QDomElement map) {
             this->parseTileSet(child);
         } else if (child.toElement().tagName() == "layer") {
             this->parseLayer(child);
+        } else if (child.toElement().tagName() == "properties") {
+            if (child.hasChildNodes()) {
+                if (child.firstChild().toElement().tagName() == "property" &&
+                    child.firstChild().toElement().attribute("name") == "bgm") {
+                    // SET BGM MEMBER VARIABLE TO child element value
+                    m_bgmPath = child.firstChild().toElement().attribute("value");
+                }
+            }
         } else {
             qDebug() << "Unrecognized 2nd level tag: " << child.toElement().tagName();
         }

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml sql
+QT       += core gui xml sql multimedia
 CONFIG   += c++11
 
 # Silly warning

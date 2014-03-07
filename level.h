@@ -25,6 +25,8 @@ private:
     int m_levelWidth, m_levelHeight;
     int m_tileWidth, m_tileHeight;
 
+    QString m_bgmPath;
+
     void parseMap(QDomElement map);
     void parseTileSet(QDomNode tileset);
     void parseTile(QDomNode tile, QMap<int, TileProperties> &tileProperties);
@@ -47,6 +49,8 @@ public:
     // getLevel* returns level size in PIXELS
     int getLevelHeight() { return m_levelHeight * m_tileHeight; }
     int getLevelWidth() { return m_levelWidth * m_tileWidth; }
+
+    QString getBGMPath() { return m_bgmPath; }
 
     virtual void step(qint64 time, long delta);
 
