@@ -1,8 +1,9 @@
 #include "level.h"
 
-Level::Level(QString filePath, QGraphicsItem *parent) :
-    QGraphicsItemGroup(parent) {
-    QFile tileFile(filePath);
+Level::Level(QString filePath, QString fileName, QGraphicsItem *parent) :
+    QGraphicsItemGroup(parent),
+    m_filePath(filePath) {
+    QFile tileFile(filePath + "/" + fileName);
     if(!tileFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Couldn't open file";
     }
@@ -90,7 +91,9 @@ void Level::parseTileSet(QDomNode tileset) {
 
     TileMap *tileMap = new TileMap(cellWidth, cellHeight,
                                    dividerWidth, dividerHeight,
-                                   ":/Levels/" + tilemapPath, tiles_wide, tiles_high);
+                                   m_filePath + "/" + tilemapPath, tiles_wide, tiles_high);
+
+    qDebug() << "Tilemap Path: " << m_filePath + "/" + tilemapPath;
 
     tileMap->m_tileProperties = tp;
 

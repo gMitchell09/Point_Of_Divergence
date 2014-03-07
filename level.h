@@ -25,6 +25,8 @@ private:
     int m_levelWidth, m_levelHeight;
     int m_tileWidth, m_tileHeight;
 
+    QString m_filePath;
+
     QString m_bgmPath;
 
     void parseMap(QDomElement map);
@@ -35,7 +37,7 @@ private:
     QPointF getTilePos(int tileNum) const;
 
 public:
-    explicit Level(QString filePath, QGraphicsItem *parent = 0);
+    explicit Level(QString filePath, QString fileName, QGraphicsItem *parent = 0);
 
     // Overrides to fix QT collision stupidity
     virtual QRectF boundingRect() const {

@@ -6,6 +6,10 @@
 
 QT       += core gui xml sql multimedia
 CONFIG   += c++11
+CONFIG   -= app_bundle
+
+copy_resources.path = $$OUT_PWD
+copy_resources.files = resources
 
 # Silly warning
 # QMAKE_CXXFLAGS_WARN_ON += -Wno-reorder -Wsequence-point -Wno-unused-parameter
@@ -60,15 +64,4 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-RESOURCES += \
-    Simple_Sprite.qrc \
-    Backgrounds.qrc \
-    MarioSprites.qrc \
-    Goomba.qrc \
-    Life.qrc \
-    Items.qrc \
-    LevelTest.qrc \
-    MenuImages.qrc
-
-OTHER_FILES += \
-    ../../Desktop/Game Assets/LevelTest.tmx
+INSTALLS += copy_resources

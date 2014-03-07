@@ -23,7 +23,6 @@ struct Collision {
 class AnimatedCollideableSprite : public AnimatedSprite
 {
 private:
-    QPointF m_collisionPoints[4][2];
     std::stack<PositionState> m_positionStateStack;
 
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset);
@@ -61,6 +60,7 @@ public:
 
 
 protected:
+    QPointF m_collisionPoints[4][2];
     virtual bool usesStack() { return false; }
 };
 
