@@ -15,7 +15,7 @@
 
 AnimatedSprite::AnimatedSprite(int width, int height, QGraphicsItem *parent) :
     Sprite(parent),
-    m_width(width), m_height(height) {
+    m_width(width), m_height(height), m_useSlice(false) {
 }
 
 void AnimatedSprite::addAnimation(std::vector<QPixmap> pixmapList, QPainterPath animationPath, kAnimationType animationType) {
@@ -71,8 +71,8 @@ void AnimatedSprite::step(qint64 time, long delta) {
             State currentState;
 
             // Loop until we are ahead of the past... wait, WTF does that even mean?!?!
-            while (!m_stateStack.empty() && (currentState = m_stateStack.top()).timestamp > time) {
-                m_stateStack.pop();
+            while (!m_stateStack.empty() && (currentState = m_stateStack.back()).timestamp > time) {
+                m_stateStack.pop_back();
             }
 
             m_nCurrentAnimation = currentState.m_nCurrentAnimation;
@@ -152,10 +152,21 @@ void AnimatedSprite::step(qint64 time, long delta) {
             currentState.m_nCurrentAnimation = m_nCurrentAnimation;
             currentState.m_nCurrentFrame = m_nCurrentFrame;
             currentState.timestamp = time;
-            m_stateStack.push(currentState);
+            m_stateStack.push_back(currentState);
         }
     }
 
     if (m_nCurrentFrame >= (signed)m_animationList.at(m_nCurrentAnimation).size() || m_nCurrentFrame < 0) m_nCurrentFrame = m_animationList.at(m_nCurrentAnimation).size() - 1;
     this->setPixmap(m_animationList.at(m_nCurrentAnimation).at(m_nCurrentFrame));
+}
+
+void AnimatedSprite::beginSlice() {
+    m_stateSliceBegin = m_stateStack.size();
+}
+
+void AnimatedSprite::endSlice() {
+    m_stateSliceEnd = m_stateStack.size();
+
+    m_stateSlice = std::vector<State>(m_stateStack.begin() + m_stateSliceBegin, m_stateStack.begin() + m_stateSliceEnd);
+    m_stateSliceIndex = 0;
 }

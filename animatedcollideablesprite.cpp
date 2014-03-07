@@ -127,15 +127,19 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
     }
 
     if (timeReversed && this->usesStack()) {
-        if (!m_positionStateStack.empty()) {
-            PositionState currentState;
+        if (!m_useSlice) {
+            if (!m_positionStateStack.empty()) {
+                PositionState currentState;
 
-            // Loop until we are ahead of the past... wait, WTF does that even mean?!?!
-            while (!m_positionStateStack.empty() && (currentState = m_positionStateStack.top()).timestamp > time) {
-                m_positionStateStack.pop();
+                // Loop until we are ahead of the past... wait, WTF does that even mean?!?!
+                while (!m_positionStateStack.empty() && (currentState = m_positionStateStack.back()).timestamp > time) {
+                    m_positionStateStack.pop_back();
+                }
+
+                this->setPos(currentState.pos);
             }
+        } else {
 
-            this->setPos(currentState.pos);
         }
     }
 
@@ -328,7 +332,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
             PositionState currentState;
             currentState.pos = this->pos();
             currentState.timestamp = time;
-            m_positionStateStack.push(currentState);
+            m_positionStateStack.push_back(currentState);
         }
     }
 }
@@ -512,3 +516,12 @@ void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraph
 
 }
 
+void AnimatedCollideableSprite::beginSlice() {
+    m_positionStateSliceBegin = m_positionStateStack.size();
+}
+
+void AnimatedCollideableSprite::endSlice() {
+    m_positionStateSliceEnd = m_positionStateStack.size();
+
+    m_positionStateSlice = std::vector<PositionState>(m_positionStateStack.begin() + m_positionStateSliceBegin, m_positionStateStack.begin() + m_positionStateSliceEnd);
+}

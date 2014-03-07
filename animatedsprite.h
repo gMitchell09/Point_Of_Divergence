@@ -21,7 +21,6 @@ enum kAnimationType {
     Forward_Reverse_Loop,   Reverse_Forward_Loop
 };
 
-struct State { char m_nCurrentFrame, m_nCurrentAnimation; qint64 timestamp; };
 
 class AnimatedSprite : public Sprite {
 
@@ -32,13 +31,19 @@ private:
      *  - List of series' of pixmaps that correspond to each animation that this sprite will contain
      */
 
+    struct State { char m_nCurrentFrame, m_nCurrentAnimation; qint64 timestamp; };
+
     std::vector<QPainterPath> m_animationPathList;
     char m_nCurrentFrame;
     char m_nCurrentAnimation;
     std::vector<std::vector<QPixmap>> m_animationList;
     std::vector<kAnimationType> m_animationType;
 
-    std::stack<State> m_stateStack;
+    std::vector<State> m_stateStack;
+
+    std::vector<State> m_stateSlice;
+    int m_stateSliceBegin, m_stateSliceEnd;
+    int m_stateSliceIndex;
 
     bool m_countUp;
     unsigned int m_msPerFrame;
@@ -60,9 +65,16 @@ public:
     virtual bool isCollideable() { return false; }
     virtual bool isBackground() { return false; }
 
+    virtual void beginSlice();
+    virtual void endSlice();
+
+    virtual void useSlice(bool use = true) { m_useSlice = use; }
+
     virtual QString className() { return "AnimatedSprite"; }
 
 protected:
+    bool m_useSlice;
+
     virtual bool usesStack() { return false; }
 
 signals:

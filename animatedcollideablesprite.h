@@ -11,8 +11,6 @@
 #include <QDebug>
 #include <stack>
 
-struct PositionState { QPointF pos; qint64 timestamp; };
-
 struct Collision {
     Sprite *firstSprite, *secondSprite;
     QPointF normalVector; // W.R.T. first!!!
@@ -23,7 +21,14 @@ struct Collision {
 class AnimatedCollideableSprite : public AnimatedSprite
 {
 private:
-    std::stack<PositionState> m_positionStateStack;
+    struct PositionState { QPointF pos; qint64 timestamp; };
+
+    std::vector<PositionState> m_positionStateStack;
+
+    std::vector<PositionState> m_positionStateSlice;
+
+    int m_positionStateSliceBegin, m_positionStateSliceEnd;
+    int m_positionStateSliceIndex;
 
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset);
     void resolveCollision(Collision collision);
@@ -57,6 +62,9 @@ public:
     bool isOnRightSlope() { return m_onRightSlope; }
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
+    virtual void beginSlice();
+    virtual void endSlice();
 
 
 protected:
