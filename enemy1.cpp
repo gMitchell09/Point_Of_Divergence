@@ -6,7 +6,7 @@
 #include "enemy1.h"
 #include "gameengine.h"
 
-Enemy1::Enemy1(int width, int height, QGraphicsItem *parent) :
+Enemy1::Enemy1(int width, int height, QString path, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, parent) {
 
     m_leftAccel = -150;
@@ -19,8 +19,8 @@ Enemy1::Enemy1(int width, int height, QGraphicsItem *parent) :
 
     m_squishCtr = 0;
 
-    QPixmap goombaStand(":Goomba/GoombaStand.png");
-    QPixmap goombaSquish(":Goomba/GoombaSquish.png");
+    QPixmap goombaStand(path + "/GoombaStand.png");
+    QPixmap goombaSquish(path + "/GoombaSquish.png");
 
     std::vector<QPixmap> stand;
     stand.push_back(goombaStand);

@@ -377,7 +377,7 @@ void GameEngine::startSinglePlayer() {
     mainChar->setPos(120 , 1020);
     mainChar->setSolid(true);
 
-    goomba = new Enemy1(20, 18);
+    goomba = new Enemy1(20, 18, enemyPath);
     goomba->setPos(500, 1120);
 
     floater = new MovingPlatform(48, 64);
@@ -422,7 +422,7 @@ void GameEngine::startSinglePlayer() {
     life3->setPos(QPointF(75, 25));
     life3->setPixmap(QPixmap(itemPath + "/HeartContainer.png"));
 
-    object1 = new ObjectItem(16, 16);
+    object1 = new ObjectItem(16, 16, itemPath);
     object1->setPos(700, 1020);
     object1->setSolid(false);
 

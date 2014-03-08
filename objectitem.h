@@ -10,7 +10,7 @@
 class ObjectItem : public AnimatedCollideableSprite
 {
 public:
-    ObjectItem(int width, int height, QGraphicsItem *parent = 0);
+    ObjectItem(int width, int height, QString path, QGraphicsItem *parent = 0);
 
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 

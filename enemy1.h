@@ -16,14 +16,14 @@ private:
     MovementState m_currentState;
 
 public:
-    Enemy1(int width, int height, QGraphicsItem *parent = 0);
+    Enemy1(int width, int height, QString path, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 
     virtual QString className() { return "Enemy1"; }
 
-    virtual Side damagesChar() { return (Side)(Left|Right|Top); }
+    virtual Side damagesChar() { return (m_currentState == Stand) ? ((Side)(Left|Right|Top)) : (Side)0; }
 
 protected:
     virtual bool usesStack() { return true; }
