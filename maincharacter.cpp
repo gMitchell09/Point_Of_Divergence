@@ -2,6 +2,7 @@
  * Use Case: *
  */
 
+#include "sfxmanager.h"
 #include "maincharacter.h"
 
 #define MIN(x, y) ((x<y)?x:y)
@@ -277,6 +278,9 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
 
         if (locSide & other->damagesChar()) {
             ((GameEngine*)this->scene())->characterDamaged();
+
+            SFXManager *inst = SFXManager::Instance();
+            inst->playSound(SFXManager::SFX::MainChar_Damaged);
         }
 
         switch (other->blockType()) {
@@ -286,10 +290,15 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
                 ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
                 ((GameEngine*)this->scene())->incrementCoins();
                 hitCoin = true;
+
+                SFXManager *inst = SFXManager::Instance();
+                inst->playSound(SFXManager::SFX::Coin_Grab);
             }
             break;
         case ItemType::kBox:
             if ((locSide & Left && m_leftPressed) || (locSide & Right && m_rightPressed)) {
+                SFXManager *inst = SFXManager::Instance();
+                inst->playSound(SFXManager::SFX::MainChar_PushBox);
                 qDebug() << "PUSH THE BOX";
                 if (locSide & Left && m_leftPressed) {
                     other->setVelocity(QPointF(-m_boxPushVelocity, other->getVelocity().y()));
@@ -329,4 +338,7 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
 
 void MainCharacter::jump() {
     this->getVelocity().setY(m_jumpStartVel);
+
+    SFXManager *inst = SFXManager::Instance();
+    inst->playSound(SFXManager::SFX::MainChar_Jump);
 }

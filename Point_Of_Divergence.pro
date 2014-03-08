@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     menubutton.cpp \
     level.cpp \
     optionbutton.cpp \
-    databasecontroller.cpp
+    databasecontroller.cpp \
+    sfxmanager.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -60,7 +61,8 @@ HEADERS  += mainwindow.h \
     menubutton.h \
     level.h \
     optionbutton.h \
-    databasecontroller.h
+    databasecontroller.h \
+    sfxmanager.h
 
 FORMS    += mainwindow.ui
 

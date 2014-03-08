@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QPixmap>
 #include <QFile>
+#include <QApplication>
+#include "sfxmanager.h"
 #include "gameengine.h"
 
 static const QString bkgPath = "./resources/backgrounds";
@@ -42,6 +44,8 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     QFile file(levelPath + "/LevelTest.tmx");
 
     m_mediaPlayer = new QMediaPlayer(this);
+    // Pre-load the SFX
+    SFXManager::Instance();
 
     if (!file.exists()) {
         QMessageBox *msg = new QMessageBox("Level not found!", "Level Not Found!!", QMessageBox::Critical, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
@@ -444,9 +448,9 @@ void GameEngine::startSinglePlayer() {
     this->addSprite(object1);
     this->addSprite(goomba); // Add our goomba
 
-    qDebug() << "BGM: " << QDir::currentPath() + bgmPath + level->getBGMPath();
-    if (level->getBGMPath() != "") {
-        m_mediaPlayer->setMedia(QUrl::fromLocalFile(QDir::currentPath() + bgmPath + level->getBGMPath()));
+    qDebug() << "BGM: " << QApplication::applicationDirPath() + bgmPath + level->getBGMPath();
+    if (level->getBGMPath() != "" && m_audioSettings) {
+        m_mediaPlayer->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + level->getBGMPath()));
         m_mediaPlayer->setVolume(50);
         connect(m_mediaPlayer, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(playBGM(QMediaPlayer::MediaStatus)));
     }

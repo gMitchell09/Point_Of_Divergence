@@ -2,6 +2,7 @@
  * Use Case: 07 (Destroy Enemy)
  */
 
+#include "sfxmanager.h"
 #include "enemy1.h"
 #include "gameengine.h"
 
@@ -67,6 +68,9 @@ void Enemy1::collisionOccurred(QList<Collision> &collisions, unsigned char side)
         if (col.firstSide & Top && col.secondSprite->className() == "MainCharacter") {
             m_currentState = Squish;
             this->triggerAnimation(m_currentState);
+
+            SFXManager *inst = SFXManager::Instance();
+            inst->playSound(SFXManager::SFX::Enemy_Squish);
         }
     }
 }
