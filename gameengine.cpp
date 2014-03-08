@@ -9,7 +9,8 @@
 
 static const QString bkgPath = "./resources/backgrounds";
 static const QString buttonPath = "./resources/buttons";
-static const QString bgmPath = "./resources/bgm";
+// No dot for bgmPath because we need the absolute path.
+static const QString bgmPath = "/resources/bgm";
 static const QString sfxPath = "./resources/sfx";
 static const QString levelPath = "./resources/levels";
 static const QString spritePath = "./resources/sprites";
@@ -443,10 +444,11 @@ void GameEngine::startSinglePlayer() {
     this->addSprite(object1);
     this->addSprite(goomba); // Add our goomba
 
+    qDebug() << "BGM: " << QDir::currentPath() + bgmPath + level->getBGMPath();
     if (level->getBGMPath() != "") {
-        m_mediaPlayer->setMedia(QUrl::fromLocalFile(level->getBGMPath()));
-        m_mediaPlayer->setVolume(100);
-        m_mediaPlayer->play();
+        m_mediaPlayer->setMedia(QUrl::fromLocalFile(QDir::currentPath() + bgmPath + level->getBGMPath()));
+        m_mediaPlayer->setVolume(50);
+        connect(m_mediaPlayer, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(playBGM(QMediaPlayer::MediaStatus)));
     }
 
     m_gamePaused = false;

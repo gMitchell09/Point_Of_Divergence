@@ -185,6 +185,7 @@ protected:
 
 private slots:
     void invalidateTimer();
+    void playBGM(QMediaPlayer::MediaStatus status) { m_mediaPlayer->play(); qDebug() << status;}
 };
 
 #endif // GAMEENGINE_H
