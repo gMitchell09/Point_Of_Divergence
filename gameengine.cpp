@@ -140,9 +140,12 @@ void GameEngine::step(qint64 time) {
 }
 
 void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
+    if (keyEvent->isAutoRepeat()) return;
     if (keyEvent->key() == Qt::Key_R) {
         if (m_gamePaused || m_gamePausedDueToDamage)
             m_gamePaused = m_gamePausedDueToDamage = false;
+        if (!m_timeReversed)
+            m_mediaPlayer->setPlaybackRate(-1);
         m_timeReversed = true;
     } else if (keyEvent->key() == Qt::Key_1) {
         m_timeDivider = 2;
@@ -161,6 +164,7 @@ void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
 
 void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
+        m_mediaPlayer->setPlaybackRate(1);
         m_timeReversed = false;
     } else if (keyEvent->key() == Qt::Key_1 || keyEvent->key() == Qt::Key_2 || keyEvent->key() == Qt::Key_3 || keyEvent->key() == Qt::Key_4) {
         m_timeDivider = 1;

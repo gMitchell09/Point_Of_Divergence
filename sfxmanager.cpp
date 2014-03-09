@@ -5,6 +5,7 @@ static const QString sfxPath =  "/resources/sfx";
 SFXManager* SFXManager::m_singleton = 0;
 
 SFXManager::SFXManager() {
+    qDebug() << "SFX Path: " << QApplication::applicationDirPath() + sfxPath + "/mcJump.wav";
     QSoundEffect *mcJump = new QSoundEffect();
     mcJump->setSource(QUrl::fromLocalFile(QApplication::applicationDirPath() + sfxPath + "/mcJump.wav"));
     mcJump->setVolume(0.25f);

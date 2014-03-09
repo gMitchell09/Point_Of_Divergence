@@ -12,7 +12,7 @@ class SFXManager
 {
 public:
     enum class SFX {
-        MainChar_Jump,
+        MainChar_Jump = 0,
         MainChar_Damaged,
         MainChar_PushBox,
         Enemy_Squish,
@@ -29,6 +29,7 @@ public:
 
     bool playSound(SFX sound) {
         m_sfxArray[(size_t)sound]->play();
+        qDebug() << "Sound: " << (size_t)sound;
         return true;
     }
 
