@@ -65,6 +65,7 @@ private:
     bool m_audioSettings;
 
     QMediaPlayer *m_mediaPlayer;
+    QMediaPlayer *m_mediaPlayerReverse;
 
     qint64 m_prevTime;
     qint64 m_gameTime;
@@ -186,6 +187,8 @@ protected:
 private slots:
     void invalidateTimer();
     void playBGM(QMediaPlayer::MediaStatus status) { m_mediaPlayer->play(); qDebug() << status;}
+    void forwardPositionChanged(qint64 pos);
+    void reversePositionChanged(qint64 pos);
 };
 
 #endif // GAMEENGINE_H

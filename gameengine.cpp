@@ -44,6 +44,7 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     QFile file(levelPath + "/LevelTest.tmx");
 
     m_mediaPlayer = new QMediaPlayer(this);
+    m_mediaPlayerReverse = new QMediaPlayer(this);
     // Pre-load the SFX
     SFXManager::Instance();
 
@@ -144,8 +145,10 @@ void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
         if (m_gamePaused || m_gamePausedDueToDamage)
             m_gamePaused = m_gamePausedDueToDamage = false;
-        if (!m_timeReversed)
-            m_mediaPlayer->setPlaybackRate(-1);
+        if (!m_timeReversed) {
+            m_mediaPlayer->pause();
+            m_mediaPlayerReverse->play();
+        }
         m_timeReversed = true;
     } else if (keyEvent->key() == Qt::Key_1) {
         m_timeDivider = 2;
@@ -163,8 +166,12 @@ void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
 }
 
 void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
+    if (keyEvent->isAutoRepeat()) return;
     if (keyEvent->key() == Qt::Key_R) {
-        m_mediaPlayer->setPlaybackRate(1);
+        if (m_timeReversed) {
+            m_mediaPlayerReverse->pause();
+            m_mediaPlayer->play();
+        };
         m_timeReversed = false;
     } else if (keyEvent->key() == Qt::Key_1 || keyEvent->key() == Qt::Key_2 || keyEvent->key() == Qt::Key_3 || keyEvent->key() == Qt::Key_4) {
         m_timeDivider = 1;
@@ -455,8 +462,13 @@ void GameEngine::startSinglePlayer() {
     qDebug() << "BGM: " << QApplication::applicationDirPath() + bgmPath + level->getBGMPath();
     if (level->getBGMPath() != "" && m_audioSettings) {
         m_mediaPlayer->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + level->getBGMPath()));
+        m_mediaPlayerReverse->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + level->getReversedBGMPath()));
+
         m_mediaPlayer->setVolume(50);
+        m_mediaPlayerReverse->setVolume(50);
         connect(m_mediaPlayer, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(playBGM(QMediaPlayer::MediaStatus)));
+        connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(forwardPositionChanged(qint64)));
+        connect(m_mediaPlayerReverse, SIGNAL(positionChanged(qint64)), this, SLOT(reversePositionChanged(qint64)));
     }
 
     m_gamePaused = false;
@@ -501,3 +513,12 @@ void GameEngine::QuitGame() {
     exit(0);
 }
 
+void GameEngine::forwardPositionChanged(qint64 pos) {
+    if (m_mediaPlayer->state() == QMediaPlayer::PlayingState)
+        m_mediaPlayerReverse->setPosition(m_mediaPlayerReverse->duration() - pos);
+}
+
+void GameEngine::reversePositionChanged(qint64 pos) {
+    if (m_mediaPlayerReverse->state() == QMediaPlayer::PlayingState)
+        m_mediaPlayer->setPosition(m_mediaPlayer->duration() - pos);
+}

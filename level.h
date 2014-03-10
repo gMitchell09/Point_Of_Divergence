@@ -52,7 +52,8 @@ public:
     int getLevelHeight() { return m_levelHeight * m_tileHeight; }
     int getLevelWidth() { return m_levelWidth * m_tileWidth; }
 
-    QString getBGMPath() { return m_bgmPath; }
+    QString getBGMPath() { return "/" + m_bgmPath; }
+    QString getReversedBGMPath() { return "/REVERSED_" + m_bgmPath; }
 
     virtual void step(qint64 time, long delta);
 
