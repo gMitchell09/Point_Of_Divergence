@@ -45,7 +45,7 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_mediaPlayer = new QMediaPlayer(this);
     m_mediaPlayerReverse = new QMediaPlayer(this);
     // Pre-load the SFX
-    SFXManager::Instance();
+    //SFXManager::Instance();
 
     if (!file.exists()) {
         QMessageBox *msg = new QMessageBox("Level not found!", "Level Not Found!!", QMessageBox::Critical, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
@@ -132,6 +132,7 @@ void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
             m_gamePaused = m_gamePausedDueToDamage = false;
         if (!m_timeReversed) {
             m_mediaPlayer->pause();
+            m_mediaPlayerReverse->setPosition(m_mediaPlayerReverse->duration() - m_mediaPlayer->position());
             m_mediaPlayerReverse->play();
         }
         m_timeReversed = true;
@@ -155,6 +156,7 @@ void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_R) {
         if (m_timeReversed) {
             m_mediaPlayerReverse->pause();
+            m_mediaPlayer->setPosition(m_mediaPlayer->duration() - m_mediaPlayerReverse->position());
             m_mediaPlayer->play();
         };
         m_timeReversed = false;
@@ -337,9 +339,9 @@ void GameEngine::initBGM(QString bgmFileName, QString revBgmFileName) {
 //        qDebug() << "Supported: " << m_mediaPlayer->hasSupport()
 
         connect(m_mediaPlayer, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(playBGM(QMediaPlayer::MediaStatus)));
-        connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(forwardPositionChanged(qint64)));
         connect(m_mediaPlayer, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(handleError(QMediaPlayer::Error)));
-        connect(m_mediaPlayerReverse, SIGNAL(positionChanged(qint64)), this, SLOT(reversePositionChanged(qint64)));
+//        connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(forwardPositionChanged(qint64)));
+//        connect(m_mediaPlayerReverse, SIGNAL(positionChanged(qint64)), this, SLOT(reversePositionChanged(qint64)));
 
         m_mediaPlayer->play();
     }
