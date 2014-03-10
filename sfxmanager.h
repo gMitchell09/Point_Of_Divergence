@@ -28,16 +28,22 @@ public:
     }
 
     bool playSound(SFX sound) {
-        m_sfxArray[(size_t)sound]->play();
-        qDebug() << "Sound: " << (size_t)sound;
-        return true;
+        if (!m_mute) {
+            m_sfxArray[(size_t)sound]->play();
+            qDebug() << "Sound: " << (size_t)sound;
+            return true;
+        }
     }
+
+    void setMute(bool mute) { m_mute = mute; }
 
     ~SFXManager() { delete m_singleton; }
 
 private:
     std::array<QSoundEffect*, (size_t)SFX::SFX_Count> m_sfxArray;
     SFXManager();
+
+    bool m_mute;
 
     static SFXManager *m_singleton;
 };

@@ -11,11 +11,21 @@
 #include "sprite.h"
 
 class GameEngine;
-class OptionButton : public Sprite
+
+class IMenuItem {
+public:
+    virtual ~IMenuItem() {}
+    virtual void setListener(void* listener) = 0;
+    virtual void saveValue() = 0;
+};
+
+class OptionButton : public Sprite, public IMenuItem
 {
 private:
     bool m_pressed;
     bool m_state;
+
+    bool *m_listener;
     QPixmap *m_upGraphic, *m_downGraphic;
 
     std::function<void(void)> m_clickedCallback;
@@ -30,6 +40,14 @@ public:
 
     inline void setCallback(std::function<void(void)> callback) {
         m_clickedCallback = callback;
+    }
+
+    void setListener(void* listener) {
+        m_listener = (bool*) listener;
+    }
+
+    void saveValue() {
+        if (m_listener) *m_listener = !m_state;
     }
 
     virtual void clicked();

@@ -39,11 +39,13 @@
 #include "staticplatform.h"
 #include "enemy1.h"
 #include "databasecontroller.h"
+#include "optionbutton.h"
 
 class Level;
 class MainCharacter;
 class MenuButton;
 class OptionButton;
+class IMenuItem;
 
 class GameEngine : public QGraphicsScene
 {
@@ -52,17 +54,9 @@ private:
     /* Arbitrary Constants, chosen by fair dice roll */
     static const float m_gravity; // The enemy's gate is down.
 
-    /* This is the minimum character distance from the edge of the screen before
-     *  the viewport will start following the character.
-     */
-    static const int m_windowXTolerance = 40;
-    static const int m_windowYTolerance = 120;
-    /* --- Arbitrary Constants End */
-
     double m_timeDivider;
     bool m_gamePaused;
     bool m_gamePausedDueToDamage;
-    bool m_audioSettings;
 
     QMediaPlayer *m_mediaPlayer;
     QMediaPlayer *m_mediaPlayerReverse;
@@ -71,21 +65,11 @@ private:
     qint64 m_gameTime;
 
     MainCharacter * m_mainActor;
-    StaticBackground *bkg;
+    StaticBackground *m_bkg;
 
-    QGraphicsItemGroup * initialMenu;
-    QGraphicsItemGroup * loadMenu;
-    QGraphicsItemGroup * optionsMenu;
-
-    MenuButton * m_testButton;
-    MenuButton * m_newgameButton;
-    MenuButton * m_loadgameButton;
-    MenuButton * m_optionsButton;
-    MenuButton * m_quitButton;
-    MenuButton * m_mainmenuButton;
-    MenuButton * m_saveButton;
-    MenuButton * m_cancelButton;
-    OptionButton * m_musicButton;
+    QGraphicsItemGroup * m_initialMenu;
+    QGraphicsItemGroup * m_loadMenu;
+    QGraphicsItemGroup * m_optionsMenu;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
 
@@ -103,6 +87,18 @@ private:
     int m_coinCount;
 
     QTimer *heartbeat;
+
+    struct ge_opts {
+        bool muteBGM;
+        bool muteSFX;
+        float volumeBGM;
+        float volumeSFX;
+
+        ge_opts() {
+            muteBGM = muteSFX = false;
+            volumeBGM = volumeSFX = 1.0f;
+        }
+    } m_selectedOptions;
 
     void removeDeletedItems();
     void initBGM(QString bgmFileName, QString revBgmFileName);
@@ -125,7 +121,6 @@ public:
     void displayMainMenu_load();
     void displayMainMenu_option();
     void startSinglePlayer();
-    void toggleAudio();
     void saveSettings();
     void QuitGame();
     void modifiedOptionsWarning();
@@ -186,7 +181,10 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent * keyEvent);
 
 private slots:
-    void invalidateTimer();
+    void invalidateTimer() {
+        qint64 nMS = QDateTime::currentMSecsSinceEpoch();
+        step(nMS);
+    }
     void playBGM(QMediaPlayer::MediaStatus status) { m_mediaPlayer->play(); qDebug() << "****************"; qDebug() << status;}
     void forwardPositionChanged(qint64 pos);
     void reversePositionChanged(qint64 pos);
