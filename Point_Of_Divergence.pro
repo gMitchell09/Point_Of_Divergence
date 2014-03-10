@@ -8,6 +8,8 @@ QT       += core gui xml sql multimedia network
 CONFIG   += c++11
 CONFIG   -= app_bundle
 
+DESTDIR = $$PWD
+
 copy_resources.path = $$OUT_PWD
 copy_resources.files = resources
 

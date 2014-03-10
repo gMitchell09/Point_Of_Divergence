@@ -364,9 +364,9 @@ void GameEngine::displayInitialMenu() {
     //*** Instantiate Initial Menu
     m_initialMenu = new QGraphicsItemGroup();
 
-    QPixmap *button_static = new QPixmap(buttonPath + "/menuButton_newgame_static.png");
-    QPixmap *button_clicked = new QPixmap(buttonPath + "/menuButton_newgame_clicked.png");
-    QPixmap *button_hover = new QPixmap(buttonPath + "/menuButton_newgame_hover.png");
+    QPixmap *button_static = new QPixmap(buttonPath + "/menuButton_newgame_STATIC.png");
+    QPixmap *button_clicked = new QPixmap(buttonPath + "/menuButton_newgame_CLICKED.png");
+    QPixmap *button_hover = new QPixmap(buttonPath + "/menuButton_newgame_HOVER.png");
     *button_static = button_static->scaled(200, 100);
     *button_clicked = button_clicked->scaled(200, 100);
     *button_hover = button_hover->scaled(200, 100);
@@ -376,9 +376,9 @@ void GameEngine::displayInitialMenu() {
     std::function<void(void)> func = std::bind(&GameEngine::startSinglePlayer, this);
     newgameButton->setCallback(func);
 
-    button_static = new QPixmap(buttonPath + "/menuButton_loadgame_static.png");
-    button_clicked = new QPixmap(buttonPath + "/menuButton_loadgame_clicked.png");
-    button_hover = new QPixmap(buttonPath + "/menuButton_loadgame_hover.png");
+    button_static = new QPixmap(buttonPath + "/menuButton_loadgame_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/menuButton_loadgame_CLICKED.png");
+    button_hover = new QPixmap(buttonPath + "/menuButton_loadgame_HOVER.png");
     *button_static = button_static->scaled(200, 100);
     *button_clicked = button_clicked->scaled(200, 100);
     *button_hover = button_hover->scaled(200, 100);
@@ -387,9 +387,9 @@ void GameEngine::displayInitialMenu() {
     func = std::bind(&GameEngine::displayLoadMenu, this);
     loadgameButton->setCallback(func);
 
-    button_static = new QPixmap(buttonPath + "/menuButton_options_static.png");
-    button_clicked = new QPixmap(buttonPath + "/menuButton_options_clicked.png");
-    button_hover = new QPixmap(buttonPath + "/menuButton_options_hover.png");
+    button_static = new QPixmap(buttonPath + "/menuButton_options_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/menuButton_options_CLICKED.png");
+    button_hover = new QPixmap(buttonPath + "/menuButton_options_HOVER.png");
     *button_static = button_static->scaled(200, 100);
     *button_clicked = button_clicked->scaled(200, 100);
     *button_hover = button_hover->scaled(200, 100);
@@ -398,9 +398,9 @@ void GameEngine::displayInitialMenu() {
     func = std::bind(&GameEngine::displayOptionsMenu, this);
     optionsButton->setCallback(func);
 
-    button_static = new QPixmap(buttonPath + "/menuButton_quit_static.png");
-    button_clicked = new QPixmap(buttonPath + "/menuButton_quit_clicked.png");
-    button_hover = new QPixmap(buttonPath + "/menuButton_quit_hover.png");
+    button_static = new QPixmap(buttonPath + "/menuButton_quit_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/menuButton_quit_CLICKED.png");
+    button_hover = new QPixmap(buttonPath + "/menuButton_quit_HOVER.png");
     *button_static = button_static->scaled(200, 100);
     *button_clicked = button_clicked->scaled(200, 100);
     *button_hover = button_hover->scaled(200, 100);
@@ -420,29 +420,29 @@ void GameEngine::displayInitialMenu() {
     //*** Instantiate Options Menu
     m_optionsMenu = new QGraphicsItemGroup();
 
-    button_static = new QPixmap(buttonPath + "/option_music_static.png");
-    button_clicked = new QPixmap(buttonPath + "/option_music_clicked.png");
+    button_static = new QPixmap(buttonPath + "/option_music_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/option_music_CLICKED.png");
     musicButton = new OptionButton(button_static, button_clicked);
     musicButton->setPos(this->width()/2-musicButton->boundingRect().width()/2, this->height()/4-musicButton->boundingRect().height()/2);
     musicButton->setListener(&(m_selectedOptions.muteBGM));
 
-    button_static = new QPixmap(buttonPath + "/option_music_static.png");
-    button_clicked = new QPixmap(buttonPath + "/option_music_clicked.png");
+    button_static = new QPixmap(buttonPath + "/option_music_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/option_music_CLICKED.png");
     sfxButton = new OptionButton(button_static, button_clicked);
     sfxButton->setPos(this->width()/2-musicButton->boundingRect().width()/2, this->height()*2/4-musicButton->boundingRect().height()/2);
     sfxButton->setListener(&(m_selectedOptions.muteSFX));
 
-    button_static = new QPixmap(buttonPath + "/menuButton_save_static.png");
-    button_clicked = new QPixmap(buttonPath + "/menuButton_save_clicked.png");
-    button_hover = new QPixmap(buttonPath + "/menuButton_save_hover.png");
+    button_static = new QPixmap(buttonPath + "/menuButton_save_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/menuButton_save_CLICKED.png");
+    button_hover = new QPixmap(buttonPath + "/menuButton_save_HOVER.png");
     saveButton = new MenuButton(button_static, button_clicked, button_hover);
     saveButton->setPos(this->width()/3-saveButton->boundingRect().width()/2, this->height()*3/4-saveButton->boundingRect().height()/2);
     func = std::bind(&GameEngine::saveSettings, this);
     saveButton->setCallback(func);
 
-    button_static = new QPixmap(buttonPath + "/menuButton_cancel_static.png");
-    button_clicked = new QPixmap(buttonPath + "/menuButton_cancel_clicked.png");
-    button_hover = new QPixmap(buttonPath + "/menuButton_cancel_hover.png");
+    button_static = new QPixmap(buttonPath + "/menuButton_cancel_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/menuButton_cancel_CLICKED.png");
+    button_hover = new QPixmap(buttonPath + "/menuButton_cancel_HOVER.png");
     cancelButton = new MenuButton(button_static, button_clicked, button_hover);
     cancelButton->setPos(this->width()*2/3-cancelButton->boundingRect().width()/2, this->height()*3/4-cancelButton->boundingRect().height()/2);
     func = std::bind(&GameEngine::modifiedOptionsWarning, this);
@@ -459,9 +459,9 @@ void GameEngine::displayInitialMenu() {
     //*** Instantiate Load Menu
     m_loadMenu = new QGraphicsItemGroup();
 
-    button_static = new QPixmap(buttonPath + "/menuButton_mainmenu_static.png");
-    button_clicked = new QPixmap(buttonPath + "/menuButton_mainmenu_clicked.png");
-    button_hover = new QPixmap(buttonPath + "/menuButton_mainmenu_hover.png");
+    button_static = new QPixmap(buttonPath + "/menuButton_mainmenu_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/menuButton_mainmenu_CLICKED.png");
+    button_hover = new QPixmap(buttonPath + "/menuButton_mainmenu_HOVER.png");
     mainmenuButton = new MenuButton(button_static, button_clicked, button_hover);
     mainmenuButton->setPos(this->width()/2-mainmenuButton->boundingRect().width()/2, this->height()*2/3-mainmenuButton->boundingRect().height()/2);
     func = std::bind(&GameEngine::displayMainMenu_load, this);
