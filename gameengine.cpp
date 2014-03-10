@@ -459,17 +459,7 @@ void GameEngine::startSinglePlayer() {
     this->addSprite(object1);
     this->addSprite(goomba); // Add our goomba
 
-    qDebug() << "BGM: " << QApplication::applicationDirPath() + bgmPath + level->getBGMPath();
-    if (level->getBGMPath() != "" && m_audioSettings) {
-        m_mediaPlayer->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + level->getBGMPath()));
-        m_mediaPlayerReverse->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + level->getReversedBGMPath()));
-
-        m_mediaPlayer->setVolume(50);
-        m_mediaPlayerReverse->setVolume(50);
-        connect(m_mediaPlayer, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(playBGM(QMediaPlayer::MediaStatus)));
-        connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(forwardPositionChanged(qint64)));
-        connect(m_mediaPlayerReverse, SIGNAL(positionChanged(qint64)), this, SLOT(reversePositionChanged(qint64)));
-    }
+    this->initBGM(level->getBGMPath(), level->getReversedBGMPath());
 
     m_gamePaused = false;
 }
@@ -517,8 +507,33 @@ void GameEngine::forwardPositionChanged(qint64 pos) {
     if (m_mediaPlayer->state() == QMediaPlayer::PlayingState)
         m_mediaPlayerReverse->setPosition(m_mediaPlayerReverse->duration() - pos);
 }
-
 void GameEngine::reversePositionChanged(qint64 pos) {
     if (m_mediaPlayerReverse->state() == QMediaPlayer::PlayingState)
         m_mediaPlayer->setPosition(m_mediaPlayer->duration() - pos);
+}
+
+void GameEngine::initBGM(QString bgmFileName, QString revBgmFileName) {
+    qDebug() << "BGM: " << QApplication::applicationDirPath() + bgmPath + bgmFileName;
+    qDebug() << "REV: " << QApplication::applicationDirPath() + bgmPath + revBgmFileName;
+
+    if (bgmFileName != "" && m_audioSettings) {
+        QFile ft(QApplication::applicationDirPath() + bgmPath + bgmFileName);
+        if (!ft.exists()) qDebug() << "WTF?!?!?!";
+        m_mediaPlayer->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + bgmFileName));
+        m_mediaPlayerReverse->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + revBgmFileName));
+
+        m_mediaPlayer->setVolume(50);
+        m_mediaPlayerReverse->setVolume(50);
+
+
+//        qDebug() << "Supported: " << m_mediaPlayer->hasSupport()
+
+        connect(m_mediaPlayer, SIGNAL(mediaStatusChanged(QMediaPlayer::MediaStatus)), this, SLOT(playBGM(QMediaPlayer::MediaStatus)));
+        connect(m_mediaPlayer, SIGNAL(positionChanged(qint64)), this, SLOT(forwardPositionChanged(qint64)));
+        connect(m_mediaPlayer, SIGNAL(error(QMediaPlayer::Error)), this, SLOT(handleError(QMediaPlayer::Error)));
+        connect(m_mediaPlayerReverse, SIGNAL(positionChanged(qint64)), this, SLOT(reversePositionChanged(qint64)));
+
+        m_mediaPlayer->play();
+    }
+
 }

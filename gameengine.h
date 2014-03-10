@@ -105,6 +105,7 @@ private:
     QTimer *heartbeat;
 
     void removeDeletedItems();
+    void initBGM(QString bgmFileName, QString revBgmFileName);
 
 public:
     explicit GameEngine(QObject *parent = 0);
@@ -186,9 +187,12 @@ protected:
 
 private slots:
     void invalidateTimer();
-    void playBGM(QMediaPlayer::MediaStatus status) { m_mediaPlayer->play(); qDebug() << status;}
+    void playBGM(QMediaPlayer::MediaStatus status) { m_mediaPlayer->play(); qDebug() << "****************"; qDebug() << status;}
     void forwardPositionChanged(qint64 pos);
     void reversePositionChanged(qint64 pos);
+    void handleError(QMediaPlayer::Error er) {
+        qDebug() << "ERROR!!! " << er;
+    }
 };
 
 #endif // GAMEENGINE_H

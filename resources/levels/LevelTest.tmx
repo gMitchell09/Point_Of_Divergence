@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="100" height="40" tilewidth="32" tileheight="32">
  <properties>
-  <property name="bgm" value="Chapel of Hate v0_8.mp3"/>
+  <property name="bgm" value="The_last_wish_0.mp3"/>
  </properties>
  <tileset firstgid="1" name="Tiles_32x32" tilewidth="32" tileheight="32">
   <image source="../tilesets/Tiles_32x32.png" width="256" height="256"/>

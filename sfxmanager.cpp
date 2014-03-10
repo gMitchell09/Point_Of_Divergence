@@ -8,23 +8,23 @@ SFXManager::SFXManager() {
     qDebug() << "SFX Path: " << QApplication::applicationDirPath() + sfxPath + "/mcJump.wav";
     QSoundEffect *mcJump = new QSoundEffect();
     mcJump->setSource(QUrl::fromLocalFile(QApplication::applicationDirPath() + sfxPath + "/mcJump.wav"));
-    mcJump->setVolume(0.25f);
+    mcJump->setVolume(1.0f);
 
     QSoundEffect *mcHurt = new QSoundEffect();
     mcHurt->setSource(QUrl::fromLocalFile(QApplication::applicationDirPath() + sfxPath + "/mcHurt.wav"));
-    mcHurt->setVolume(0.25f);
+    mcHurt->setVolume(1.0f);
 
     QSoundEffect *mcPushBox = new QSoundEffect();
     mcPushBox->setSource(QUrl::fromLocalFile(QApplication::applicationDirPath() + sfxPath + "/mcPushBox.wav"));
-    mcPushBox->setVolume(0.25f);
+    mcPushBox->setVolume(1.0f);
 
     QSoundEffect *enemySquish = new QSoundEffect();
     enemySquish->setSource(QUrl::fromLocalFile(QApplication::applicationDirPath() + sfxPath + "/enemySquish.wav"));
-    enemySquish->setVolume(0.25f);
+    enemySquish->setVolume(1.0f);
 
     QSoundEffect *coinGrab = new QSoundEffect();
     coinGrab->setSource(QUrl::fromLocalFile(QApplication::applicationDirPath() + sfxPath + "/coinGrab.wav"));
-    coinGrab->setVolume(0.25f);
+    coinGrab->setVolume(1.0f);
 
     m_sfxArray[(size_t)SFX::MainChar_Jump] = mcJump;
     m_sfxArray[(size_t)SFX::MainChar_Damaged] = mcHurt;
