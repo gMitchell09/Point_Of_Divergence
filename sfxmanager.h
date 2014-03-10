@@ -33,9 +33,15 @@ public:
             qDebug() << "Sound: " << (size_t)sound;
             return true;
         }
+        return false;
     }
 
     void setMute(bool mute) { m_mute = mute; }
+    void setVolume(float volume) {
+        for (int i = 0; i < (int) SFX::SFX_Count; i++) {
+            m_sfxArray[i]->setVolume(volume);
+        }
+    }
 
     ~SFXManager() { delete m_singleton; }
 

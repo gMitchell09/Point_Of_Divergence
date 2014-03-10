@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui xml sql multimedia
+QT       += core gui xml sql multimedia network
 CONFIG   += c++11
 CONFIG   -= app_bundle
 

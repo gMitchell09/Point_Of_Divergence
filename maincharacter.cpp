@@ -297,15 +297,17 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
             break;
         case ItemType::kBox:
             if ((locSide & Left && m_leftPressed) || (locSide & Right && m_rightPressed)) {
-                SFXManager *inst = SFXManager::Instance();
-                inst->playSound(SFXManager::SFX::MainChar_PushBox);
                 qDebug() << "PUSH THE BOX";
                 if (locSide & Left && m_leftPressed) {
+//                    SFXManager *inst = SFXManager::Instance();
+//                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
                     other->setVelocity(QPointF(-m_boxPushVelocity, other->getVelocity().y()));
                     qDebug() << "Push Left";
                     //other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
                 }
                 else if (locSide & Right && m_rightPressed) {
+//                    SFXManager *inst = SFXManager::Instance();
+//                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
                     other->setVelocity(QPointF(m_boxPushVelocity, other->getVelocity().y()));
                     qDebug() << "Push Right";
                     //other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
