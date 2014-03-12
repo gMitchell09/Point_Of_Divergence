@@ -42,7 +42,9 @@ SOURCES += main.cpp\
     level.cpp \
     optionbutton.cpp \
     databasecontroller.cpp \
-    sfxmanager.cpp
+    sfxmanager.cpp \
+    networkmanager.cpp \
+    datagramserializer.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -64,7 +66,9 @@ HEADERS  += mainwindow.h \
     level.h \
     optionbutton.h \
     databasecontroller.h \
-    sfxmanager.h
+    sfxmanager.h \
+    networkmanager.h \
+    datagramserializer.h
 
 FORMS    += mainwindow.ui
 
