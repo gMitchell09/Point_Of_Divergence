@@ -10,9 +10,10 @@
 #include "networkmanager.h"
 #include <QDebug>
 #include <QByteArray>
+#include <vector>
 
 #define MAX_DATAGRAM_SIZE 4096
-#define COM_PORT 12345
+#define COM_PORT (quint16)12345
 
 NetworkManager* NetworkManager::m_instance = NULL;
 
@@ -35,13 +36,20 @@ QHostAddress NetworkManager::getThisAddr() {
 
 void NetworkManager::readyRead() {
     while (udpSocket.hasPendingDatagrams()) {
-        char *data = (char*) malloc(sizeof(char) * udpSocket.pendingDatagramSize());
+        DatagramFormat datagram;
         QHostAddress addr;
         quint16 port;
+        char *data = (char*) malloc(sizeof(char) * udpSocket.pendingDatagramSize());
+
         udpSocket.readDatagram(data, udpSocket.pendingDatagramSize(), &addr, &port);
-        qDebug() << "Datagram from: " << addr << ":" << port;
-        qDebug() << "Data: " << data;
+
+        datagram.deserialize(data, udpSocket.pendingDatagramSize());
+        datagramVector.push_back(datagram);
+
         free(data);
+
+        qDebug() << "Datagram from: " << addr << ":" << port;
+        qDebug() << datagram.toString();
     }
 }
 
@@ -49,4 +57,13 @@ void NetworkManager::connectToHost(QHostAddress &address) {
     char datagram[256] = "HELLO WORLD!!!";
     udpSocket.writeDatagram(datagram, 256, address, COM_PORT);
     this->startListening();
+}
+
+void NetworkManager::sendDatagram(NetworkManager::DatagramFormat d, QHostAddress host) {
+    if (!udpSocket.isValid() || !udpSocket.isOpen() || !udpSocket.isWritable()) {
+        qDebug() << "Error!!!  QUdpSocket is not open!! >:O";
+        return;
+    }
+
+    udpSocket.writeDatagram(d.serialize(), host, COM_PORT);
 }
