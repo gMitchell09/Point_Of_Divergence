@@ -350,11 +350,11 @@ void GameEngine::initBGM(QString bgmFileName, QString revBgmFileName) {
 
 //*** Menu Related Functionality
 void GameEngine::displayInitialMenu() {
-    MenuButton * testButton;
     MenuButton * newgameButton;
     MenuButton * loadgameButton;
     MenuButton * optionsButton;
     MenuButton * quitButton;
+
     MenuButton * mainmenuButton;
     MenuButton * saveButton;
     MenuButton * cancelButton;
