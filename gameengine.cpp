@@ -133,17 +133,32 @@ void GameEngine::keyPressEvent(QKeyEvent * keyEvent) {
         if (!m_timeReversed) {
             m_mediaPlayer->pause();
             m_mediaPlayerReverse->setPosition(m_mediaPlayerReverse->duration() - m_mediaPlayer->position());
+
             m_mediaPlayerReverse->play();
+            m_mediaPlayerReverse->setPlaybackRate(1/m_timeDivider);
         }
         m_timeReversed = true;
     } else if (keyEvent->key() == Qt::Key_1) {
         m_timeDivider = 2;
+
+        m_mediaPlayer->setPlaybackRate(0.5);
+        m_mediaPlayerReverse->setPlaybackRate(0.5);
     } else if (keyEvent->key() == Qt::Key_2) {
         m_timeDivider = 3;
+
+        m_mediaPlayer->setPlaybackRate(0.333);
+        m_mediaPlayerReverse->setPlaybackRate(0.333);
     } else if (keyEvent->key() == Qt::Key_3) {
         m_timeDivider = 4;
+
+        m_mediaPlayer->setPlaybackRate(0.25);
+        m_mediaPlayerReverse->setPlaybackRate(0.25);
     } else if (keyEvent->key() == Qt::Key_4) {
         m_timeDivider = 5;
+
+        m_mediaPlayer->setPlaybackRate(0.2);
+        m_mediaPlayerReverse->setPlaybackRate(0.2);
+
     } else if (keyEvent->key() == Qt::Key_Space) {
         m_gamePaused = !m_gamePaused;
     } else if (m_mainActor != NULL) {
@@ -157,11 +172,17 @@ void GameEngine::keyReleaseEvent(QKeyEvent * keyEvent) {
         if (m_timeReversed) {
             m_mediaPlayerReverse->pause();
             m_mediaPlayer->setPosition(m_mediaPlayer->duration() - m_mediaPlayerReverse->position());
+
             m_mediaPlayer->play();
+            m_mediaPlayer->setPlaybackRate(1/m_timeDivider);
         };
         m_timeReversed = false;
     } else if (keyEvent->key() == Qt::Key_1 || keyEvent->key() == Qt::Key_2 || keyEvent->key() == Qt::Key_3 || keyEvent->key() == Qt::Key_4) {
         m_timeDivider = 1;
+
+        m_mediaPlayer->setPlaybackRate(1);
+        m_mediaPlayerReverse->setPlaybackRate(1);
+
     } else if (m_mainActor != NULL) {
         m_mainActor->keyReleaseEvent(keyEvent);
     }
