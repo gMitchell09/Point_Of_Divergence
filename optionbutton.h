@@ -9,15 +9,9 @@
 
 #include "gameengine.h"
 #include "sprite.h"
+#include "IMenuItem.h"
 
 class GameEngine;
-
-class IMenuItem {
-public:
-    virtual ~IMenuItem() {}
-    virtual void setListener(void* listener) = 0;
-    virtual void saveValue() = 0;
-};
 
 class OptionButton : public Sprite, public IMenuItem
 {

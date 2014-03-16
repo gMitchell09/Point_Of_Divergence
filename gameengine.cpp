@@ -379,7 +379,7 @@ void GameEngine::displayInitialMenu() {
     MenuButton * mainmenuButton;
     MenuButton * saveButton;
     MenuButton * cancelButton;
-    OptionButton * musicButton;
+    OptionSlider * musicButton;
     OptionButton * sfxButton;
 
     //*** Instantiate Initial Menu
@@ -441,9 +441,9 @@ void GameEngine::displayInitialMenu() {
     //*** Instantiate Options Menu
     m_optionsMenu = new QGraphicsItemGroup();
 
-    button_static = new QPixmap(buttonPath + "/option_music_STATIC.png");
-    button_clicked = new QPixmap(buttonPath + "/option_music_CLICKED.png");
-    musicButton = new OptionButton(button_static, button_clicked);
+    button_static = new QPixmap(buttonPath + "/optionSlider_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/option_SLIDER.png");
+    musicButton = new OptionSlider(*button_static, *button_clicked);
     musicButton->setPos(this->width()/2-musicButton->boundingRect().width()/2, this->height()/4-musicButton->boundingRect().height()/2);
     musicButton->setListener(&(m_selectedOptions.muteBGM));
 

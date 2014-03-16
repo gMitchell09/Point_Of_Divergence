@@ -40,6 +40,7 @@
 #include "enemy1.h"
 #include "databasecontroller.h"
 #include "optionbutton.h"
+#include "optionslider.h"
 
 class Level;
 class MainCharacter;
