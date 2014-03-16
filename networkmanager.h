@@ -11,10 +11,16 @@
 #define NETWORKMANAGER_H
 
 #include <QObject>
+#include <QAbstractSocket>
+#include <QFile>
+#include <QHostAddress>
+#include <QTcpSocket>
 #include <QUdpSocket>
 #include <QHostAddress>
 #include <QPointF>
 #include <QTimer>
+#include <QByteArray>
+#include <QDataStream>
 
 #include <queue>
 
@@ -58,40 +64,41 @@ public:
         }
     };
 
-private:
-    explicit NetworkManager(QObject *parent = 0);
-    static NetworkManager *m_instance;
+    void connectToPeer();
 
+private:
     /// Our shared QUdpSocket
     QUdpSocket m_udpSocket;
+
+    /// TCP socket
+    QTcpSocket m_tcpSocket;
 
     /// The queue that all received datagrams are inserted into upon receipt
     std::queue<DatagramFormat> m_datagramQueue;
 
     bool m_isConnected;
     bool m_isTryingToConnect;
+    bool m_isRuler;
+
+    /// Private variables for TXing
+    QString m_tmxPath;
+
+    /// Functions for TXing
+    void sendTmx();
 
     QTimer *m_watchdog;
 
 public:
-
-    /// Get the shared instance of our NetworkManager
-    static NetworkManager * Instance() {
-        if (!m_instance) {
-            m_instance = new NetworkManager;
-        }
-        return m_instance;
-    }
-
-    ~NetworkManager() {
-        delete m_instance;
-    }
+    explicit NetworkManager(QString tmx, QObject *parent = 0);
 
     /// Bind and open our socket to allow the receipt of incoming datagrams
-    void startListening();
+    void startListeningUDP();
 
     /// Transmit "hello world" packet and startListening
-    void connectToHost(QHostAddress &address);
+    void connectToPeer(QHostAddress &address);
+
+    /// Open TCP port for connection
+    void startListeningTCP();
 
     /// Get the local machine QHostAddress
     QHostAddress getThisAddr();
@@ -109,6 +116,8 @@ public:
         return dg;
     }
 
+    ~NetworkManager() {}
+
 signals:
     /// Emitted when a player connects to us
     void networkPlayerConnected();
@@ -118,8 +127,10 @@ signals:
 
 public slots:
     /// Hooked to our socket to signal when we can consume a datagram
-    void readyRead();
+    void readyReadTCP();
     void connectionTimeout();
+    void peerConnected();
+    void readyReadUDP();
 };
 
 #endif // NETWORKMANAGER_H
