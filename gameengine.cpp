@@ -246,15 +246,6 @@ void GameEngine::startSinglePlayer() {
     ObjectItem *object1;
     MovingPlatform *floater;
 
-    MainCharacter *mainChar;
-    Enemy1 *goomba;
-    mainChar = new MainCharacter(16, 32);
-    mainChar->setPos(120 , 1020);
-    mainChar->setSolid(true);
-
-    goomba = new Enemy1(20, 18, enemyPath);
-    goomba->setPos(500, 1120);
-
     floater = new MovingPlatform(48, 64);
     floater->setPixmap(QPixmap(otherSpritePath + "/1.png"));
     floater->setPos(300, 900);
@@ -304,7 +295,7 @@ void GameEngine::startSinglePlayer() {
     gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
     gameTime->setPos(QPointF(630, 15));
 
-    Level *level = new Level(levelPath, "LevelTest.tmx", 0);
+    Level *level = new Level(levelPath, "LevelTest.tmx", this);
     level->setPos(QPointF(0, 0));
 
     this->setSceneRect(0, 0, level->getLevelWidth(), level->getLevelHeight());
@@ -312,7 +303,6 @@ void GameEngine::startSinglePlayer() {
     this->addLevel(level);
     this->displayBackground(bkgImg);
 
-    this->addSprite(mainChar, true);
     this->addSprite(testSprite2);
     this->addSprite(floater);
     this->addHUD(life1);
@@ -321,7 +311,6 @@ void GameEngine::startSinglePlayer() {
     this->addHUDText(gameTime);
 
     this->addSprite(object1);
-    this->addSprite(goomba); // Add our goomba
 
     this->initBGM(level->getBGMPath(), level->getReversedBGMPath());
 

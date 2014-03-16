@@ -9,6 +9,7 @@ Tile::Tile(int width, int height, QGraphicsItem *parent) :
     this->setAcceleration(QPointF(0, 0));
     m_isStatic = true;
     m_usesStack = false;
+    this->setZValue(-100);
     this->setTransformOriginPoint(this->boundingRect().width()/2, this->boundingRect().height()/2);
 }
 

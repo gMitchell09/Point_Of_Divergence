@@ -25,6 +25,8 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
     m_boxPushAcceleration = 100;
     m_boxPushVelocity = 100;
 
+    this->setZValue(1000);
+
     TileMap * playerTiles = new TileMap(16, 33, 1, 1, "./resources/sprites/MarioMovement.png");
 
     std::vector<QPixmap> standRight;

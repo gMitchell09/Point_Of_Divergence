@@ -14,7 +14,9 @@
 #include "tile.h"
 
 class TileMap;
+class GameEngine;
 struct TileProperties;
+
 class Level : public QGraphicsItemGroup
 {
 private:
@@ -24,6 +26,7 @@ private:
     // Width, Height in # tiles
     int m_levelWidth, m_levelHeight;
     int m_tileWidth, m_tileHeight;
+    GameEngine* m_gameEngine;
 
     QString m_filePath;
 
@@ -37,7 +40,7 @@ private:
     QPointF getTilePos(int tileNum) const;
 
 public:
-    explicit Level(QString filePath, QString fileName, QGraphicsItem *parent = 0);
+    explicit Level(QString filePath, QString fileName, GameEngine* gameEngine, QGraphicsItem *parent = 0);
 
     // Overrides to fix QT collision stupidity
     virtual QRectF boundingRect() const {

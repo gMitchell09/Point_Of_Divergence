@@ -1,8 +1,21 @@
 #include "level.h"
 
-Level::Level(QString filePath, QString fileName, QGraphicsItem *parent) :
+static const QString bkgPath = "./resources/backgrounds";
+static const QString buttonPath = "./resources/buttons";
+// No dot for bgmPath because we need the absolute path.
+static const QString bgmPath = "/resources/bgm";
+static const QString sfxPath = "./resources/sfx";
+static const QString levelPath = "./resources/levels";
+static const QString spritePath = "./resources/sprites";
+static const QString tilesetPath = "./resources/tilesets";
+static const QString enemyPath = spritePath + "/enemies";
+static const QString itemPath = spritePath + "/items";
+static const QString otherSpritePath = spritePath + "/other";
+
+Level::Level(QString filePath, QString fileName, GameEngine *gameEngine, QGraphicsItem *parent) :
     QGraphicsItemGroup(parent),
-    m_filePath(filePath) {
+    m_filePath(filePath),
+    m_gameEngine(gameEngine) {
     QFile tileFile(filePath + "/" + fileName);
     if(!tileFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Couldn't open file";
@@ -122,24 +135,45 @@ void Level::parseLayer(QDomNode layer) {
             // Normalize our tile index by getting our tile index relative to
             //  our current tilemap.
             int idx = gid - firstElement;
-            QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
-            Tile *tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), this);
 
-            tile->setPixmap(tileImage);
+            Tile *tile = NULL;
+            TileProperties tp;
+
             if (tileMap->m_tileProperties.contains(idx)) {
-                qDebug() << "Idx: " << idx << "\nTile: " << tileImage << "Pos: " << pos;
-                TileProperties tp = tileMap->m_tileProperties[idx];
+                tp = tileMap->m_tileProperties[idx];
+            } else {
+                tp.solid = true;
+                tp.kind = kBlock;
+            }
+
+            if (tp.kind == kMainCharacter) {
+                MainCharacter *mainChar = new MainCharacter(16, 32);
+                mainChar->setPos(pos);
+                mainChar->setSolid(true);
+                m_gameEngine->addSprite(mainChar, true);
+            } else if (tp.kind == kGoomba) {
+                Enemy1 *goomba = new Enemy1(20, 18, enemyPath);
+                goomba->setPos(pos);
+                this->addToGroup(goomba);
+            } else {
+                // We have an actual tile and not a "special" tile, i.e. goomba, mainchar, ...
+                QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
+
+                tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), this);
                 tile->setSolid(tp.solid);
                 tile->setBlockType(tp.kind);
+
+                qDebug() << "Idx: " << idx << "\nTile: " << tileImage << "Pos: " << pos;
                 qDebug() << "Solid: " << tp.solid;
                 qDebug() << "Kind: " << tp.kind;
-            } else {
-                tile->setSolid(true);
-                tile->setBlockType(ItemType::kBlock);
+
+                tile->setPixmap(tileImage);
+
+                tile->setPos(pos);
+                tile->setShapeMode(Tile::BoundingRectShape);
+                this->addToGroup(tile);
+
             }
-            tile->setPos(pos);
-            tile->setShapeMode(Tile::BoundingRectShape);
-            this->addToGroup(tile);
             validTiles++;
         }
         currentTile++;

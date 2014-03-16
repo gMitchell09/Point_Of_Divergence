@@ -97,7 +97,7 @@ void NetworkManager::sendTmx() {
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_2);
+        out.setVersion(QDataStream::Qt_5_0);
         out << (quint16)0;
         out << line;
         out.device()->seek(0);
@@ -120,7 +120,7 @@ void NetworkManager::readyReadTCP() {
     QDataStream in(&m_tcpSocket);
     static quint16 blockSize = 0;
 
-    in.setVersion(QDataStream::Qt_5_2);
+    in.setVersion(QDataStream::Qt_5_0);
     if (blockSize == 0) {
         if (m_tcpSocket.bytesAvailable() < (int)sizeof(quint16)) return;
         in >> blockSize;
