@@ -21,6 +21,7 @@
 #include <QTimer>
 #include <QByteArray>
 #include <QDataStream>
+#include <QTcpServer>
 
 #include <queue>
 
@@ -71,7 +72,8 @@ private:
     QUdpSocket m_udpSocket;
 
     /// TCP socket
-    QTcpSocket m_tcpSocket;
+    QTcpSocket *m_tcpSocket;
+    QTcpServer m_tcpServer;
 
     /// The queue that all received datagrams are inserted into upon receipt
     std::queue<DatagramFormat> m_datagramQueue;
@@ -134,6 +136,7 @@ public slots:
     void peerConnected();
     void readyReadUDP();
     void tcpSocketStateChanged(QAbstractSocket::SocketState);
+    void acceptConnection();
 };
 
 #endif // NETWORKMANAGER_H

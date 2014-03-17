@@ -12,11 +12,12 @@
 #include <QByteArray>
 #include <QMessageBox>
 
-#define COM_PORT (quint16)12345
+#define COM_PORT (quint16)1500
 #define NETWORK_TIMEOUT 1500
 
 NetworkManager::NetworkManager(QString tmxPath, QString tmpFilePath, QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_tcpSocket(NULL)
 {
     m_tmxPath = tmxPath;
     m_tmpFilePath = tmpFilePath;
@@ -26,9 +27,11 @@ NetworkManager::NetworkManager(QString tmxPath, QString tmpFilePath, QObject *pa
 }
 
 QHostAddress NetworkManager::getThisAddr() {
-    QHostAddress addr;
-    addr = m_tcpSocket.localAddress();
-    return addr;
+    QTcpSocket tmp;
+    tmp.connectToHost(QHostAddress("www.google.com"), 80);
+    if (!tmp.waitForConnected(500))
+        qDebug() << "FUCK";
+    return tmp.localAddress();
 }
 
 void NetworkManager::startListeningUDP() {
@@ -74,18 +77,23 @@ void NetworkManager::connectionTimeout() {
 
     qDebug() << "Fuck";
 }
-
+////////////////////////////////////     TCP     //////////////////////////////////
 /// Peer 1 Flow
 void NetworkManager::startListeningTCP() {
     m_isRuler = true;
-    m_tcpSocket.bind(QHostAddress::AnyIPv4, COM_PORT);
-    connect(&m_tcpSocket, SIGNAL(connected()), this, SLOT(peerConnected()));
+
+    m_tcpServer.listen(QHostAddress::AnyIPv4, COM_PORT);
+
+    while (!m_tcpServer.isListening() && !m_tcpServer.listen(QHostAddress::Any, COM_PORT)) {
+        qDebug() << "Error: " << m_tcpServer.errorString();
+    }
+
+    connect(&m_tcpServer, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
 }
 
 void NetworkManager::peerConnected() {
-    emit networkPlayerConnected();
     m_isConnected = true;
-    connect(&m_tcpSocket, SIGNAL(readyRead()), this, SLOT(packetReceived()));
+    connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(readyReadTCP()));
 
     this->sendTmx();
 }
@@ -93,21 +101,25 @@ void NetworkManager::peerConnected() {
 void NetworkManager::sendTmx() {
     QFile fileTmx(m_tmxPath);
     fileTmx.open(QIODevice::ReadOnly);
-    if(!fileTmx.isOpen()) qDebug() << "Error: TMX File Nonexistent";
+    if(!fileTmx.isOpen() || !fileTmx.exists()) qDebug() << "Error: TMX File Nonexistent";
     else {
-        QDataStream in(&fileTmx);
-        QByteArray line;
-        in >> line;
+
+        QByteArray line = fileTmx.readAll();
         fileTmx.close();
 
         QByteArray block;
         QDataStream out(&block, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_0);
-        out << (quint16)0;
+        out.setVersion(QDataStream::Qt_5_1);
+        out << (quint32)0;
         out << line;
         out.device()->seek(0);
-        out << (quint16)(block.size() - sizeof(quint16));
+        out << (quint32)(block.size() - sizeof(quint32));
+
+        m_tcpSocket->write(block);
+
+        m_tcpSocket->flush();
     }
+    m_tcpSocket->close();
 }
 
 /// Peer 2 Flow
@@ -115,45 +127,57 @@ void NetworkManager::connectToPeer(QHostAddress &address) {
     m_isRuler = false;
     m_watchdog->start();
 
-    m_tcpSocket.connectToHost(address, COM_PORT);
+    if (!m_tcpSocket)
+        m_tcpSocket = new QTcpSocket();
 
-    if (!m_tcpSocket.waitForConnected(5000)) {
-        qDebug() << "Error: " << m_tcpSocket.errorString();
+    m_tcpSocket->connectToHost(address, COM_PORT);
+    qDebug() << address;
+
+    if (!m_tcpSocket->waitForConnected(5000)) {
+        qDebug() << "Error: " << m_tcpSocket->errorString();
+        m_tcpSocket->disconnectFromHost();
     } else {
-        qDebug() << "Connected?";
+        m_isConnected = true;
     }
 
-    connect(&m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(tcpSocketStateChanged(QAbstractSocket::SocketState)));
-    connect(&m_tcpSocket, SIGNAL(readyRead()), this, SLOT(readyReadTCP()));
+    connect(m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(tcpSocketStateChanged(QAbstractSocket::SocketState)));
+    connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(readyReadTCP()));
 }
 
 void NetworkManager::readyReadTCP() {
-    qDebug() << "Packet Received!";
 
-    QDataStream in(&m_tcpSocket);
-    static quint16 blockSize = 0;
+    QDataStream in(m_tcpSocket);
+    static quint32 blockSize = 0;
 
-    in.setVersion(QDataStream::Qt_5_0);
+    in.setVersion(QDataStream::Qt_5_1);
     if (blockSize == 0) {
-        if (m_tcpSocket.bytesAvailable() < (int)sizeof(quint16)) return;
+        if (m_tcpSocket->bytesAvailable() < (int)sizeof(quint16)) return;
         in >> blockSize;
     }
 
-    if (m_tcpSocket.bytesAvailable() < blockSize) return;
+    if (m_tcpSocket->bytesAvailable() < blockSize) {
+        qDebug() << "Not enough bytes";
+        return;
+    }
 
     QByteArray line;
     in >> line;
 
+    qDebug() << "Line: " << line;
+
     QFile file(m_tmpFilePath);
-    if(!(file.open(QIODevice::Append)))
+    if(!(file.open(QIODevice::WriteOnly)))
         qDebug() << "Couldn't open file";
+
+    file.write(line);
 
     blockSize = 0;
     file.close();
+
+    m_tcpSocket->close();
 }
 
 void NetworkManager::tcpSocketStateChanged(QAbstractSocket::SocketState state) {
-    qDebug() << "State changed: " << state;
     if (state == QAbstractSocket::SocketState::ConnectedState) {
         m_isConnected = true;
         emit networkPlayerConnected();
@@ -161,4 +185,10 @@ void NetworkManager::tcpSocketStateChanged(QAbstractSocket::SocketState state) {
         m_isConnected = false;
         emit networkPlayerConnectionLost();
     }
+}
+
+void NetworkManager::acceptConnection() {
+    m_tcpSocket = m_tcpServer.nextPendingConnection();
+    emit networkPlayerConnected();
+    this->peerConnected();
 }
