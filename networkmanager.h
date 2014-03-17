@@ -35,9 +35,9 @@ public:
     struct DatagramFormat {
         QPointF pos;
         QPointF vel;
+        int mainCharFrame;
+        int mainCharAnim;
         qint64 timestamp;
-        bool initiateConnection;
-        bool ackInitialConnection;
 
         /// Convert our struct into a QByteArray
         QByteArray serialize() {
@@ -116,6 +116,8 @@ public:
         return dg;
     }
 
+    bool isConnected() { return m_isConnected; }
+
     ~NetworkManager() {}
 
 signals:
@@ -131,6 +133,7 @@ public slots:
     void connectionTimeout();
     void peerConnected();
     void readyReadUDP();
+    void tcpSocketStateChanged(QAbstractSocket::SocketState);
 };
 
 #endif // NETWORKMANAGER_H

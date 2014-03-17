@@ -6,6 +6,8 @@
 #include <QPixmap>
 #include <QFile>
 #include <QApplication>
+#include <QInputDialog>
+
 #include "sfxmanager.h"
 #include "gameengine.h"
 
@@ -19,6 +21,8 @@ static const QString tilesetPath = "./resources/tilesets";
 static const QString enemyPath = spritePath + "/enemies";
 static const QString itemPath = spritePath + "/items";
 static const QString otherSpritePath = spritePath + "/other";
+
+#define ABS(x) ((x<0)?(-x):(x))
 
 GameEngine::GameEngine(QObject* parent) : QGraphicsScene(parent), m_mainActor(NULL), m_prevTime(0)
 {
@@ -35,7 +39,8 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_hud(0),
     m_timeDivider(1),
     m_gamePaused(false),
-    m_gamePausedDueToDamage(false) {
+    m_gamePausedDueToDamage(false),
+    m_networkPlayer(NULL) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 
     qDebug() << "Level Path: " << levelPath + "/LevelTest.tmx";
@@ -44,6 +49,9 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_networkManager = new NetworkManager(levelPath + "/LevelTest.tmx",
                                           levelPath + "/tmp.tmx",
                                           this);
+
+    connect(m_networkManager, SIGNAL(networkPlayerConnected()), this, SLOT(networkPlayerConnected()));
+    connect(m_networkManager, SIGNAL(networkPlayerConnectionLost()), this, SLOT(networkPlayerDisconnected()));
 
     m_mediaPlayer = new QMediaPlayer(this);
     m_mediaPlayerReverse = new QMediaPlayer(this);
@@ -66,6 +74,7 @@ GameEngine::~GameEngine() {
     delete m_hud;
     delete m_hudGameTime;
     delete heartbeat;
+    delete m_networkPlayer;
 
     for (auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); ++itr) {
         this->removeItem(*itr);
@@ -99,6 +108,7 @@ void GameEngine::step(qint64 time) {
         // This is what we will timestamp all history events with so we can have a definite point-of-reference
         //   to accurately play back events.
         m_gameTime += deltaTime;
+        m_totalGameTime += ABS(deltaTime);
 
         for(auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); itr++) {
             Sprite* spr = dynamic_cast<Sprite*>(*itr);
@@ -119,11 +129,23 @@ void GameEngine::step(qint64 time) {
             m_hudGameTime->setText(QString("Time: %1 Coins: %2").arg(m_gameTime/1000, 4, 10, QChar('0')).arg(m_coinCount, 3, 10, QChar('0')));
         }
 
-        if(m_timeReversed){
+        if (m_timeReversed){
              this->setForegroundBrush(QColor(255, 255, 255, 127));
-        }
-        else this->setForegroundBrush(QColor(255, 255, 255, 0));
+        } else this->setForegroundBrush(QColor(255, 255, 255, 0));
 
+        if (m_mainActor && !m_peerAddress.isNull() && m_networkManager->isConnected()) {
+            NetworkManager::DatagramFormat dg;
+            dg.timestamp = m_gameTime;
+            m_mainActor->fillDatagram(dg);
+            m_networkManager->sendDatagram(dg, m_peerAddress);
+        }
+
+        if (m_networkPlayer && m_networkManager) {
+            NetworkManager::DatagramFormat nextDG;
+            while (m_networkManager->hasPendingDatagrams() && (nextDG = m_networkManager->nextDatagram()).timestamp < m_totalGameTime) {
+                m_networkPlayer->decodeDatagram(nextDG);
+            }
+        }
         this->removeDeletedItems();
     }
 }
@@ -237,6 +259,7 @@ void GameEngine::saveGame(std::vector<QString> values) {
 
 void GameEngine::startSinglePlayer() {
     this->removeItem(m_initialMenu);
+    this->removeItem(m_mpMenu);
 
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
@@ -311,7 +334,7 @@ void GameEngine::startSinglePlayer() {
     this->addHUD(life1);
     this->addHUD(life2);
     this->addHUD(life3);
-    this->addHUDText(gameTime);
+    this->addHUDText(gameTime, true);
 
     this->addSprite(object1);
 
@@ -623,12 +646,41 @@ void GameEngine::createMPPressed() {
     QHostAddress addr = m_networkManager->getThisAddr();
     qDebug() << "Address: " << addr;
 
+    this->startSinglePlayer();
+    m_waitingForNetworkPlayer = new QGraphicsSimpleTextItem("Waiting for network player...", m_hud);
+    m_waitingForNetworkPlayer->setText("Waiting for network player...");
+    m_waitingForNetworkPlayer->setPos(this->views().at(0)->size().width()/2 - m_waitingForNetworkPlayer->boundingRect().width()/2, 32);
+    this->addHUDText(m_waitingForNetworkPlayer);
 }
 
 void GameEngine::joinMPPressed() {
+    bool ok = false;
 
+    QString hostAddr = QInputDialog::getText(this->views().at(0), "Peer IP Address", "IP Address:", QLineEdit::Normal, "127.0.0.1", &ok);
+    if (!ok) return;
+    QHostAddress addr(hostAddr);
+    if (addr.isNull()) {
+        QMessageBox::critical(this->views().at(0), "Invalid IP Address", "The IP Address entered was invalid", QMessageBox::Ok);
+        return;
+    }
+    qDebug() << "Address: " << addr;
+    m_peerAddress = addr;
+
+    m_networkManager->connectToPeer(m_peerAddress);
 }
 
+void GameEngine::networkPlayerConnected() {
+    qDebug() << "Woo!  We have a connection!";
+    NetworkPlayer *np = new NetworkPlayer(16, 32);
+    np->setSolid(true);
+    this->addNetworkSprite(np);
+}
+
+void GameEngine::networkPlayerDisconnected() {
+    qDebug() << "Aww snap.";
+}
+
+//*****************************************************************
 void GameEngine::QuitGame() {
     exit(0);
 }

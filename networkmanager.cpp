@@ -83,8 +83,11 @@ void NetworkManager::startListeningTCP() {
 }
 
 void NetworkManager::peerConnected() {
+    emit networkPlayerConnected();
     m_isConnected = true;
     connect(&m_tcpSocket, SIGNAL(readyRead()), this, SLOT(packetReceived()));
+
+    this->sendTmx();
 }
 
 void NetworkManager::sendTmx() {
@@ -113,7 +116,15 @@ void NetworkManager::connectToPeer(QHostAddress &address) {
     m_watchdog->start();
 
     m_tcpSocket.connectToHost(address, COM_PORT);
-    connect(&m_tcpSocket, SIGNAL(readyRead()), this, SLOT(packetReceived()));
+
+    if (!m_tcpSocket.waitForConnected(5000)) {
+        qDebug() << "Error: " << m_tcpSocket.errorString();
+    } else {
+        qDebug() << "Connected?";
+    }
+
+    connect(&m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(tcpSocketStateChanged(QAbstractSocket::SocketState)));
+    connect(&m_tcpSocket, SIGNAL(readyRead()), this, SLOT(readyReadTCP()));
 }
 
 void NetworkManager::readyReadTCP() {
@@ -139,4 +150,15 @@ void NetworkManager::readyReadTCP() {
 
     blockSize = 0;
     file.close();
+}
+
+void NetworkManager::tcpSocketStateChanged(QAbstractSocket::SocketState state) {
+    qDebug() << "State changed: " << state;
+    if (state == QAbstractSocket::SocketState::ConnectedState) {
+        m_isConnected = true;
+        emit networkPlayerConnected();
+    } else if (state == QAbstractSocket::SocketState::UnconnectedState) {
+        m_isConnected = false;
+        emit networkPlayerConnectionLost();
+    }
 }

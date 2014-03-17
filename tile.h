@@ -5,8 +5,6 @@
 #include <QGraphicsScene>
 #include <QGraphicsSceneMouseEvent>
 
-#include "gameengine.h"
-#include "sprite.h"
 #include "animatedcollideablesprite.h"
 #include "tilemap.h"
 

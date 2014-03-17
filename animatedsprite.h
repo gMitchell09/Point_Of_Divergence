@@ -73,6 +73,18 @@ public:
 
     virtual QString className() { return "AnimatedSprite"; }
 
+    virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) {
+        Sprite::fillDatagram(datagram);
+        datagram.mainCharFrame = m_nCurrentFrame;
+        datagram.mainCharAnim = m_nCurrentAnimation;
+    }
+
+    virtual void decodeDatagram(NetworkManager::DatagramFormat dg) {
+        Sprite::decodeDatagram(dg);
+        m_nCurrentAnimation = dg.mainCharAnim;
+        m_nCurrentFrame = dg.mainCharFrame;
+    }
+
 protected:
     bool m_useSlice;
 

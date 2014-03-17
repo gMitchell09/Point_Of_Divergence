@@ -62,7 +62,7 @@ public:
 
     QPointF& getApparentVelocity() { return m_apparentVelocity; }
 
-    virtual void step(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta); }
+    virtual void step(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta);}
 
     virtual void pushState(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta); }
     virtual void popState(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta); }
@@ -101,7 +101,12 @@ public:
         return t == kSlope60Right || t == kSlope60Left;
     }
 
-    virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) { }
+    virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) {
+        datagram.pos = this->pos();
+        datagram.vel = this->getVelocity();
+    }
+
+    virtual void decodeDatagram(NetworkManager::DatagramFormat dg)  { Q_UNUSED(dg); }
 };
 
 #endif // SPRITE_H

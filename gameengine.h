@@ -42,6 +42,7 @@
 #include "optionbutton.h"
 #include "optionslider.h"
 #include "networkmanager.h"
+#include "networkplayer.h"
 
 class Level;
 class MainCharacter;
@@ -65,8 +66,10 @@ private:
 
     qint64 m_prevTime;
     qint64 m_gameTime;
+    qint64 m_totalGameTime;
 
     MainCharacter * m_mainActor;
+    NetworkPlayer *m_networkPlayer;
     StaticBackground *m_bkg;
 
     QGraphicsItemGroup * m_initialMenu;
@@ -74,7 +77,10 @@ private:
     QGraphicsItemGroup * m_mpMenu;
     QGraphicsItemGroup * m_optionsMenu;
 
+    QGraphicsSimpleTextItem *m_waitingForNetworkPlayer;
+
     NetworkManager *m_networkManager;
+    QHostAddress m_peerAddress;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
 
@@ -148,14 +154,15 @@ public:
         m_hud->addToGroup(sprite);
     }
 
-    inline void addHUDText(QGraphicsSimpleTextItem* text) {
+    inline void addHUDText(QGraphicsSimpleTextItem* text, bool isGameTime = false) {
         if (!m_hud) {
             m_hud = new HUD(this->views().at(0), QPointF(0, 0));
             this->addItem(m_hud);
         }
         this->addItem(text);
         m_hud->addToGroup(text);
-        m_hudGameTime = text;
+        if (isGameTime)
+            m_hudGameTime = text;
     }
 
     inline size_t addSprite(Sprite* sprite, bool mainActor = false) {
@@ -170,6 +177,10 @@ public:
     inline void addLevel(Level* level) {
         m_levels.push_back(level);
         this->addItem((QGraphicsItemGroup*)level);
+    }
+
+    inline void addNetworkSprite(NetworkPlayer *np) {
+        this->addSprite(np);
     }
 
     float getGravity() { return m_gravity; }
@@ -201,6 +212,9 @@ private slots:
     void handleError(QMediaPlayer::Error er) {
         qDebug() << "ERROR!!! " << er;
     }
+
+    void networkPlayerConnected();
+    void networkPlayerDisconnected();
 };
 
 #endif // GAMEENGINE_H

@@ -11,6 +11,9 @@
 
 #include <QGraphicsScene>
 #include <QDebug>
+#include <QtMath>
+#include <QPainter>
+
 #include <stack>
 
 struct Collision {
@@ -67,6 +70,10 @@ public:
 
     virtual void beginSlice();
     virtual void endSlice();
+
+    virtual void decodeDatagram(NetworkManager::DatagramFormat dg) {
+        AnimatedSprite::decodeDatagram(dg);
+    }
 
 
 protected:

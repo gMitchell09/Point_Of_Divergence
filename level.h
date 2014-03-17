@@ -10,8 +10,9 @@
 #include <QDomElement>
 
 
-#include "tilemap.h"
 #include "tile.h"
+#include "tilemap.h"
+#include "maincharacter.h"
 
 class TileMap;
 class GameEngine;

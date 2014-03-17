@@ -44,8 +44,8 @@ SOURCES += main.cpp\
     databasecontroller.cpp \
     sfxmanager.cpp \
     networkmanager.cpp \
-    datagramserializer.cpp \
-    optionslider.cpp
+    optionslider.cpp \
+    networkplayer.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -69,9 +69,9 @@ HEADERS  += mainwindow.h \
     databasecontroller.h \
     sfxmanager.h \
     networkmanager.h \
-    datagramserializer.h \
     optionslider.h \
-    IMenuItem.h
+    IMenuItem.h \
+    networkplayer.h
 
 FORMS    += mainwindow.ui
 
