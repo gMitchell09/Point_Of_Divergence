@@ -181,6 +181,7 @@ public:
 
     inline void addNetworkSprite(NetworkPlayer *np) {
         this->addSprite(np);
+        m_networkPlayer = np;
     }
 
     float getGravity() { return m_gravity; }
