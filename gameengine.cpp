@@ -329,7 +329,7 @@ void GameEngine::startSinglePlayer() {
     this->addLevel(level);
     this->displayBackground(bkgImg);
 
-    this->addSprite(testSprite2);
+    //this->addSprite(testSprite2);
     this->addSprite(floater);
     this->addHUD(life1);
     this->addHUD(life2);
