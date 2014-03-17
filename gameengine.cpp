@@ -133,12 +133,12 @@ void GameEngine::step(qint64 time) {
              this->setForegroundBrush(QColor(255, 255, 255, 127));
         } else this->setForegroundBrush(QColor(255, 255, 255, 0));
 
-        qDebug() << "Is Connected?: " << m_networkManager->isConnected();
         if (m_networkManager->isConnected()) {
             qDebug() << "Sending Datagram";
             NetworkManager::DatagramFormat dg;
             dg.timestamp = m_gameTime;
             m_mainActor->fillDatagram(dg);
+            qDebug() << "Datagram: " << dg.toString();
             qDebug() << "Bytes Written: " << m_networkManager->sendDatagram(dg);
         }
 
