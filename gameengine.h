@@ -41,6 +41,7 @@
 #include "databasecontroller.h"
 #include "optionbutton.h"
 #include "optionslider.h"
+#include "networkmanager.h"
 
 class Level;
 class MainCharacter;
@@ -72,6 +73,8 @@ private:
     QGraphicsItemGroup * m_loadMenu;
     QGraphicsItemGroup * m_mpMenu;
     QGraphicsItemGroup * m_optionsMenu;
+
+    NetworkManager *m_networkManager;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
 
@@ -128,6 +131,9 @@ public:
     void saveSettings();
     void QuitGame();
     void modifiedOptionsWarning();
+
+    void createMPPressed();
+    void joinMPPressed();
 
     inline void addHandler(std::function<void(long)> callback) {
         m_stepHandlerVector.push_back(callback);

@@ -7,6 +7,8 @@
  */
 
 #include "animatedsprite.h"
+#include "networkmanager.h"
+
 #include <QGraphicsScene>
 #include <QDebug>
 #include <stack>

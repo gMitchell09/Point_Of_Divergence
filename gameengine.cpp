@@ -11,7 +11,6 @@
 
 static const QString bkgPath = "./resources/backgrounds";
 static const QString buttonPath = "./resources/buttons";
-// No dot for bgmPath because we need the absolute path.
 static const QString bgmPath = "/resources/bgm";
 static const QString sfxPath = "./resources/sfx";
 static const QString levelPath = "./resources/levels";
@@ -41,6 +40,10 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
 
     qDebug() << "Level Path: " << levelPath + "/LevelTest.tmx";
     QFile file(levelPath + "/LevelTest.tmx");
+
+    m_networkManager = new NetworkManager(levelPath + "/LevelTest.tmx",
+                                          levelPath + "/tmp.tmx",
+                                          this);
 
     m_mediaPlayer = new QMediaPlayer(this);
     m_mediaPlayerReverse = new QMediaPlayer(this);
@@ -342,8 +345,8 @@ void GameEngine::initBGM(QString bgmFileName, QString revBgmFileName) {
         m_mediaPlayer->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + bgmFileName));
         m_mediaPlayerReverse->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + revBgmFileName));
 
-        m_mediaPlayer->setVolume(50);
-        m_mediaPlayerReverse->setVolume(50);
+        m_mediaPlayer->setVolume(100);
+        m_mediaPlayerReverse->setVolume(100);
 
 
 //        qDebug() << "Supported: " << m_mediaPlayer->hasSupport()
@@ -507,16 +510,16 @@ void GameEngine::displayInitialMenu() {
     button_hover = new QPixmap(buttonPath + "/menuButton_createMP_HOVER.png");
     createMPButton = new MenuButton(button_static, button_clicked, button_hover);
     createMPButton->setPos(this->width()/2-createMPButton->boundingRect().width()/2, this->height()/4-createMPButton->boundingRect().height()/2);
-//    func = std::bind(&GameEngine::, this);
-//    createMPButton->setCallback(func);
+    func = std::bind(&GameEngine::createMPPressed, this);
+    createMPButton->setCallback(func);
 
     button_static = new QPixmap(buttonPath + "/menuButton_joinMP_STATIC.png");
     button_clicked = new QPixmap(buttonPath + "/menuButton_joinMP_CLICKED.png");
     button_hover = new QPixmap(buttonPath + "/menuButton_joinMP_HOVER.png");
     joinMPButton = new MenuButton(button_static, button_clicked, button_hover);
     joinMPButton->setPos(this->width()/2-joinMPButton->boundingRect().width()/2, this->height()*2/4-joinMPButton->boundingRect().height()/2);
-//    func = std::bind(&GameEngine::, this);
-//    joinMPButton->setCallback(func);
+    func = std::bind(&GameEngine::joinMPPressed, this);
+    joinMPButton->setCallback(func);
 
     mainmenuButton->setPos(this->width()/2-mainmenuButton->boundingRect().width()/2, this->height()*3/4-mainmenuButton->boundingRect().height()/2);
     func = std::bind(&GameEngine::displayMainMenu_mp, this);
@@ -612,6 +615,18 @@ void GameEngine::saveSettings() {
     }
     this->displayMainMenu_option();
     SFXManager::Instance()->setMute(m_selectedOptions.muteSFX);
+}
+
+//************************************************************
+void GameEngine::createMPPressed() {
+    m_networkManager->startListeningTCP();
+    QHostAddress addr = m_networkManager->getThisAddr();
+    qDebug() << "Address: " << addr;
+
+}
+
+void GameEngine::joinMPPressed() {
+
 }
 
 void GameEngine::QuitGame() {

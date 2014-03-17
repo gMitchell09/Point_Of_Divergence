@@ -80,8 +80,8 @@ private:
     bool m_isTryingToConnect;
     bool m_isRuler;
 
-    /// Private variables for TXing
     QString m_tmxPath;
+    QString m_tmpFilePath;
 
     /// Functions for TXing
     void sendTmx();
@@ -89,7 +89,7 @@ private:
     QTimer *m_watchdog;
 
 public:
-    explicit NetworkManager(QString tmx, QObject *parent = 0);
+    explicit NetworkManager(QString tmx, QString tmpFilePath, QObject *parent = 0);
 
     /// Bind and open our socket to allow the receipt of incoming datagrams
     void startListeningUDP();

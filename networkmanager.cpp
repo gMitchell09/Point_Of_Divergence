@@ -15,24 +15,27 @@
 #define COM_PORT (quint16)12345
 #define NETWORK_TIMEOUT 1500
 
-NetworkManager::NetworkManager(QString tmxPath, QObject *parent) :
+NetworkManager::NetworkManager(QString tmxPath, QString tmpFilePath, QObject *parent) :
     QObject(parent)
 {
     m_tmxPath = tmxPath;
+    m_tmpFilePath = tmpFilePath;
     m_watchdog = new QTimer(this);
     m_watchdog->setInterval(NETWORK_TIMEOUT);
     m_watchdog->setSingleShot(true);
 }
 
 QHostAddress NetworkManager::getThisAddr() {
-    return m_udpSocket.localAddress();
+    QHostAddress addr;
+    addr = m_tcpSocket.localAddress();
+    return addr;
 }
 
 void NetworkManager::startListeningUDP() {
     if (!m_udpSocket.bind(QHostAddress::AnyIPv4)) {
         qDebug() << "Unable to bind socket";
     }
-    else connect(&m_udpSocket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    else connect(&m_udpSocket, SIGNAL(readyRead()), this, SLOT(readyReadUDP()));
 }
 
 void NetworkManager::readyReadUDP() {
@@ -68,7 +71,6 @@ qint64 NetworkManager::sendDatagram(NetworkManager::DatagramFormat d, QHostAddre
 void NetworkManager::connectionTimeout() {
     emit networkPlayerConnectionLost();
     m_isConnected = false;
-    m_isTryingToConnect = false;
 
     qDebug() << "Fuck";
 }
@@ -76,7 +78,7 @@ void NetworkManager::connectionTimeout() {
 /// Peer 1 Flow
 void NetworkManager::startListeningTCP() {
     m_isRuler = true;
-    m_tcpSocket.bind(COM_PORT);
+    m_tcpSocket.bind(QHostAddress::AnyIPv4, COM_PORT);
     connect(&m_tcpSocket, SIGNAL(connected()), this, SLOT(peerConnected()));
 }
 
@@ -131,7 +133,7 @@ void NetworkManager::readyReadTCP() {
     QByteArray line;
     in >> line;
 
-    QFile file(" (>*.*)> ");
+    QFile file(m_tmpFilePath);
     if(!(file.open(QIODevice::Append)))
         qDebug() << "Couldn't open file";
 

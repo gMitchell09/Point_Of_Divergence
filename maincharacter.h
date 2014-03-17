@@ -13,6 +13,7 @@
 #include "animatedcollideablesprite.h"
 #include "global.h"
 #include "gameengine.h"
+#include "networkmanager.h"
 
 class MainCharacter : public AnimatedCollideableSprite
 {

@@ -9,6 +9,7 @@
 #include <QGraphicsPixmapItem>
 
 #include "global.h"
+#include "networkmanager.h"
 
 ///
 /// \brief The Sprite class is an abstract base class for all other sprites in engine
@@ -99,6 +100,8 @@ public:
         ItemType t = this->blockType();
         return t == kSlope60Right || t == kSlope60Left;
     }
+
+    virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) { }
 };
 
 #endif // SPRITE_H

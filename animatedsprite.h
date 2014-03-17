@@ -13,6 +13,7 @@
 #include <stack>
 
 #include "sprite.h"
+#include "networkmanager.h"
 
 enum kAnimationType {
     Loop,                   Loop_Reverse,
