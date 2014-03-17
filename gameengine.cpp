@@ -133,10 +133,11 @@ void GameEngine::step(qint64 time) {
              this->setForegroundBrush(QColor(255, 255, 255, 127));
         } else this->setForegroundBrush(QColor(255, 255, 255, 0));
 
-        if (m_networkManager->isConnected()) {
+        if (1 || m_networkManager->isConnected()) {
             NetworkManager::DatagramFormat dg;
             dg.timestamp = m_gameTime;
             m_mainActor->fillDatagram(dg);
+            m_networkManager->sendDatagram(dg);
         }
 
         qDebug() << "A: " << m_networkPlayer << ", " << m_networkManager;
