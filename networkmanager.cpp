@@ -126,6 +126,7 @@ void NetworkManager::sendTmx() {
     }
     m_tcpSocket->close();
     this->startListeningUDP();
+    emit networkPlayerConnected();
 }
 
 /// Peer 2 Flow
@@ -186,17 +187,16 @@ void NetworkManager::readyReadTCP() {
 
     // Start listening on the UDP side
     this->startListeningUDP();
+    emit networkPlayerConnected();
 }
 
 void NetworkManager::tcpSocketStateChanged(QAbstractSocket::SocketState state) {
     if (state == QAbstractSocket::SocketState::ConnectedState) {
         m_isConnected = true;
-        emit networkPlayerConnected();
     }
 }
 
 void NetworkManager::acceptConnection() {
     m_tcpSocket = m_tcpServer.nextPendingConnection();
-    emit networkPlayerConnected();
     this->peerConnected();
 }

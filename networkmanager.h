@@ -54,8 +54,7 @@ public:
 
         /// Deconstruct a packet into our struct
         void deserialize(char* data, size_t size) {
-            if (size == sizeof(DatagramFormat))
-                memcpy(this, data, sizeof(DatagramFormat));
+            memcpy(this, data, sizeof(DatagramFormat));
         }
 
         QString toString() {

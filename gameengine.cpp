@@ -644,12 +644,6 @@ void GameEngine::saveSettings() {
 
 //************************************************************
 void GameEngine::createMPPressed() {
-    this->startSinglePlayer();
-    m_waitingForNetworkPlayer = new QGraphicsSimpleTextItem("Waiting for network player...", m_hud);
-    m_waitingForNetworkPlayer->setText("Waiting for network player...");
-    m_waitingForNetworkPlayer->setPos(this->views().at(0)->size().width()/2 - m_waitingForNetworkPlayer->boundingRect().width()/2, 32);
-    this->addHUDText(m_waitingForNetworkPlayer);
-
     m_networkManager->startListeningTCP();
     QHostAddress addr = m_networkManager->getThisAddr();
     qDebug() << "Address: " << addr;
@@ -677,6 +671,8 @@ void GameEngine::networkPlayerConnected() {
     NetworkPlayer *np = new NetworkPlayer(16, 32);
     np->setSolid(true);
     this->addNetworkSprite(np);
+
+    this->startSinglePlayer();
 }
 
 void GameEngine::networkPlayerDisconnected() {
