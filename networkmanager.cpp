@@ -68,12 +68,8 @@ void NetworkManager::readyReadUDP() {
 
 qint64 NetworkManager::sendDatagram(NetworkManager::DatagramFormat d, QHostAddress host) {
     QUdpSocket mySock;
-    qDebug() << "Socket is valid: " << ((mySock.isValid()) ? "Yes" : "No");
-    qDebug() << "Socket is writeable: " << ((mySock.isWritable()) ? "Yes" : "No");
-    if (!mySock.isValid() || !mySock.isWritable()) {
-        qDebug() << "Error!!!  QUdpSocket is not good!! >:O";
-        return -1;
-    }
+
+    qDebug() << "Host Address: " << host;
 
     return mySock.writeDatagram(d.serialize(), host, COM_PORT);
 }
