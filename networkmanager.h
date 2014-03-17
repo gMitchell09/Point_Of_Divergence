@@ -110,7 +110,7 @@ public:
     qint64 sendDatagram(DatagramFormat d);
 
     /// Check if our incoming datagram queue is empth
-    bool hasPendingDatagrams() { return m_datagramQueue.empty(); }
+    bool hasPendingDatagrams() { return !m_datagramQueue.empty(); }
 
     /// Pull the next datagram from our queue
     DatagramFormat nextDatagram() {

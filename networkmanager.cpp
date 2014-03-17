@@ -60,9 +60,6 @@ void NetworkManager::readyReadUDP() {
 
         // Pet the dog
         m_watchdog->start();
-
-        qDebug() << "Datagram from: " << addr << ":" << port;
-        qDebug() << datagram.toString();
     }
 }
 

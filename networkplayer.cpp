@@ -21,4 +21,6 @@ void NetworkPlayer::decodeDatagram(NetworkManager::DatagramFormat dg) {
     AnimatedCollideableSprite::decodeDatagram(dg);
     this->setPos(dg.pos);
     this->setVelocity(dg.vel);
+
+    qDebug() << "Decode datagram: " << dg.toString();
 }

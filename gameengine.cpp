@@ -134,18 +134,16 @@ void GameEngine::step(qint64 time) {
         } else this->setForegroundBrush(QColor(255, 255, 255, 0));
 
         if (m_networkManager->isConnected()) {
-            qDebug() << "Sending Datagram";
             NetworkManager::DatagramFormat dg;
             dg.timestamp = m_gameTime;
             m_mainActor->fillDatagram(dg);
-            qDebug() << "Datagram: " << dg.toString();
-            qDebug() << "Bytes Written: " << m_networkManager->sendDatagram(dg);
         }
 
         if (m_networkPlayer && m_networkManager) {
             NetworkManager::DatagramFormat nextDG;
-            while (m_networkManager->hasPendingDatagrams() && (nextDG = m_networkManager->nextDatagram()).timestamp < m_totalGameTime) {
+            while (m_networkManager->hasPendingDatagrams()) {
                 m_networkPlayer->decodeDatagram(nextDG);
+                nextDG = m_networkManager->nextDatagram();
             }
         }
         this->removeDeletedItems();
