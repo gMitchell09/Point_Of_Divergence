@@ -139,11 +139,18 @@ void GameEngine::step(qint64 time) {
             m_mainActor->fillDatagram(dg);
         }
 
+        qDebug() << "A: " << m_networkPlayer << ", " << m_networkManager;
         if (m_networkPlayer && m_networkManager) {
-            NetworkManager::DatagramFormat nextDG;
+            qDebug() << m_networkManager->hasPendingDatagrams();
             while (m_networkManager->hasPendingDatagrams()) {
+                qDebug() << "ASDJKHSAJKDHSAJKDHJKSALD";
+                qDebug() << "ASDJKHSAJKDHSAJKDHJKSALD";
+                qDebug() << "ASDJKHSAJKDHSAJKDHJKSALD";
+                qDebug() << "ASDJKHSAJKDHSAJKDHJKSALD";
+                qDebug() << "ASDJKHSAJKDHSAJKDHJKSALD";
+                qDebug() << "ASDJKHSAJKDHSAJKDHJKSALD";
+                NetworkManager::DatagramFormat nextDG = m_networkManager->nextDatagram();
                 m_networkPlayer->decodeDatagram(nextDG);
-                nextDG = m_networkManager->nextDatagram();
             }
         }
         this->removeDeletedItems();
@@ -666,9 +673,10 @@ void GameEngine::joinMPPressed() {
 
 void GameEngine::networkPlayerConnected() {
     qDebug() << "Woo!  We have a connection!";
-    NetworkPlayer *np = new NetworkPlayer(16, 32);
-    np->setSolid(true);
-    this->addNetworkSprite(np);
+    m_networkPlayer = new NetworkPlayer(16, 32);
+    m_networkPlayer->setSolid(true);
+
+    this->addSprite(m_networkPlayer);
 
     this->startSinglePlayer();
 }

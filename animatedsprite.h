@@ -83,6 +83,8 @@ public:
         Sprite::decodeDatagram(dg);
         m_nCurrentAnimation = dg.mainCharAnim;
         m_nCurrentFrame = dg.mainCharFrame;
+
+        this->setPixmap(m_animationList.at(m_nCurrentAnimation).at(m_nCurrentFrame));
     }
 
 protected:

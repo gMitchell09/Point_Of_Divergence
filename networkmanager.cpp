@@ -56,6 +56,8 @@ void NetworkManager::readyReadUDP() {
         datagram.deserialize(data, m_udpSocket.pendingDatagramSize());
         free(data);
 
+        qDebug() << "Datagram: " << datagram.toString();
+
         m_datagramQueue.push(datagram);
 
         // Pet the dog
