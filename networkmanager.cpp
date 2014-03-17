@@ -66,12 +66,12 @@ void NetworkManager::readyReadUDP() {
     }
 }
 
-qint64 NetworkManager::sendDatagram(NetworkManager::DatagramFormat d, QHostAddress host) {
+qint64 NetworkManager::sendDatagram(NetworkManager::DatagramFormat d) {
     QUdpSocket mySock;
 
-    qDebug() << "Host Address: " << host;
+    qDebug() << "Host Address: " << m_peerAddress;
 
-    return mySock.writeDatagram(d.serialize(), host, COM_PORT);
+    return mySock.writeDatagram(d.serialize(), m_peerAddress, COM_PORT);
 }
 
 void NetworkManager::connectionTimeout() {
@@ -97,6 +97,8 @@ void NetworkManager::startListeningTCP() {
 void NetworkManager::peerConnected() {
     m_isConnected = true;
     connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(readyReadTCP()));
+
+    m_peerAddress = m_tcpSocket->peerAddress();
 
     this->sendTmx();
 }
@@ -143,6 +145,8 @@ void NetworkManager::connectToPeer(QHostAddress &address) {
     } else {
         m_isConnected = true;
     }
+
+    m_peerAddress = address;
 
     connect(m_tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(tcpSocketStateChanged(QAbstractSocket::SocketState)));
     connect(m_tcpSocket, SIGNAL(readyRead()), this, SLOT(readyReadTCP()));

@@ -139,7 +139,7 @@ void GameEngine::step(qint64 time) {
             NetworkManager::DatagramFormat dg;
             dg.timestamp = m_gameTime;
             m_mainActor->fillDatagram(dg);
-            qDebug() << "Bytes Written: " << m_networkManager->sendDatagram(dg, m_peerAddress);
+            qDebug() << "Bytes Written: " << m_networkManager->sendDatagram(dg);
         }
 
         if (m_networkPlayer && m_networkManager) {

@@ -71,6 +71,8 @@ private:
     /// Our shared QUdpSocket
     QUdpSocket m_udpSocket;
 
+    QHostAddress m_peerAddress;
+
     /// TCP socket
     QTcpSocket *m_tcpSocket;
     QTcpServer m_tcpServer;
@@ -106,7 +108,7 @@ public:
     QHostAddress getThisAddr();
 
     /// Transmit a datagram to host
-    qint64 sendDatagram(DatagramFormat d, QHostAddress host);
+    qint64 sendDatagram(DatagramFormat d);
 
     /// Check if our incoming datagram queue is empth
     bool hasPendingDatagrams() { return m_datagramQueue.empty(); }
