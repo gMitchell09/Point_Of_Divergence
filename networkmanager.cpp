@@ -66,6 +66,8 @@ void NetworkManager::readyReadUDP() {
 }
 
 qint64 NetworkManager::sendDatagram(NetworkManager::DatagramFormat d, QHostAddress host) {
+    qDebug() << "Socket is valid: " << ((m_udpSocket.isValid()) ? "Yes" : "No");
+    qDebug() << "Socket is writeable: " << ((m_udpSocket.isWritable()) ? "Yes" : "No");
     if (!m_udpSocket.isValid() || !m_udpSocket.isWritable()) {
         qDebug() << "Error!!!  QUdpSocket is not good!! >:O";
         return -1;
