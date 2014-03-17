@@ -70,6 +70,7 @@ private:
 
     QGraphicsItemGroup * m_initialMenu;
     QGraphicsItemGroup * m_loadMenu;
+    QGraphicsItemGroup * m_mpMenu;
     QGraphicsItemGroup * m_optionsMenu;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
@@ -118,8 +119,10 @@ public:
     void displayBackground(QPixmap &bkgPix);
     void displayInitialMenu();
     void displayLoadMenu();
+    void displayMultiplayerMenu();
     void displayOptionsMenu();
     void displayMainMenu_load();
+    void displayMainMenu_mp();
     void displayMainMenu_option();
     void startSinglePlayer();
     void saveSettings();

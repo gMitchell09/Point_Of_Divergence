@@ -362,10 +362,15 @@ void GameEngine::initBGM(QString bgmFileName, QString revBgmFileName) {
 void GameEngine::displayInitialMenu() {
     MenuButton * newgameButton;
     MenuButton * loadgameButton;
+    MenuButton * mpButton;
     MenuButton * optionsButton;
     MenuButton * quitButton;
 
     MenuButton * mainmenuButton;
+
+    MenuButton * createMPButton;
+    MenuButton * joinMPButton;
+
     MenuButton * saveButton;
     MenuButton * cancelButton;
     OptionSlider * musicButton;
@@ -382,7 +387,7 @@ void GameEngine::displayInitialMenu() {
     *button_hover = button_hover->scaled(200, 100);
 
     newgameButton = new MenuButton(button_static, button_clicked, button_hover);
-    newgameButton->setPos(this->width()/2-newgameButton->boundingRect().width()/2, this->height()/5-newgameButton->boundingRect().height()/2);
+    newgameButton->setPos(this->width()/2-newgameButton->boundingRect().width()/2, this->height()/6-newgameButton->boundingRect().height()/2);
     std::function<void(void)> func = std::bind(&GameEngine::startSinglePlayer, this);
     newgameButton->setCallback(func);
 
@@ -393,9 +398,20 @@ void GameEngine::displayInitialMenu() {
     *button_clicked = button_clicked->scaled(200, 100);
     *button_hover = button_hover->scaled(200, 100);
     loadgameButton = new MenuButton(button_static, button_clicked, button_hover);
-    loadgameButton->setPos(this->width()/2-loadgameButton->boundingRect().width()/2, this->height()*2/5-loadgameButton->boundingRect().height()/2);
+    loadgameButton->setPos(this->width()/2-loadgameButton->boundingRect().width()/2, this->height()*2/6-loadgameButton->boundingRect().height()/2);
     func = std::bind(&GameEngine::displayLoadMenu, this);
     loadgameButton->setCallback(func);
+
+    button_static = new QPixmap(buttonPath + "/menuButton_mp_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/menuButton_mp_CLICKED.png");
+    button_hover = new QPixmap(buttonPath + "/menuButton_mp_HOVER.png");
+    *button_static = button_static->scaled(200, 100);
+    *button_clicked = button_clicked->scaled(200, 100);
+    *button_hover = button_hover->scaled(200, 100);
+    mpButton = new MenuButton(button_static, button_clicked, button_hover);
+    mpButton->setPos(this->width()/2-mpButton->boundingRect().width()/2, this->height()*3/6-mpButton->boundingRect().height()/2);
+    func = std::bind(&GameEngine::displayMultiplayerMenu, this);
+    mpButton->setCallback(func);
 
     button_static = new QPixmap(buttonPath + "/menuButton_options_STATIC.png");
     button_clicked = new QPixmap(buttonPath + "/menuButton_options_CLICKED.png");
@@ -404,7 +420,7 @@ void GameEngine::displayInitialMenu() {
     *button_clicked = button_clicked->scaled(200, 100);
     *button_hover = button_hover->scaled(200, 100);
     optionsButton = new MenuButton(button_static, button_clicked, button_hover);
-    optionsButton->setPos(this->width()/2-optionsButton->boundingRect().width()/2, this->height()*3/5-optionsButton->boundingRect().height()/2);
+    optionsButton->setPos(this->width()/2-optionsButton->boundingRect().width()/2, this->height()*4/6-optionsButton->boundingRect().height()/2);
     func = std::bind(&GameEngine::displayOptionsMenu, this);
     optionsButton->setCallback(func);
 
@@ -415,12 +431,13 @@ void GameEngine::displayInitialMenu() {
     *button_clicked = button_clicked->scaled(200, 100);
     *button_hover = button_hover->scaled(200, 100);
     quitButton = new MenuButton(button_static, button_clicked, button_hover);
-    quitButton->setPos(this->width()/2-quitButton->boundingRect().width()/2, this->height()*4/5-quitButton->boundingRect().height()/2);
+    quitButton->setPos(this->width()/2-quitButton->boundingRect().width()/2, this->height()*5/6-quitButton->boundingRect().height()/2);
     func = std::bind(&GameEngine::QuitGame, this);
     quitButton->setCallback(func);
 
     m_initialMenu->addToGroup(newgameButton);
     m_initialMenu->addToGroup(loadgameButton);
+    m_initialMenu->addToGroup(mpButton);
     m_initialMenu->addToGroup(optionsButton);
     m_initialMenu->addToGroup(quitButton);
     m_initialMenu->setHandlesChildEvents(false);
@@ -482,6 +499,36 @@ void GameEngine::displayInitialMenu() {
     m_loadMenu->setPos(0, 0);
     //*** End Instantiation of Load Menu
 
+    //*** Instantiate Options Menu
+    m_mpMenu = new QGraphicsItemGroup();
+
+    button_static = new QPixmap(buttonPath + "/menuButton_createMP_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/menuButton_createMP_CLICKED.png");
+    button_hover = new QPixmap(buttonPath + "/menuButton_createMP_HOVER.png");
+    createMPButton = new MenuButton(button_static, button_clicked, button_hover);
+    createMPButton->setPos(this->width()/2-createMPButton->boundingRect().width()/2, this->height()/4-createMPButton->boundingRect().height()/2);
+//    func = std::bind(&GameEngine::, this);
+//    createMPButton->setCallback(func);
+
+    button_static = new QPixmap(buttonPath + "/menuButton_joinMP_STATIC.png");
+    button_clicked = new QPixmap(buttonPath + "/menuButton_joinMP_CLICKED.png");
+    button_hover = new QPixmap(buttonPath + "/menuButton_joinMP_HOVER.png");
+    joinMPButton = new MenuButton(button_static, button_clicked, button_hover);
+    joinMPButton->setPos(this->width()/2-joinMPButton->boundingRect().width()/2, this->height()*2/4-joinMPButton->boundingRect().height()/2);
+//    func = std::bind(&GameEngine::, this);
+//    joinMPButton->setCallback(func);
+
+    mainmenuButton->setPos(this->width()/2-mainmenuButton->boundingRect().width()/2, this->height()*3/4-mainmenuButton->boundingRect().height()/2);
+    func = std::bind(&GameEngine::displayMainMenu_mp, this);
+    mainmenuButton->setCallback(func);
+
+    m_mpMenu->addToGroup(createMPButton);
+    m_mpMenu->addToGroup(joinMPButton);
+    m_mpMenu->addToGroup(mainmenuButton);
+    m_mpMenu->setHandlesChildEvents(false);
+    m_mpMenu->setPos(0, 0);
+    //*** End Instantiation of Load Menu
+
     this->addItem(m_initialMenu);
 }
 
@@ -512,6 +559,11 @@ void GameEngine::displayLoadMenu() {
     m_table->readVals("*", "save_table");
 }
 
+void GameEngine::displayMultiplayerMenu() {
+    this->removeItem(m_initialMenu);
+    this->addItem(m_mpMenu);
+}
+
 void GameEngine::displayOptionsMenu() {
     this->removeItem(m_initialMenu);
     this->addItem(m_optionsMenu);
@@ -519,6 +571,11 @@ void GameEngine::displayOptionsMenu() {
 
 void GameEngine::displayMainMenu_load() {
     this->removeItem(m_loadMenu);
+    this->addItem(m_initialMenu);
+}
+
+void GameEngine::displayMainMenu_mp() {
+    this->removeItem(m_mpMenu);
     this->addItem(m_initialMenu);
 }
 

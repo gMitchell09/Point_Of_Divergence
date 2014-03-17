@@ -44,47 +44,9 @@ void OptionSlider::mousePressEvent(QGraphicsSceneMouseEvent *ev) {
         m_txt->setX(m_slider->pos().x()+6);
         m_txt->setText(QString::number(round(100*(m_slider->pos().x()-1)/(m_bkg->boundingRect().width()-1))));
     }
-
-//    int temp = round(100*(ev->pos().x()-1)/(m_bkg->boundingRect().width()-1));
-//    qDebug() << temp/100.;//*m_bkg->boundingRect().width();
-
-//    if(temp < 1) {
-//        m_slider->setX(1);
-//        m_txt->setX(m_slider->pos().x()+8);
-//        m_txt->setText("0");
-//    }
-//    else if (temp > 95) {
-//        m_slider->setX(m_bkg->boundingRect().width()-m_slider->boundingRect().width()-1);
-//        m_txt->setText("100");
-//        m_txt->setX(m_slider->pos().x()+4);
-//    }
-//    else {
-//        m_slider->setX((temp/100.)*m_bkg->boundingRect().width());
-//        m_txt->setX(m_slider->pos().x()+6);
-//        m_txt->setText(QString::number(temp));
-//    }
 }
 
 void OptionSlider::mouseMoveEvent(QGraphicsSceneMouseEvent *ev) {
-//    int temp = round(100*(ev->pos().x()-1)/(m_bkg->boundingRect().width()-1));
-//    qDebug() << temp/100.;//*m_bkg->boundingRect().width();
-
-//    if(temp < 1) {
-//        m_slider->setX(1);
-//        m_txt->setX(m_slider->pos().x()+8);
-//        m_txt->setText("0");
-//    }
-//    else if (temp > 95) {
-//        m_slider->setX(m_bkg->boundingRect().width()-m_slider->boundingRect().width()-1);
-//        m_txt->setText("100");
-//        m_txt->setX(m_slider->pos().x()+4);
-//    }
-//    else {
-//        m_slider->setX((temp/100.)*m_bkg->boundingRect().width());
-//        m_txt->setX(m_slider->pos().x()+6);
-//        m_txt->setText(QString::number(temp));
-//    }
-
     if(ev->pos().x() < 25) {
         m_slider->setX(1);
         m_txt->setX(m_slider->pos().x()+8);
