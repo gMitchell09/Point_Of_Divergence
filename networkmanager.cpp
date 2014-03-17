@@ -35,10 +35,13 @@ QHostAddress NetworkManager::getThisAddr() {
 }
 
 void NetworkManager::startListeningUDP() {
-    if (!m_udpSocket.bind(QHostAddress::AnyIPv4)) {
+    if (!m_udpSocket.bind(QHostAddress::AnyIPv4, COM_PORT)) {
         qDebug() << "Unable to bind socket";
     }
-    else connect(&m_udpSocket, SIGNAL(readyRead()), this, SLOT(readyReadUDP()));
+    else {
+        connect(&m_udpSocket, SIGNAL(readyRead()), this, SLOT(readyReadUDP()));
+        m_isConnected = true;
+    }
 }
 
 void NetworkManager::readyReadUDP() {
@@ -120,6 +123,7 @@ void NetworkManager::sendTmx() {
         m_tcpSocket->flush();
     }
     m_tcpSocket->close();
+    this->startListeningUDP();
 }
 
 /// Peer 2 Flow
@@ -175,15 +179,15 @@ void NetworkManager::readyReadTCP() {
     file.close();
 
     m_tcpSocket->close();
+
+    // Start listening on the UDP side
+    this->startListeningUDP();
 }
 
 void NetworkManager::tcpSocketStateChanged(QAbstractSocket::SocketState state) {
     if (state == QAbstractSocket::SocketState::ConnectedState) {
         m_isConnected = true;
         emit networkPlayerConnected();
-    } else if (state == QAbstractSocket::SocketState::UnconnectedState) {
-        m_isConnected = false;
-        emit networkPlayerConnectionLost();
     }
 }
 
