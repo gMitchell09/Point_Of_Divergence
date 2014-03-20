@@ -24,6 +24,7 @@ NetworkManager::NetworkManager(QString tmxPath, QString tmpFilePath, QObject *pa
     m_watchdog = new QTimer(this);
     m_watchdog->setInterval(NETWORK_TIMEOUT);
     m_watchdog->setSingleShot(true);
+    m_isConnected = false;
 }
 
 QHostAddress NetworkManager::getThisAddr() {

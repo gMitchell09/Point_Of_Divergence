@@ -26,15 +26,6 @@ struct Collision {
 class AnimatedCollideableSprite : public AnimatedSprite
 {
 private:
-    struct PositionState { QPointF pos; qint64 timestamp; };
-
-    std::vector<PositionState> m_positionStateStack;
-
-    std::vector<PositionState> m_positionStateSlice;
-
-    int m_positionStateSliceBegin, m_positionStateSliceEnd;
-    int m_positionStateSliceIndex;
-
     unsigned char checkForCollision(QList<Collision> &collisions, QPointF offset);
     void resolveCollision(Collision collision);
     bool spriteWithinWhisker(QPolygonF whisker, QList<Sprite *> &collisions);
@@ -47,12 +38,8 @@ private:
 public:
     explicit AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent = 0);
 
-    bool isStatic() { return false; }
-    bool isAnimated() { return true; }
-    bool isCollideable() { return true; }
-    bool isBackground() { return false; }
-
     ///
+
     /// \brief setBrake
     /// \param brake determines if sprite is slowing to a stop
     ///
@@ -61,20 +48,31 @@ public:
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
 
-    virtual QString className() { return "AnimatedCollideableSprite"; }
 
     bool isOnLeftSlope() { return m_onLeftSlope; }
     bool isOnRightSlope() { return m_onRightSlope; }
 
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
-    virtual void beginSlice();
-    virtual void endSlice();
-
     virtual void decodeDatagram(NetworkManager::DatagramFormat dg) {
         AnimatedSprite::decodeDatagram(dg);
     }
 
+    virtual void pushState(qint64 time, long delta, State& state) {
+        state.pos = this->pos();
+        AnimatedSprite::pushState(time, delta, state);
+    }
+
+    virtual void setState(State currentState) {
+        AnimatedSprite::setState(currentState);
+        this->setPos(currentState.pos);
+    }
+
+    bool isStatic() { return false; }
+    bool isAnimated() { return true; }
+    bool isCollideable() { return true; }
+    bool isBackground() { return false; }
+    virtual QString className() { return "AnimatedCollideableSprite"; }
 
 protected:
     QPointF m_collisionPoints[4][2];

@@ -45,7 +45,8 @@ SOURCES += main.cpp\
     sfxmanager.cpp \
     networkmanager.cpp \
     optionslider.cpp \
-    networkplayer.cpp
+    networkplayer.cpp \
+    characterclone.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -71,7 +72,8 @@ HEADERS  += mainwindow.h \
     networkmanager.h \
     optionslider.h \
     IMenuItem.h \
-    networkplayer.h
+    networkplayer.h \
+    characterclone.h
 
 FORMS    += mainwindow.ui
 

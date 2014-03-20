@@ -22,10 +22,20 @@ class Sprite : public QGraphicsPixmapItem
 private:
     bool m_solid;
 
+    void beginSlice();
+    void endSlice();
+
 protected:
     QPointF m_acceleration, m_velocity, m_apparentVelocity;
-
+    struct State { char m_nCurrentFrame, m_nCurrentAnimation; QPointF pos; qint64 timestamp; };
     virtual bool usesStack() { return false; }
+
+    std::vector<State> m_stateStack;
+    std::vector<State> m_stateSlice;
+
+    bool m_useSlice;
+
+    size_t m_sliceBegin, m_sliceEnd, m_sliceIndex;
 
 public:
     explicit Sprite(QGraphicsItem *parent = 0);
@@ -62,10 +72,31 @@ public:
 
     QPointF& getApparentVelocity() { return m_apparentVelocity; }
 
-    virtual void step(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta);}
+    virtual void step(qint64 time, long delta) {
+        if (delta > 0) {
+            State state;
+            this->pushState(time, delta, state);
+        } else {
+            this->popState(time, delta);
+        }
+    }
 
-    virtual void pushState(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta); }
-    virtual void popState(qint64 time, long delta) { Q_UNUSED(time); Q_UNUSED(delta); }
+    virtual void pushState(qint64 time, long delta, State& state) {
+        state.timestamp = time;
+        m_stateStack.push_back(state);
+    }
+
+    void popState(qint64 time, long delta) {
+        if (!m_stateStack.empty()) {
+            State currentState;
+            while (!m_stateStack.empty() && (currentState = m_stateStack.back()).timestamp > time) {
+                m_stateStack.pop_back();
+            }
+            this->setState(currentState);
+        }
+    }
+
+    virtual void setState(State currentState) { Q_UNUSED(currentState); }
 
     void setSolid(bool solid = true) { m_solid = solid; }
     bool isSolid() { return m_solid; }
@@ -107,6 +138,8 @@ public:
     }
 
     virtual void decodeDatagram(NetworkManager::DatagramFormat dg)  { Q_UNUSED(dg); }
+
+    std::vector<State> getStackSlice() { return m_stateSlice; }
 };
 
 #endif // SPRITE_H

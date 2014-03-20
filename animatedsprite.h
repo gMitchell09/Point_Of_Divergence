@@ -32,8 +32,6 @@ private:
      *  - List of series' of pixmaps that correspond to each animation that this sprite will contain
      */
 
-    struct State { char m_nCurrentFrame, m_nCurrentAnimation; qint64 timestamp; };
-
     std::vector<QPainterPath> m_animationPathList;
     char m_nCurrentFrame;
     char m_nCurrentAnimation;
@@ -61,17 +59,13 @@ public:
 
     virtual void step(qint64 time, long delta);
 
-    virtual bool isStatic() { return false; }
-    virtual bool isAnimated() { return true; }
-    virtual bool isCollideable() { return false; }
-    virtual bool isBackground() { return false; }
 
-    virtual void beginSlice();
-    virtual void endSlice();
+    virtual void pushState(qint64 time, long delta, State &state) {
+        state.m_nCurrentAnimation = this->m_nCurrentAnimation;
+        state.m_nCurrentFrame = this->m_nCurrentFrame;
 
-    virtual void useSlice(bool use = true) { m_useSlice = use; }
-
-    virtual QString className() { return "AnimatedSprite"; }
+        Sprite::pushState(time, delta, state);
+    }
 
     virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) {
         Sprite::fillDatagram(datagram);
@@ -87,14 +81,21 @@ public:
         this->setPixmap(m_animationList.at(m_nCurrentAnimation).at(m_nCurrentFrame));
     }
 
+    virtual void setState(State currentState) {
+        Sprite::setState(currentState);
+        m_nCurrentAnimation = currentState.m_nCurrentAnimation;
+        m_nCurrentFrame = currentState.m_nCurrentFrame;
+    }
+
+    virtual bool isStatic() { return false; }
+    virtual bool isAnimated() { return true; }
+    virtual bool isCollideable() { return false; }
+    virtual bool isBackground() { return false; }
+
+    virtual QString className() { return "AnimatedSprite"; }
+
 protected:
-    bool m_useSlice;
-
     virtual bool usesStack() { return false; }
-
-signals:
-    
-public slots:
     
 };
 

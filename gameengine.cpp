@@ -24,9 +24,7 @@ static const QString otherSpritePath = spritePath + "/other";
 
 #define ABS(x) ((x<0)?(-x):(x))
 
-GameEngine::GameEngine(QObject* parent) : QGraphicsScene(parent), m_mainActor(NULL), m_prevTime(0)
-{
-}
+GameEngine::GameEngine(QObject* parent) : QGraphicsScene(parent), m_mainActor(NULL), m_prevTime(0) {}
 
 GameEngine::GameEngine(int width, int height, QObject *parent) :
     QGraphicsScene(parent),
@@ -40,7 +38,8 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_timeDivider(1),
     m_gamePaused(false),
     m_gamePausedDueToDamage(false),
-    m_networkPlayer(NULL) {
+    m_networkPlayer(NULL),
+    m_peerAddress() {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 
     qDebug() << "Level Path: " << levelPath + "/LevelTest.tmx";
@@ -133,7 +132,7 @@ void GameEngine::step(qint64 time) {
              this->setForegroundBrush(QColor(255, 255, 255, 127));
         } else this->setForegroundBrush(QColor(255, 255, 255, 0));
 
-        if (m_networkManager->isConnected()) {
+        if (!m_peerAddress.isNull() && m_networkManager->isConnected()) {
             NetworkManager::DatagramFormat dg;
             dg.timestamp = m_gameTime;
             m_mainActor->fillDatagram(dg);
@@ -266,11 +265,8 @@ void GameEngine::startSinglePlayer() {
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
     heartbeat->start(1); // 20fps
 
-    StaticPlatform *testSprite, *testSprite2;
-    StaticBackground *bkg;
     Sprite *life1, *life2, *life3;
     QGraphicsSimpleTextItem *gameTime;
-    ObjectItem *object1;
     MovingPlatform *floater;
 
     floater = new MovingPlatform(48, 64);
@@ -280,28 +276,7 @@ void GameEngine::startSinglePlayer() {
     floater->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
     floater->setSolid(true);
 
-    QPixmap myPix1(otherSpritePath + "/1.png");
-    QPixmap myPix2(otherSpritePath + "/2.png");
-    QPixmap myPix3(otherSpritePath + "/3.png");
-    QPixmap myPix4(otherSpritePath + "/4.png");
-    QPixmap myPix5(otherSpritePath + "/5.png");
-
     QPixmap bkgImg(bkgPath + "/sky2.jpg");
-
-    std::vector<QPixmap> pixmapList2;
-    pixmapList2.push_back(myPix1);
-    pixmapList2.push_back(myPix2);
-    pixmapList2.push_back(myPix3);
-    pixmapList2.push_back(myPix4);
-    pixmapList2.push_back(myPix5);
-
-    testSprite2 = new StaticPlatform(48, 64);
-    testSprite2->addAnimation(pixmapList2, Loop);
-    testSprite2->setPos(800, 1020);
-    testSprite2->setVelocity(QPointF(0, 0));
-    testSprite2->setAcceleration(QPointF(0, 0));
-    testSprite2->triggerAnimation(0);
-    testSprite2->setSolid(true);
 
     life1 = new Sprite();
     life1->setPos(QPointF(25, 25));
@@ -315,10 +290,6 @@ void GameEngine::startSinglePlayer() {
     life3->setPos(QPointF(75, 25));
     life3->setPixmap(QPixmap(itemPath + "/HeartContainer.png"));
 
-    object1 = new ObjectItem(16, 16, itemPath);
-    object1->setPos(700, 1020);
-    object1->setSolid(false);
-
     gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
     gameTime->setPos(QPointF(630, 15));
 
@@ -330,14 +301,11 @@ void GameEngine::startSinglePlayer() {
     this->addLevel(level);
     this->displayBackground(bkgImg);
 
-    //this->addSprite(testSprite2);
     this->addSprite(floater);
     this->addHUD(life1);
     this->addHUD(life2);
     this->addHUD(life3);
     this->addHUDText(gameTime, true);
-
-    this->addSprite(object1);
 
     this->initBGM(level->getBGMPath(), level->getReversedBGMPath());
 
