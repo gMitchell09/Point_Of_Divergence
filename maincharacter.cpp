@@ -4,6 +4,7 @@
 
 #include "sfxmanager.h"
 #include "maincharacter.h"
+#include "characterclone.h"
 
 #define MIN(x, y) ((x<y)?x:y)
 #define MAX(x, y) ((x>y)?x:y)
@@ -143,16 +144,20 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 
         m_leftPressed = true;
     }
-    if (keyEvent->key() == Qt::Key_Up && !(m_jumping && m_jumping_double))  {
-        if(m_jumping)
-            m_jumping_double=true;
-        this->jump();
+    else if (keyEvent->key() == Qt::Key_Up)  {
+        if (!(m_jumping && m_jumping_double)) {
+            if(m_jumping)
+                m_jumping_double=true;
+            this->jump();
 
-        m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
-        this->triggerAnimation(m_currentState);
+            m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
+            this->triggerAnimation(m_currentState);
 
-        m_jumping = true;
-        m_upPressed = true;
+            m_jumping = true;
+            m_upPressed = true;
+        }
+    } else if (keyEvent->key() == Qt::Key_Shift) {
+        this->beginSlice();
     }
 
     m_keyRecentPress = keyEvent->key();
@@ -175,26 +180,32 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     }
 
     switch (keyEvent->key()) {
-    case Qt::Key_Up:
-        m_upPressed = false;
-        break;
-    case Qt::Key_Down:
-        m_downPressed = false;
-        break;
-    case Qt::Key_Left:
-        m_leftPressed = false;
-        if (this->getAcceleration().x() < 0) {
-            this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
-            this->setBrake(true);
-        }
-        break;
-    case Qt::Key_Right:
-        m_rightPressed = false;
-        if (this->getAcceleration().x() > 0) {
-            this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
-            this->setBrake(true);
-        }
-        break;
+        case Qt::Key_Up:
+            m_upPressed = false;
+            break;
+        case Qt::Key_Down:
+            m_downPressed = false;
+            break;
+        case Qt::Key_Left:
+            m_leftPressed = false;
+            if (this->getAcceleration().x() < 0) {
+                this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
+                this->setBrake(true);
+            }
+            break;
+        case Qt::Key_Right:
+            m_rightPressed = false;
+            if (this->getAcceleration().x() > 0) {
+                this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
+                this->setBrake(true);
+            }
+            break;
+        case Qt::Key_Shift:
+            this->endSlice();
+            CharacterClone* clone = new CharacterClone(16, 33, this->m_stateSlice);
+            ((GameEngine*)this->scene())->addSprite(clone);
+
+            break;
     }
 }
 

@@ -8,6 +8,8 @@
 #include <QGraphicsItem>
 #include <QGraphicsPixmapItem>
 
+#include <algorithm>
+
 #include "global.h"
 #include "networkmanager.h"
 
@@ -22,12 +24,10 @@ class Sprite : public QGraphicsPixmapItem
 private:
     bool m_solid;
 
-    void beginSlice();
-    void endSlice();
 
 protected:
     QPointF m_acceleration, m_velocity, m_apparentVelocity;
-    struct State { char m_nCurrentFrame, m_nCurrentAnimation; QPointF pos; qint64 timestamp; };
+    struct State { char m_nCurrentFrame, m_nCurrentAnimation; QPointF pos; QPointF vel; qint64 timestamp; };
     virtual bool usesStack() { return false; }
 
     std::vector<State> m_stateStack;
@@ -36,6 +36,24 @@ protected:
     bool m_useSlice;
 
     size_t m_sliceBegin, m_sliceEnd, m_sliceIndex;
+
+    void beginSlice() {
+        // Set the first state we want to be the last state in the stack
+        m_sliceBegin = m_stateStack.size();
+        m_sliceIndex = 0;
+
+        m_stateSlice.clear();
+    }
+
+    void endSlice() {
+        m_sliceEnd = m_stateStack.size();
+
+        // Copy a slice of our State Stack into our State Slice
+
+        std::copy(m_stateStack.begin() + m_sliceBegin,
+                  m_stateStack.begin() + m_sliceEnd,
+                  std::back_inserter(m_stateSlice));
+    }
 
 public:
     explicit Sprite(QGraphicsItem *parent = 0);
@@ -71,6 +89,7 @@ public:
     QPointF& getVelocity() { return m_velocity; }
 
     QPointF& getApparentVelocity() { return m_apparentVelocity; }
+    void setApparentVelocity(QPointF vel) { m_apparentVelocity = vel; }
 
     virtual void step(qint64 time, long delta) {
         if (delta > 0) {
@@ -136,6 +155,8 @@ public:
         datagram.pos = this->pos();
         datagram.vel = this->getVelocity();
     }
+
+    virtual bool isSmart() { return this->isStatic(); }
 
     virtual void decodeDatagram(NetworkManager::DatagramFormat dg)  { Q_UNUSED(dg); }
 

@@ -16,20 +16,44 @@ private:
     MovementState m_currentMovementState;
 
 public:
-    explicit CharacterClone(int width, int height, QGraphicsItem *parent = 0);
+    explicit CharacterClone(int width, int height, std::vector<State> stateStack, QGraphicsItem *parent = 0);
 
-    virtual void step(qint64 time, long delta) {}
+    virtual void step(qint64 time, long delta) {
+        AnimatedCollideableSprite::step(time, delta);
+    }
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side) {}
 
     virtual QString className() { return "CharacterClone"; }
 
-    bool isStatic() { return false; }
+    bool isStatic() { return true; }
     bool isAnimated() { return true; }
     bool isCollideable() { return true; }
     bool isBackground() { return false; }
 
+    // Mute these methods so we can use our custom stack
+    virtual void pushState(qint64 time, long delta, State& state) {
+        ++m_sliceIndex;
+        if (m_sliceIndex >= m_stateStack.size()) m_sliceIndex = 0;
+
+        State currentState = m_stateStack.at(m_sliceIndex);
+        this->setState(currentState);
+    }
+
+    void popState(qint64 time, long delta) {
+        --m_sliceIndex;
+
+        if (m_sliceIndex < 0) m_sliceIndex = m_stateStack.size() - 1;
+
+        State currentState = m_stateStack.at(m_sliceIndex);
+        this->setState(currentState);
+    }
+
+    virtual void setState(State currentState) {
+        AnimatedCollideableSprite::setState(currentState);
+    }
+
 protected:
-    virtual bool usesStack() { return false; }
+    virtual bool usesStack() { return true; }
 
 };
 

@@ -60,12 +60,14 @@ public:
 
     virtual void pushState(qint64 time, long delta, State& state) {
         state.pos = this->pos();
+        state.vel = this->getApparentVelocity();
         AnimatedSprite::pushState(time, delta, state);
     }
 
     virtual void setState(State currentState) {
         AnimatedSprite::setState(currentState);
         this->setPos(currentState.pos);
+        this->setApparentVelocity(currentState.vel);
     }
 
     bool isStatic() { return false; }

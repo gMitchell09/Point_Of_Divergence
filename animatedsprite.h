@@ -38,12 +38,6 @@ private:
     std::vector<std::vector<QPixmap>> m_animationList;
     std::vector<kAnimationType> m_animationType;
 
-    std::vector<State> m_stateStack;
-
-    std::vector<State> m_stateSlice;
-    int m_stateSliceBegin, m_stateSliceEnd;
-    int m_stateSliceIndex;
-
     bool m_countUp;
     unsigned int m_msPerFrame;
     unsigned int m_msCounter;
