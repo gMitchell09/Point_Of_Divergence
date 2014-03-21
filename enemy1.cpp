@@ -67,6 +67,8 @@ void Enemy1::collisionOccurred(QList<Collision> &collisions, unsigned char side)
     for (auto itr = collisions.begin(); itr != collisions.end(); ++itr) {
         Collision col = (*itr);
         if (col.firstSide & Top && col.secondSprite->className() == "MainCharacter") {
+            // Bounce!!!
+            col.secondSprite->setVelocity(QPointF(col.secondSprite->getVelocity().x(), -400));
             m_currentState = Squish;
             this->triggerAnimation(m_currentState);
 

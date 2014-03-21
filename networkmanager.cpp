@@ -17,7 +17,8 @@
 
 NetworkManager::NetworkManager(QString tmxPath, QString tmpFilePath, QObject *parent) :
     QObject(parent),
-    m_tcpSocket(NULL)
+    m_tcpSocket(NULL),
+    m_isConnected(false)
 {
     m_tmxPath = tmxPath;
     m_tmpFilePath = tmpFilePath;
@@ -29,14 +30,17 @@ NetworkManager::NetworkManager(QString tmxPath, QString tmpFilePath, QObject *pa
 
 QHostAddress NetworkManager::getThisAddr() {
     QTcpSocket tmp;
-    tmp.connectToHost(QHostAddress("www.google.com"), 80);
-    if (!tmp.waitForConnected(500))
+    tmp.connectToHost(QHostAddress("74.125.131.105"), 80);
+    if (!tmp.waitForConnected(5000)) {
+        qDebug() << tmp.errorString();
         qDebug() << "FUCK";
+    }
     return tmp.localAddress();
 }
 
 void NetworkManager::startListeningUDP() {
     m_watchdog->start();
+
     if (!m_udpSocket.bind(QHostAddress::AnyIPv4, COM_PORT)) {
         qDebug() << "Unable to bind socket";
     }
@@ -78,13 +82,12 @@ void NetworkManager::connectionTimeout() {
     emit networkPlayerConnectionLost();
     m_isConnected = false;
 
-    qDebug() << "Fuck";
+    QMessageBox::critical(0, "Connection Timed Out", "Connection to peer has been lost", QMessageBox::Ok);
 }
+
 ////////////////////////////////////     TCP     //////////////////////////////////
 /// Peer 1 Flow
 void NetworkManager::startListeningTCP() {
-    m_isRuler = true;
-
     m_tcpServer.listen(QHostAddress::AnyIPv4, COM_PORT);
 
     while (!m_tcpServer.isListening() && !m_tcpServer.listen(QHostAddress::Any, COM_PORT)) {
@@ -92,6 +95,7 @@ void NetworkManager::startListeningTCP() {
     }
 
     connect(&m_tcpServer, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
+    m_watchdog->start();
 }
 
 void NetworkManager::peerConnected() {
@@ -131,17 +135,17 @@ void NetworkManager::sendTmx() {
 
 /// Peer 2 Flow
 void NetworkManager::connectToPeer(QHostAddress &address) {
-    m_isRuler = false;
+
     m_watchdog->start();
 
     if (!m_tcpSocket)
         m_tcpSocket = new QTcpSocket();
 
     m_tcpSocket->connectToHost(address, COM_PORT);
-    qDebug() << address;
 
     if (!m_tcpSocket->waitForConnected(5000)) {
         qDebug() << "Error: " << m_tcpSocket->errorString();
+        QMessageBox::critical(0, "Connection Timed Out", m_tcpSocket->errorString(), QMessageBox::Ok);
         m_tcpSocket->disconnectFromHost();
     } else {
         m_isConnected = true;

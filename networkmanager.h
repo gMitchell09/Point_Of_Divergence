@@ -81,7 +81,6 @@ private:
 
     bool m_isConnected;
     bool m_isTryingToConnect;
-    bool m_isRuler;
 
     QString m_tmxPath;
     QString m_tmpFilePath;
