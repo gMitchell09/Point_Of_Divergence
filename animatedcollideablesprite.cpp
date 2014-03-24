@@ -481,21 +481,21 @@ void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, 
 
 void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     AnimatedSprite::paint(painter, option, widget);
-    painter->setPen(Qt::red);
-    painter->setBrush(QColor(Qt::red));
+//    painter->setPen(Qt::red);
+//    painter->setBrush(QColor(Qt::red));
 
-    painter->translate(-this->pos());
+//    painter->translate(-this->pos());
 
-    painter->drawPolygon(topWhiskerLeft);
-    painter->drawPolygon(topWhiskerRight);
+//    painter->drawPolygon(topWhiskerLeft);
+//    painter->drawPolygon(topWhiskerRight);
 
-    painter->drawPolygon(rightWhiskerTop);
-    painter->drawPolygon(rightWhiskerBottom);
+//    painter->drawPolygon(rightWhiskerTop);
+//    painter->drawPolygon(rightWhiskerBottom);
 
-    painter->drawPolygon(bottomWhiskerRight);
-    painter->drawPolygon(bottomWhiskerLeft);
+//    painter->drawPolygon(bottomWhiskerRight);
+//    painter->drawPolygon(bottomWhiskerLeft);
 
-    painter->drawPolygon(leftWhiskerBottom);
-    painter->drawPolygon(leftWhiskerTop);
+//    painter->drawPolygon(leftWhiskerBottom);
+//    painter->drawPolygon(leftWhiskerTop);
 
 }

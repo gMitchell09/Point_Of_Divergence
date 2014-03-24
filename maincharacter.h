@@ -30,13 +30,15 @@ private:
 //    MovementState m_nextState;
 
     float m_brakeAccel, m_brakeAccelSliding;
-    float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
+    float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity, m_ladderClimbSpeed;
     float m_boxPushVelocity, m_boxPushAcceleration;
 
     bool m_upPressed, m_downPressed, m_leftPressed, m_rightPressed;
 
     bool m_jumping, m_jumping_double;
     bool m_brake;
+
+    bool m_isOnLadder;
 
     int m_keyRecentPress;
 
@@ -50,6 +52,7 @@ public:
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
     void jump();
+    void climbLadder(int dir = 1);
 
     virtual QString className() { return "MainCharacter"; }
 
