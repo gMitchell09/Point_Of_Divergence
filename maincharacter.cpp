@@ -153,6 +153,8 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         m_upPressed = true;
         if (m_isOnLadder) {
             this->climbLadder();
+            m_jumping = false;
+            m_jumping_double = false;
         }
         else if (!(m_jumping && m_jumping_double)) {
             if(m_jumping)
