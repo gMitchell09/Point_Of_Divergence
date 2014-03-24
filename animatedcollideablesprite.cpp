@@ -465,8 +465,9 @@ bool AnimatedCollideableSprite::spriteWithinWhisker(QPolygonF whisker, QList<Spr
     QList<QGraphicsItem *> items = this->scene()->items(whisker, Qt::IntersectsItemShape, Qt::DescendingOrder, this->transform());
 
     for (auto itr = items.begin(); itr != items.end(); itr++) {
-        if (((Sprite*)(*itr))->isCollideable() && (*itr) != this) {
-            collisions.push_back(dynamic_cast<Sprite*>(*itr));
+        Sprite *spr = dynamic_cast<Sprite*>(*itr);
+        if (spr != NULL && spr->isCollideable() && spr != this) {
+            collisions.push_back(spr);
         }
     }
     return !items.empty();
