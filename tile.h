@@ -29,7 +29,7 @@ private:
 
     qreal m_rotation;
 public:
-    explicit Tile(int width, int height, QGraphicsItem *parent);
+    explicit Tile(int width, int height, QGraphicsItem *parent = 0);
 
     virtual bool isStatic() { return m_isStatic; }
     virtual bool isAnimated() { return true; }
@@ -47,7 +47,7 @@ public:
             this->setAcceleration(QPointF(0, 2000));
             m_isStatic = false;
             m_usesStack = true;
-            this->setZValue(100);
+            this->setZValue(0);
         }
     }
 

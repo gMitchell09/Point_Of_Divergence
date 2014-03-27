@@ -4,7 +4,7 @@
 CharacterClone::CharacterClone(int width, int height, std::vector<State> stateStack, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, parent)
 {
-    this->setZValue(1000);
+    this->setZValue(1);
     this->setSolid(true);
 
     TileMap * playerTiles = new TileMap(16, 33, 1, 1, "./resources/sprites/MarioMovement.png");

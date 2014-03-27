@@ -10,4 +10,5 @@ Sprite::Sprite(QGraphicsItem *parent) :
     m_velocity = QPointF();
     m_apparentVelocity = QPointF();
     m_acceleration = QPointF();
+    this->setShapeMode(ShapeMode::BoundingRectShape);
 }

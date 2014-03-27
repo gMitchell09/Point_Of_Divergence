@@ -13,6 +13,7 @@
 #include "tile.h"
 #include "tilemap.h"
 #include "maincharacter.h"
+#include "switchobject.h"
 
 class TileMap;
 class GameEngine;

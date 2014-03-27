@@ -28,7 +28,7 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
     m_boxPushAcceleration = 100;
     m_boxPushVelocity = 100;
 
-    this->setZValue(1000);
+    this->setZValue(1);
 
     TileMap * playerTiles = new TileMap(16, 33, 1, 1, "./resources/sprites/MarioMovement.png");
 
@@ -361,6 +361,11 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
                     this->getAcceleration().setY(0);
                 }
                 break;
+            case ItemType::kLever:
+                if (m_downPressed) {
+                    dynamic_cast<SwitchObject*>(other)->toggle();
+                    qDebug() << "Toggle the switch";
+                }
     //        case ItemType::kSlope30Left:
     //            qDebug() << "kSlope30Left";
     //            break;
@@ -393,6 +398,5 @@ void MainCharacter::jump() {
 }
 
 void MainCharacter::climbLadder(int dir) {
-
     this->getVelocity().setY(dir * m_ladderClimbSpeed);
 }

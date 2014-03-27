@@ -156,8 +156,6 @@ public:
         datagram.vel = this->getVelocity();
     }
 
-    virtual bool isSmart() { return this->isStatic(); }
-
     virtual void decodeDatagram(NetworkManager::DatagramFormat dg)  { Q_UNUSED(dg); }
 
     std::vector<State> getStackSlice() { return m_stateSlice; }

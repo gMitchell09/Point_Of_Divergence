@@ -55,7 +55,7 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_mediaPlayer = new QMediaPlayer(this);
     m_mediaPlayerReverse = new QMediaPlayer(this);
     // Pre-load the SFX
-    //SFXManager::Instance();
+    SFXManager::Instance();
 
     if (!file.exists()) {
         QMessageBox *msg = new QMessageBox("Level not found!", "Level Not Found!!", QMessageBox::Critical, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);

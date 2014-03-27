@@ -155,6 +155,11 @@ void Level::parseLayer(QDomNode layer) {
                 Enemy1 *goomba = new Enemy1(20, 18, enemyPath);
                 goomba->setPos(pos);
                 this->addToGroup(goomba);
+            } else if (tp.kind == kLever) {
+                SwitchObject *switchObj = new SwitchObject(32, 32);
+                switchObj->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
+                switchObj->setPos(pos);
+                this->addToGroup(switchObj);
             } else {
                 // We have an actual tile and not a "special" tile, i.e. goomba, mainchar, ...
                 QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
