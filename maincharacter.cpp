@@ -259,11 +259,11 @@ void MainCharacter::step(qint64 time, long delta) {
         }
 
         // If we are magically moving at a walking pace in either direction then play the walking animation
-        if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() < -5) {
+        if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() < -10) {
             if (m_acceleration.x() < 2*m_leftAccel) this->getAcceleration().setX(m_leftAccel);
             m_currentState = Walk_Left;
             this->triggerAnimation(m_currentState);
-        } else if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() > 5) {
+        } else if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() > 10) {
             if (m_acceleration.x() > 2*m_rightAccel) this->getAcceleration().setX(m_rightAccel);
             m_currentState = Walk_Right;
             this->triggerAnimation(m_currentState);

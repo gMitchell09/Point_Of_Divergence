@@ -35,7 +35,7 @@ protected:
 
     bool m_useSlice;
 
-    size_t m_sliceBegin, m_sliceEnd, m_sliceIndex;
+    int m_sliceBegin, m_sliceEnd, m_sliceIndex;
 
     void beginSlice() {
         // Set the first state we want to be the last state in the stack
