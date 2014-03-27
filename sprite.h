@@ -105,7 +105,7 @@ public:
         m_stateStack.push_back(state);
     }
 
-    void popState(qint64 time, long delta) {
+    virtual void popState(qint64 time, long delta) {
         if (!m_stateStack.empty()) {
             State currentState;
             while (!m_stateStack.empty() && (currentState = m_stateStack.back()).timestamp > time) {

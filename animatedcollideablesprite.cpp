@@ -312,11 +312,6 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
             this->setPos(this->pos() + tmpVel * timeStep);
             m_apparentVelocity = (m_velocity + oldVel) * 0.5 + relativeVel;
         }
-
-        if (this->usesStack()) {
-            State state;
-            this->pushState(time, delta, state);
-        }
     }
 }
 

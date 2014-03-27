@@ -32,6 +32,7 @@ public:
 
     // Mute these methods so we can use our custom stack
     virtual void pushState(qint64 time, long delta, State& state) {
+        qDebug() << "Pushing";
         ++m_sliceIndex;
         if (m_sliceIndex >= m_stateStack.size()) m_sliceIndex = 0;
 
@@ -39,13 +40,15 @@ public:
         this->setState(currentState);
     }
 
-    void popState(qint64 time, long delta) {
+    virtual void popState(qint64 time, long delta) {
         --m_sliceIndex;
 
         if (m_sliceIndex < 0) m_sliceIndex = m_stateStack.size() - 1;
 
-        State currentState = m_stateStack.at(m_sliceIndex);
-        this->setState(currentState);
+        if (m_sliceIndex > 0 && m_sliceIndex < m_stateStack.size()) {
+            State currentState = m_stateStack.at(m_sliceIndex);
+            this->setState(currentState);
+        }
     }
 
     virtual void setState(State currentState) {
