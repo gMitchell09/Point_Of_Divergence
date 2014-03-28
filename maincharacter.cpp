@@ -20,7 +20,7 @@ MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
     m_maxVelY = 2000;
 
     m_jumpStartVel = -500;
-    m_ladderClimbSpeed = -250;
+    m_ladderClimbSpeed = -100;
     m_gravity = 2000;
     m_brakeAccel = 800;
     m_brakeAccelSliding = m_brakeAccel / 4;
@@ -305,6 +305,7 @@ void MainCharacter::step(qint64 time, long delta) {
 void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
     bool hitCoin = false;
     m_isOnLadder = false;
+    int ladderSide = 0;
     for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
         Sprite* other = ((Collision)(*itr)).secondSprite;
         Side locSide = ((Collision)(*itr)).firstSide;
@@ -353,8 +354,12 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
                 }
                 break;
             case ItemType::kLadder:
+                ladderSide |= locSide;
                 if (locSide & Top) m_isOnLadder = true;
                 if (m_upPressed) {
+                    if (!m_isOnLadder) {
+                        this->jump();
+                    }
 //                    this->getVelocity().setX(0);
                     this->getVelocity().setY(0);
 //                    this->getAcceleration().setX(0);

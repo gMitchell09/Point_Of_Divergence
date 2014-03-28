@@ -11,11 +11,13 @@
 #define SWITCHOBJECT_H
 
 #include <QTimer>
+#include <QObject>
 
 #include "animatedcollideablesprite.h"
 
-class SwitchObject : public AnimatedCollideableSprite
+class SwitchObject : public QObject, public AnimatedCollideableSprite
 {
+    Q_OBJECT
 private:
     bool m_state;
 
@@ -29,7 +31,7 @@ public:
 
     /// setPixmaps
     /// Set on state and off state pixmaps
-    inline void setPixmaps(QPixmap on, QPixmap off) {
+    void setPixmaps(QPixmap on, QPixmap off) {
         m_onPixmap = on;
         m_offPixmap = off;
 
@@ -47,15 +49,17 @@ public:
                 this->setPixmap(m_onPixmap);
             else
                 this->setPixmap(m_offPixmap);
+
+            emit stateChanged(m_state);
         }
     }
 
-    bool getState() { return m_state; }
+//    virtual bool getState() { return m_state; }
 
-    bool isStatic() { return true; }
-    bool isAnimated() { return false; }
-    bool isCollideable() { return true; }
-    bool isBackground() { return false; }
+    virtual bool isStatic() { return true; }
+    virtual bool isAnimated() { return false; }
+    virtual bool isCollideable() { return true; }
+    virtual bool isBackground() { return false; }
 
     virtual ItemType blockType() { return kLever; }
 
@@ -63,6 +67,9 @@ public:
 
 protected:
     virtual bool usesStack() { return false; }
+
+signals:
+    void stateChanged(bool m_state);
 };
 
 #endif // SWITCHOBJECT_H
