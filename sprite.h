@@ -49,10 +49,19 @@ protected:
         m_sliceEnd = m_stateStack.size();
 
         // Copy a slice of our State Stack into our State Slice
-
-        std::copy(m_stateStack.begin() + m_sliceBegin,
-                  m_stateStack.begin() + m_sliceEnd,
-                  std::back_inserter(m_stateSlice));
+        if (m_sliceBegin < m_sliceEnd) {
+            qDebug() << "Begin: " << m_sliceBegin << " : End: " << m_sliceEnd;
+            std::copy(m_stateStack.begin() + m_sliceBegin,
+                      m_stateStack.begin() + m_sliceEnd,
+                      std::back_inserter(m_stateSlice));
+        } else if (m_sliceBegin > m_sliceEnd) {
+            qDebug() << "Begin: " << m_sliceEnd << " : End: " << m_sliceBegin;
+            std::copy(m_stateStack.begin() + m_sliceEnd,
+                      m_stateStack.begin() + m_sliceBegin,
+                      std::back_inserter(m_stateSlice));
+        } else {
+            qDebug() << "WWWWWWWWTTTTTTTTTTTTTFFFFFFFFFFFF";
+        }
     }
 
 public:

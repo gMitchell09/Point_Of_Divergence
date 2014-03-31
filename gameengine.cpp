@@ -42,10 +42,10 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
     m_peerAddress() {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 
-    qDebug() << "Level Path: " << levelPath + "/LevelTest.tmx";
-    QFile file(levelPath + "/LevelTest.tmx");
+    qDebug() << "Level Path: " << levelPath + "/MountainCave.tmx";
+    QFile file(levelPath + "/MountainCave.tmx");
 
-    m_networkManager = new NetworkManager(levelPath + "/LevelTest.tmx",
+    m_networkManager = new NetworkManager(levelPath + "/MountainCave.tmx",
                                           levelPath + "/tmp.tmx",
                                           this);
 
