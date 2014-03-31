@@ -4,7 +4,7 @@
   <property name="bgm" value="The_last_wish_0.mp3"/>
  </properties>
  <tileset firstgid="1" name="Tiles_32x32" tilewidth="32" tileheight="32">
-  <image source="../Point_Of_Divergence/resources/tilesets/Tiles_32x32.png" width="256" height="256"/>
+  <image source="../tilesets/Tiles_32x32.png" width="256" height="256"/>
   <tile id="6">
    <properties>
     <property name="solid" value="1"/>
@@ -182,7 +182,7 @@
   </tile>
  </tileset>
  <tileset firstgid="65" name="sheet1_2" tilewidth="32" tileheight="32">
-  <image source="../Point_Of_Divergence/resources/tilesets/sheet1_2.png" width="256" height="256"/>
+  <image source="../tilesets/sheet1_2.png" width="256" height="256"/>
   <tile id="25">
    <properties>
     <property name="solid" value="0"/>
@@ -190,7 +190,7 @@
   </tile>
  </tileset>
  <tileset firstgid="129" name="objects" tilewidth="32" tileheight="32">
-  <image source="../Point_Of_Divergence/resources/tilesets/objects.png" width="1024" height="1024"/>
+  <image source="../tilesets/objects.png" width="1024" height="1024"/>
   <tile id="0">
    <properties>
     <property name="solid" value="0"/>
