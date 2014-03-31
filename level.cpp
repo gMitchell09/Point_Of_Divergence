@@ -56,6 +56,8 @@ void Level::parseMap(QDomElement map) {
                     m_bgmPath = child.firstChild().toElement().attribute("value");
                 }
             }
+        } else if (child.toElement().tagName() == "objectgroup") {
+            this->parseObjectGroup(child);
         } else {
             qDebug() << "Unrecognized 2nd level tag: " << child.toElement().tagName();
         }
@@ -168,10 +170,6 @@ void Level::parseLayer(QDomNode layer) {
                 tile->setSolid(tp.solid);
                 tile->setBlockType(tp.kind);
 
-                qDebug() << "Idx: " << idx << "\nTile: " << tileImage << "Pos: " << pos;
-                qDebug() << "Solid: " << tp.solid;
-                qDebug() << "Kind: " << tp.kind;
-
                 tile->setPixmap(tileImage);
 
                 tile->setPos(pos);
@@ -206,13 +204,82 @@ void Level::parseTile(QDomNode tile, QMap<int, TileProperties> &tileProperties) 
             } else if (property.attribute("name") == "type") {
                 tp.kind = (ItemType) property.attribute("value", "0").toInt();
             } else qDebug() << "Unknown property: " << property.attribute("name");
-            qDebug() << "id: " << id;
-            qDebug() << "Solid: " << tp.solid;
-            qDebug() << "Kind: " << tp.kind;
         }
         child = child.nextSibling();
     }
     tileProperties.insert(id, tp);
+}
+
+void Level::parseObjectGroup(QDomNode objectGroup) {
+    std::vector<ITriggerable*> receivers;
+    ITriggerable* controller = nullptr;
+
+    QDomNode child = objectGroup.firstChild();
+
+    while (!child.isNull()) {
+        ITriggerable* obj;
+        if (this->parseObject(child, obj)) {
+            controller = obj;
+        } else {
+            receivers.push_back(obj);
+        }
+        child = child.nextSibling();
+    }
+
+    if (controller != nullptr && !receivers.empty()) {
+        for (auto itr = receivers.begin(); itr != receivers.end(); ++itr) {
+            ITriggerable* obj = dynamic_cast<ITriggerable*>(*itr);
+            QMetaObject::Connection conn = QObject::connect(controller, SIGNAL(stateChanged(bool)), obj, SLOT(controllerStateChanged(bool)));
+            if (!((bool)conn)) {
+                qDebug() << "WTF";
+            }
+        }
+    }
+}
+
+bool Level::parseObject(QDomNode object, ITriggerable*& spr) {
+    int gid = object.toElement().attribute("gid", "0").toInt();
+    int x = object.toElement().attribute("x", "0").toInt();
+    int y = object.toElement().attribute("y", "0").toInt() - 32; // -32 Because of what looks like a bug in Tiled... boo...
+    QString role = object.toElement().attribute("name", "Receiver");
+    ItemType type = (ItemType)object.toElement().attribute("type", "0").toInt();
+    int firstElement = 1;
+    auto itr = m_tileSets.lowerBound(gid);
+
+    if (itr == m_tileSets.begin()) firstElement = 1;
+    else firstElement = (itr-1).key() + 1;
+    // For line above:  We add one because the keys are the final index held
+    //  in the mapped spritesheet
+
+    TileMap* tileMap = *itr;
+
+    // Normalize our tile index by getting our tile index relative to
+    //  our current tilemap.
+    int idx = gid - firstElement;
+
+    switch (type) {
+        case kLever: {
+            SwitchObject* switchObject = new SwitchObject(32, 32);
+            switchObject->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
+            switchObject->setPos(x, y);
+            this->addToGroup(switchObject);
+            spr = switchObject;
+            break;
+        }
+        case kDoor: {
+            Door *door = new Door(32, 32);
+            door->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
+            door->setPos(x, y);
+            this->addToGroup(door);
+            spr = door;
+            break;
+        }
+        default:
+            qDebug() << "Invalid Object!!!";
+    }
+
+    if (role == "Controller") return true;
+    return false;
 }
 
 QPointF Level::getTilePos(int tileNum) const {

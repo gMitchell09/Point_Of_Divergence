@@ -14,6 +14,7 @@
 #include "tilemap.h"
 #include "maincharacter.h"
 #include "switchobject.h"
+#include "door.h"
 
 class TileMap;
 class GameEngine;
@@ -38,6 +39,9 @@ private:
     void parseTileSet(QDomNode tileset);
     void parseTile(QDomNode tile, QMap<int, TileProperties> &tileProperties);
     void parseLayer(QDomNode layer);
+
+    bool parseObject(QDomNode object, ITriggerable*& spr);
+    void parseObjectGroup(QDomNode objectgroup);
 
     QPointF getTilePos(int tileNum) const;
 

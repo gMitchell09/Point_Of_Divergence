@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     optionslider.cpp \
     networkplayer.cpp \
     characterclone.cpp \
-    switchobject.cpp
+    switchobject.cpp \
+    door.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -75,7 +76,9 @@ HEADERS  += mainwindow.h \
     IMenuItem.h \
     networkplayer.h \
     characterclone.h \
-    switchobject.h
+    switchobject.h \
+    ITriggerable.h \
+    door.h
 
 FORMS    += mainwindow.ui
 

@@ -10,9 +10,10 @@
 #include "switchobject.h"
 
 SwitchObject::SwitchObject(int width, int height, QGraphicsItem* parent) :
-    AnimatedCollideableSprite(width, height, parent),
-    QObject() {
+    AnimatedCollideableSprite(width, height, parent) {
     this->setSolid(false);
     this->setZValue(10);
     this->setShapeMode(ShapeMode::BoundingRectShape);
+
+    m_toggleDelay.setSingleShot(true);
 }

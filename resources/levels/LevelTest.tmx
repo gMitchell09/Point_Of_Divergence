@@ -8212,4 +8212,8 @@
    <tile gid="0"/>
   </data>
  </layer>
+ <objectgroup name="Switch_1" width="100" height="40">
+  <object name="Controller" type="3" gid="129" x="1184" y="832"/>
+  <object name="Receiver" type="6" gid="131" x="1248" y="832"/>
+ </objectgroup>
 </map>

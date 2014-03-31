@@ -14,16 +14,12 @@
 #include <QObject>
 
 #include "animatedcollideablesprite.h"
+#include "ITriggerable.h"
 
-class SwitchObject : public QObject, public AnimatedCollideableSprite
+class SwitchObject : public ITriggerable, public AnimatedCollideableSprite
 {
     Q_OBJECT
 private:
-    bool m_state;
-
-    QPixmap m_onPixmap;
-    QPixmap m_offPixmap;
-
     QTimer m_toggleDelay;
 
 public:
@@ -31,25 +27,23 @@ public:
 
     /// setPixmaps
     /// Set on state and off state pixmaps
-    void setPixmaps(QPixmap on, QPixmap off) {
+    void setPixmaps(QPixmap off, QPixmap on) {
         m_onPixmap = on;
         m_offPixmap = off;
 
-        this->setPixmap(m_onPixmap);
+        this->setPixmap(m_offPixmap);
         m_state = false;
     }
 
-
     void toggle() {
         if (!m_toggleDelay.isActive()) {
-            m_toggleDelay.setSingleShot(true);
             m_toggleDelay.start(250); // Test with 1/4 second delay
             m_state = !m_state;
-            if (m_state)
+            if (m_state) {
                 this->setPixmap(m_onPixmap);
-            else
+            } else {
                 this->setPixmap(m_offPixmap);
-
+            }
             emit stateChanged(m_state);
         }
     }
@@ -69,7 +63,11 @@ protected:
     virtual bool usesStack() { return false; }
 
 signals:
-    void stateChanged(bool m_state);
+
+public slots:
+    virtual void controllerStateChanged(bool state) { Q_UNUSED(state); }
+
+
 };
 
 #endif // SWITCHOBJECT_H

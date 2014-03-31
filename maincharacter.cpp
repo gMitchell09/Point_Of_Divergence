@@ -369,7 +369,6 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
             case ItemType::kLever:
                 if (m_downPressed) {
                     dynamic_cast<SwitchObject*>(other)->toggle();
-                    qDebug() << "Toggle the switch";
                 }
     //        case ItemType::kSlope30Left:
     //            qDebug() << "kSlope30Left";
