@@ -32,9 +32,12 @@ public:
         m_state = false;
     }
 
+    virtual bool isController() { return false; }
+    virtual bool isReceiver() { return true; }
+
     virtual bool isStatic() { return true; }
     virtual bool isAnimated() { return false; }
-    virtual bool isCollideable() { return true; }
+    virtual bool isCollideable() { return !m_state; }
     virtual bool isBackground() { return false; }
 
     virtual ItemType blockType() { return kDoor; }
@@ -52,6 +55,11 @@ public slots:
             this->setPixmap(m_offPixmap);
         }
     }
+
+private:
+    QPixmap m_offPixmap;
+    QPixmap m_onPixmap;
+    bool m_state;
 };
 
 #endif // DOOR_H

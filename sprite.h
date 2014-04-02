@@ -27,7 +27,9 @@ private:
 
 protected:
     QPointF m_acceleration, m_velocity, m_apparentVelocity;
-    struct State { char m_nCurrentFrame, m_nCurrentAnimation; QPointF pos; QPointF vel; qint64 timestamp; };
+    struct State { char m_nCurrentFrame, m_nCurrentAnimation;
+                   QPointF pos; QPointF vel; qint64 timestamp;
+                              bool triggerableState; };
     virtual bool usesStack() { return false; }
 
     std::vector<State> m_stateStack;

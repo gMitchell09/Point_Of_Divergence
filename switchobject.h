@@ -19,8 +19,6 @@
 class SwitchObject : public ITriggerable, public AnimatedCollideableSprite
 {
     Q_OBJECT
-private:
-    QTimer m_toggleDelay;
 
 public:
     SwitchObject(int width, int height, QGraphicsItem* parent = 0);
@@ -34,6 +32,9 @@ public:
         this->setPixmap(m_offPixmap);
         m_state = false;
     }
+
+    virtual bool isController() { return true; }
+    virtual bool isReceiver() { return false; }
 
     void toggle() {
         if (!m_toggleDelay.isActive()) {
@@ -59,14 +60,38 @@ public:
 
     virtual QString className() { return "SwitchObject"; }
 
-protected:
-    virtual bool usesStack() { return false; }
+    virtual void pushState(qint64 time, long delta, State& state) {
+        state.triggerableState = m_state;
+
+        Sprite::pushState(time, delta, state);
+    }
+
+    virtual void setState(State currentState) {
+        Sprite::setState(currentState);
+        m_state = currentState.triggerableState;
+
+        if (m_state) {
+            this->setPixmap(m_onPixmap);
+        } else {
+            this->setPixmap(m_offPixmap);
+        }
+
+        emit stateChanged(m_state);
+    }
 
 signals:
 
 public slots:
     virtual void controllerStateChanged(bool state) { Q_UNUSED(state); }
 
+protected:
+    virtual bool usesStack() { return true; }
+
+private:
+    QTimer m_toggleDelay;
+    QPixmap m_offPixmap;
+    QPixmap m_onPixmap;
+    bool m_state;
 
 };
 

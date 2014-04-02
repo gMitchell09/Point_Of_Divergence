@@ -217,8 +217,10 @@ void Level::parseObjectGroup(QDomNode objectGroup) {
     QDomNode child = objectGroup.firstChild();
 
     while (!child.isNull()) {
-        ITriggerable* obj;
-        if (this->parseObject(child, obj)) {
+        ITriggerable* obj = this->parseObject(child);
+        if (obj == nullptr) return;
+
+        if (obj->isController()) {
             controller = obj;
         } else {
             receivers.push_back(obj);
@@ -237,12 +239,12 @@ void Level::parseObjectGroup(QDomNode objectGroup) {
     }
 }
 
-bool Level::parseObject(QDomNode object, ITriggerable*& spr) {
+ITriggerable* Level::parseObject(QDomNode object) {
+    ITriggerable *spr = nullptr;
     int gid = object.toElement().attribute("gid", "0").toInt();
     int x = object.toElement().attribute("x", "0").toInt();
     int y = object.toElement().attribute("y", "0").toInt() - 32; // -32 Because of what looks like a bug in Tiled... boo...
-    QString role = object.toElement().attribute("name", "Receiver");
-    ItemType type = (ItemType)object.toElement().attribute("type", "0").toInt();
+    ItemType type = (ItemType)object.toElement().attribute("name", "0").toInt();
     int firstElement = 1;
     auto itr = m_tileSets.lowerBound(gid);
 
@@ -277,9 +279,7 @@ bool Level::parseObject(QDomNode object, ITriggerable*& spr) {
         default:
             qDebug() << "Invalid Object!!!";
     }
-
-    if (role == "Controller") return true;
-    return false;
+    return spr;
 }
 
 QPointF Level::getTilePos(int tileNum) const {

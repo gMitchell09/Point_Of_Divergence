@@ -40,7 +40,7 @@ private:
     void parseTile(QDomNode tile, QMap<int, TileProperties> &tileProperties);
     void parseLayer(QDomNode layer);
 
-    bool parseObject(QDomNode object, ITriggerable*& spr);
+    ITriggerable* parseObject(QDomNode object);
     void parseObjectGroup(QDomNode objectgroup);
 
     QPointF getTilePos(int tileNum) const;

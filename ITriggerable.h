@@ -16,12 +16,12 @@
 class ITriggerable : public QObject {
     Q_OBJECT
 
-protected:
-    QPixmap m_offPixmap;
-    QPixmap m_onPixmap;
-    bool m_state;
+public:
+    virtual bool isController() { return false; }
+    virtual bool isReceiver() { return true; }
 
-    /// Signals to be sent by "Controller" object to receivers in response to a trigger event
+    /// Signals to be sent by "Controller" object to receivers in response to a
+    ///     trigger event
 signals:
     void stateChanged(bool state);
 
