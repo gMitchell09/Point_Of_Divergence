@@ -14,8 +14,8 @@ static const QString otherSpritePath = spritePath + "/other";
 
 Level::Level(QString filePath, QString fileName, GameEngine *gameEngine, QGraphicsItem *parent) :
     QGraphicsItemGroup(parent),
-    m_filePath(filePath),
-    m_gameEngine(gameEngine) {
+    m_gameEngine(gameEngine),
+    m_filePath(filePath) {
     QFile tileFile(filePath + "/" + fileName);
     if(!tileFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Couldn't open file";
