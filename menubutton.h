@@ -15,7 +15,6 @@ class GameEngine;
 class MenuButton : public Sprite
 {
 private:
-    bool m_pressed, m_hovered;
     QPixmap *m_upGraphic, *m_downGraphic, *m_hoverGraphic;
 
     std::function<void(void)> m_clickedCallback;

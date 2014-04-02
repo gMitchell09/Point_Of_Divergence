@@ -7,25 +7,29 @@
 #include <QDebug>
 #include <functional>
 
+#include <QGraphicsItem>
+#include <QGraphicsItemGroup>
+#include <QGraphicsSceneMouseEvent>
+#include <QDebug>
+#include <functional>
+
 #include "gameengine.h"
 #include "sprite.h"
 #include "IMenuItem.h"
 
 class GameEngine;
 
-class OptionButton : public Sprite, public IMenuItem
+class OptionButton : public QGraphicsItemGroup, public IMenuItem
 {
 private:
-    bool m_pressed;
     bool m_state;
-
     bool *m_listener;
-    QPixmap *m_upGraphic, *m_downGraphic;
+    QGraphicsPixmapItem *m_slider, *m_bkg;
 
     std::function<void(void)> m_clickedCallback;
 
 public:
-    explicit OptionButton(QPixmap *up, QPixmap *down, QGraphicsItem *parent = 0);
+    explicit OptionButton(QPixmap bkg, QPixmap sliderGraphic, QGraphicsItem *parent = 0);
 
     void mousePressEvent(QGraphicsSceneMouseEvent *ev);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *ev);

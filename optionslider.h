@@ -24,7 +24,9 @@ private:
 
     std::function<void(void)> m_clickedCallback;
 public:
-    explicit OptionSlider(QPixmap up, QPixmap slider, QGraphicsItem *parent = 0);
+    explicit OptionSlider(QPixmap bkg, QPixmap slider, QGraphicsItem *parent = 0);
+
+    void setSliderPos(QGraphicsSceneMouseEvent *ev);
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *ev);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *ev);

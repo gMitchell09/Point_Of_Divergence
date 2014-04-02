@@ -1,24 +1,35 @@
 #include "optionbutton.h"
 
-OptionButton::OptionButton(QPixmap *up, QPixmap *down, QGraphicsItem *parent) :
-    Sprite(parent),
-    m_upGraphic(up),
-    m_downGraphic(down),
-    m_state(true) {
-    this->setPixmap(*m_upGraphic);
+OptionButton::OptionButton(QPixmap bkg, QPixmap sliderGraphic, QGraphicsItem *parent) :
+    QGraphicsItemGroup(parent) {
+
+    m_state = true;
+
+    m_slider = new QGraphicsPixmapItem(sliderGraphic);
+    m_bkg = new QGraphicsPixmapItem(bkg);
+
+
+    m_slider->setZValue(-999);
+    m_slider->setX(m_bkg->boundingRect().width()-m_slider->boundingRect().width()-15);
+
+    m_bkg->setZValue(-1000);
+
+    this->addToGroup(m_slider);
+    this->addToGroup(m_bkg);
+
+    this->setHandlesChildEvents(true);
 }
 
 void OptionButton::mousePressEvent(QGraphicsSceneMouseEvent *ev) {
-    this->m_pressed = true;
+
 }
 
 void OptionButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) {
-    if (m_pressed) {
-        if(m_state) this->setPixmap(*m_downGraphic);
-        else this->setPixmap(*m_upGraphic);
+    if (this->boundingRect().contains(ev->pos())) {
+        if(m_state) m_slider->setX(m_bkg->boundingRect().width()-m_slider->boundingRect().width()-15);
+        else m_slider->setX(15);
 
         this->m_state = !m_state;
-        this->m_pressed = false;
         this->clicked();
     }
 }
@@ -34,6 +45,4 @@ bool OptionButton::optionState() {
 }
 
 OptionButton::~OptionButton() {
-    delete m_upGraphic;
-    delete m_downGraphic;
 }

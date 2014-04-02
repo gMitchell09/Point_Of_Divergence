@@ -10,31 +10,21 @@ MenuButton::MenuButton(QPixmap *up, QPixmap *down, QPixmap *hover, QGraphicsItem
 }
 
 void MenuButton::mousePressEvent(QGraphicsSceneMouseEvent *ev) {
-    this->m_pressed = true;
     this->setPixmap(*m_downGraphic);
 }
 
 void MenuButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) {
-    if (m_hovered) {
-        this->setPixmap(*m_hoverGraphic);
-        this->m_pressed = false;
-        this->clicked();
-    }
-    else if(m_pressed) {
+    if (this->boundingRect().contains(ev->pos())) {
         this->setPixmap(*m_upGraphic);
-        this->m_pressed = false;
         this->clicked();
     }
 }
 
 void MenuButton::hoverEnterEvent(QGraphicsSceneHoverEvent *ev) {
-        this->m_hovered = true;
-        this->setPixmap(*m_hoverGraphic);
+    this->setPixmap(*m_hoverGraphic);
 }
 
 void MenuButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *ev) {
-    this->m_hovered = false;
-
     this->setPixmap(*m_upGraphic);
 }
 
