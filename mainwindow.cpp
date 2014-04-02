@@ -22,6 +22,25 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(gameEngine);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    connect(gameEngine, SIGNAL(myExit()), this, SLOT(newGraphicsScene()));
+}
+
+void MainWindow::newGraphicsScene() {
+
+    delete gameEngine;
+    gameEngine = nullptr;
+
+    qDebug() << "trying to create new scene";
+
+    gameEngine = new GameEngine(ui->graphicsView->width(), ui->graphicsView->height());
+    gameEngine->setSceneRect(0, 0, 1275, 643);
+    gameEngine->displayInitialMenu();//displayLoadMenu
+    connect(gameEngine, SIGNAL(myExit()), this, SLOT(newGraphicsScene()));
+
+    ui->graphicsView->setScene(gameEngine);
+    ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 MainWindow::~MainWindow() {

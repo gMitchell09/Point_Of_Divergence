@@ -4,6 +4,7 @@ HUD::HUD(QGraphicsView * const&view, QPointF screenPos, QGraphicsItem *parent) :
     QGraphicsItemGroup(parent),
     m_screenPos(screenPos),
     m_view(view) {
+    this->setHandlesChildEvents(false);
 }
 
 void HUD::step(qint64 time, long delta) {

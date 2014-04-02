@@ -133,6 +133,7 @@ public:
     void displayMainMenu_load();
     void displayMainMenu_mp();
     void displayMainMenu_option();
+    void displayMainMenu_sp();
     void startSinglePlayer();
     void saveSettings();
     void QuitGame();
@@ -200,6 +201,10 @@ public:
 protected:
     virtual void keyPressEvent(QKeyEvent * keyEvent);
     virtual void keyReleaseEvent(QKeyEvent * keyEvent);
+
+signals:
+    /// Emitted when a player connects to us
+    void myExit();
 
 private slots:
     void invalidateTimer() {

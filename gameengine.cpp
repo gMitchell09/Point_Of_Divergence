@@ -10,6 +10,7 @@
 
 #include "sfxmanager.h"
 #include "gameengine.h"
+#include "mainwindow.h"
 
 static const QString bkgPath = "./resources/backgrounds";
 static const QString buttonPath = "./resources/buttons";
@@ -64,14 +65,12 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
 }
 
 GameEngine::~GameEngine() {
-    delete m_mainActor;
     delete m_bkg;
     delete m_initialMenu;
     delete m_loadMenu;
     delete m_optionsMenu;
 
     delete m_hud;
-    delete m_hudGameTime;
     delete heartbeat;
     delete m_networkPlayer;
 
@@ -79,10 +78,6 @@ GameEngine::~GameEngine() {
         this->removeItem(*itr);
     }
     m_spriteArray.clear();
-
-    for (auto itr = m_deletedItems.begin(); itr != m_deletedItems.end(); ++itr) {
-        delete *itr;
-    }
 
     for (auto itr = m_levels.begin(); itr != m_levels.end(); ++itr) {
         this->removeItem(*itr);
@@ -261,6 +256,18 @@ void GameEngine::startSinglePlayer() {
     this->removeItem(m_initialMenu);
     this->removeItem(m_mpMenu);
 
+    MenuButton * mainmenuButton;
+
+    TileMap * menuButtonTiles = new TileMap(231, 70, 0, 0, "./resources/buttons/ButtonSheet_MP.png");
+
+    QPixmap *button_static = new QPixmap(menuButtonTiles->copyCellAt(2, 0));
+    QPixmap *button_hover = new QPixmap(menuButtonTiles->copyCellAt(2, 1));
+    QPixmap *button_clicked = new QPixmap(menuButtonTiles->copyCellAt(2, 2));
+    mainmenuButton = new MenuButton(button_static, button_clicked, button_hover);
+    mainmenuButton->setPos(this->width()-mainmenuButton->boundingRect().width()-20, 10);
+    std::function<void(void)> func = std::bind(&GameEngine::displayMainMenu_sp, this);
+    mainmenuButton->setCallback(func);
+
     heartbeat = new QTimer(this);
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
     heartbeat->start(1); // 20fps
@@ -280,15 +287,15 @@ void GameEngine::startSinglePlayer() {
 
     life1 = new Sprite();
     life1->setPos(QPointF(25, 25));
-    life1->setPixmap(QPixmap(itemPath + "/HeartContainer.png"));
+    life1->setPixmap(QPixmap(spritePath + "/HeartContainer.png"));
 
     life2 = new Sprite();
     life2->setPos(QPointF(50, 25));
-    life2->setPixmap(QPixmap(itemPath + "/HeartContainer.png"));
+    life2->setPixmap(QPixmap(spritePath + "/HeartContainer.png"));
 
     life3 = new Sprite();
     life3->setPos(QPointF(75, 25));
-    life3->setPixmap(QPixmap(itemPath + "/HeartContainer.png"));
+    life3->setPixmap(QPixmap(spritePath + "/HeartContainer.png"));
 
     gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
     gameTime->setPos(QPointF(630, 15));
@@ -306,6 +313,7 @@ void GameEngine::startSinglePlayer() {
     this->addHUD(life2);
     this->addHUD(life3);
     this->addHUDText(gameTime, true);
+    this->addHUD(mainmenuButton);
 
     this->initBGM(level->getBGMPath(), level->getReversedBGMPath());
 
@@ -572,6 +580,16 @@ void GameEngine::displayMainMenu_option() {
     this->removeItem(m_optionsMenu);
     this->addItem(m_initialMenu);
 }
+
+void GameEngine::displayMainMenu_sp() {
+
+//    this->removeItem(m_hud);
+//    this->removeItem(m_levels);
+    qDebug() << "Exiting Game";
+
+    emit myExit();
+}
+
 //***************************************************************************
 
 void GameEngine::modifiedOptionsWarning() {
