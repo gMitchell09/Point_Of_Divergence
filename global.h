@@ -10,6 +10,7 @@
 enum ItemType { kBlock = 0, kBox, kCoin, kLever, kButton, kSwitch, kDoor, kMovingPlatform, kGate, kClock, kTime_Lever,
                 kSlope30Right = 11, kSlope45Right, kSlope60Right,
                 kSlope30Left = 14,  kSlope45Left,  kSlope60Left,
-                kGoomba = 17, kMainCharacter = 18, kLadder = 19};
+                kGoomba = 17, kMainCharacter = 18, kLadder = 19,
+                kLeverFlipped = 20, kDoorOpen = 21};
 
 #endif // GLOBAL_H

@@ -199,6 +199,7 @@
   </tile>
   <tile id="1">
    <properties>
+    <property name="secondTile" value="1"/>
     <property name="solid" value="0"/>
     <property name="type" value="3"/>
    </properties>
@@ -8217,6 +8218,10 @@
   <object name="6" type="6 - kDoor" gid="133" x="576" y="768"/>
   <object name="6" type="6 - kDoor" gid="133" x="576" y="800"/>
   <object name="6" type="6 - kDoor" gid="133" x="576" y="832"/>
+  <object name="20" type="20 - kLeverFlipped" gid="130" x="640" y="864"/>
+  <object name="21" type="21 - kDoorOpen" gid="134" x="704" y="832"/>
+  <object name="21" type="21 - kDoorOpen" gid="134" x="704" y="800"/>
+  <object name="21" type="21 - kDoorOpen" gid="134" x="704" y="768"/>
  </objectgroup>
  <objectgroup name="Switch_1" width="100" height="40">
   <object name="3" type="3 - kLever" gid="129" x="1632" y="384"/>

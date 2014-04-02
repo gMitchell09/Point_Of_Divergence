@@ -212,7 +212,7 @@ void Level::parseTile(QDomNode tile, QMap<int, TileProperties> &tileProperties) 
 
 void Level::parseObjectGroup(QDomNode objectGroup) {
     std::vector<ITriggerable*> receivers;
-    ITriggerable* controller = nullptr;
+    std::vector<ITriggerable*> controllers;
 
     QDomNode child = objectGroup.firstChild();
 
@@ -221,19 +221,23 @@ void Level::parseObjectGroup(QDomNode objectGroup) {
         if (obj == nullptr) return;
 
         if (obj->isController()) {
-            controller = obj;
+            controllers.push_back(obj);
         } else {
             receivers.push_back(obj);
         }
         child = child.nextSibling();
     }
 
-    if (controller != nullptr && !receivers.empty()) {
+    if (!controllers.empty() && !receivers.empty()) {
         for (auto itr = receivers.begin(); itr != receivers.end(); ++itr) {
-            ITriggerable* obj = dynamic_cast<ITriggerable*>(*itr);
-            QMetaObject::Connection conn = QObject::connect(controller, SIGNAL(stateChanged(bool)), obj, SLOT(controllerStateChanged(bool)));
-            if (!((bool)conn)) {
-                qDebug() << "WTF";
+            for (auto contItr = controllers.begin(); contItr != controllers.end(); ++contItr) {
+                ITriggerable* rcvInst = dynamic_cast<ITriggerable*>(*itr);
+                ITriggerable* contInst = dynamic_cast<ITriggerable*>(*contItr);
+
+                QMetaObject::Connection conn = QObject::connect(contInst, SIGNAL(stateChanged(bool)), rcvInst, SLOT(controllerStateChanged(bool)));
+                if (!((bool)conn)) {
+                    qDebug() << "WTF";
+                }
             }
         }
     }
@@ -268,6 +272,15 @@ ITriggerable* Level::parseObject(QDomNode object) {
             spr = switchObject;
             break;
         }
+        case kLeverFlipped: {
+            SwitchObject* switchObject = new SwitchObject(32, 32);
+            switchObject->setPixmaps(tileMap->copyCellAtWithoutMask(idx - 1), tileMap->copyCellAtWithoutMask(idx));
+            switchObject->setPos(x, y);
+            this->addToGroup(switchObject);
+            spr = switchObject;
+            break;
+        }
+
         case kDoor: {
             Door *door = new Door(32, 32);
             door->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
@@ -276,6 +289,17 @@ ITriggerable* Level::parseObject(QDomNode object) {
             spr = door;
             break;
         }
+
+        case kDoorOpen: {
+            Door *door = new Door(32, 32);
+            door->setPixmaps(tileMap->copyCellAtWithoutMask(idx - 1), tileMap->copyCellAtWithoutMask(idx));
+            door->setPos(x, y);
+            door->controllerStateChanged(true);
+            this->addToGroup(door);
+            spr = door;
+            break;
+        }
+
         default:
             qDebug() << "Invalid Object!!!";
     }

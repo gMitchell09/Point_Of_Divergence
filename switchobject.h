@@ -68,6 +68,8 @@ public:
 
     virtual void setState(State currentState) {
         Sprite::setState(currentState);
+
+        if (m_state == currentState.triggerableState) return;
         m_state = currentState.triggerableState;
 
         if (m_state) {

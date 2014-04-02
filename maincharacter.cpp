@@ -12,7 +12,11 @@
 
 MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, parent),
-    m_isOnLadder(false) {
+    m_isOnLadder(false),
+    m_leftPressed(false),
+    m_rightPressed(false),
+    m_downPressed(false),
+    m_upPressed(false) {
 
     m_leftAccel = -400;
     m_rightAccel = -m_leftAccel;
