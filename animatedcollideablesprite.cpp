@@ -258,17 +258,23 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                 this->setY(col.overlapDistance.y());
                                 break;
                             case Bottom:
-                                if (!second->isSlope()) this->setY(col.overlapDistance.y() - this->boundingRect().height() + 1);
+                                if (!second->isSlope()) {
+                                    this->setY(col.overlapDistance.y() - this->boundingRect().height() + 1);
+                                }
                                 break;
                             case Right:
                                 // Only reposition the player if they are (not on a slope) and moving in the direction of the collision.  This prevents that weird
                                 //   suction bug.
-                                if (!second->isSlope() && this->getVelocity().x() > 0) this->setX(col.overlapDistance.x() - this->boundingRect().width() - 4);
+                                if (!second->isSlope() && this->getVelocity().x() > 0) {
+                                    this->setX(col.overlapDistance.x() - this->boundingRect().width() - 4);
+                                }
                                 break;
                             case Left:
                                 // Only reposition the player if they are (not on a slope) and moving in the direction of the collision.  This prevents that weird
                                 //   suction bug.
-                                if (!second->isSlope() && this->getVelocity().x() < 0) this->setX(col.overlapDistance.x() + 4);
+                                if (!second->isSlope() && this->getVelocity().x() < 0) {
+                                    this->setX(col.overlapDistance.x() + 4);
+                                }
                                 break;
                         }
 
@@ -476,21 +482,21 @@ void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, 
 
 void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     AnimatedSprite::paint(painter, option, widget);
-//    painter->setPen(Qt::red);
-//    painter->setBrush(QColor(Qt::red));
+    painter->setPen(Qt::red);
+    painter->setBrush(QColor(Qt::red));
 
-//    painter->translate(-this->pos());
+    painter->translate(-this->pos());
 
-//    painter->drawPolygon(topWhiskerLeft);
-//    painter->drawPolygon(topWhiskerRight);
+    painter->drawPolygon(topWhiskerLeft);
+    painter->drawPolygon(topWhiskerRight);
 
-//    painter->drawPolygon(rightWhiskerTop);
-//    painter->drawPolygon(rightWhiskerBottom);
+    painter->drawPolygon(rightWhiskerTop);
+    painter->drawPolygon(rightWhiskerBottom);
 
-//    painter->drawPolygon(bottomWhiskerRight);
-//    painter->drawPolygon(bottomWhiskerLeft);
+    painter->drawPolygon(bottomWhiskerRight);
+    painter->drawPolygon(bottomWhiskerLeft);
 
-//    painter->drawPolygon(leftWhiskerBottom);
-//    painter->drawPolygon(leftWhiskerTop);
+    painter->drawPolygon(leftWhiskerBottom);
+    painter->drawPolygon(leftWhiskerTop);
 
 }
