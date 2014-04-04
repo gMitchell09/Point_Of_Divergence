@@ -21,6 +21,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Point_Of_Divergence
 TEMPLATE = app
 
+INCLUDEPATH += ./Box2D
+LIBS += -L./Box2D/Build/ Box2D.a
+DEPENDPATH += ./Box2D
 
 SOURCES += main.cpp\
     gameengine.cpp \
