@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objecttypes>
+ <objecttype name="0 - kBlock" color="#00ff00"/>
+ <objecttype name="1 - kBox" color="#00ff00"/>
+ <objecttype name="2 - kCoin" color="#00ff00"/>
+ <objecttype name="3 - kLever" color="#00ff00"/>
+ <objecttype name="4 - kButton" color="#00ff00"/>
+ <objecttype name="5 - kSwitch" color="#00ff00"/>
+ <objecttype name="6 - kDoor" color="#00ff00"/>
+ <objecttype name="7 - kMovingPlatform" color="#00ff00"/>
+ <objecttype name="8 - kGate" color="#00ff00"/>
+ <objecttype name="9 - kClock" color="#00ff00"/>
+ <objecttype name="10 - kTime_Lever" color="#00ff00"/>
+ <objecttype name="11 - kSlope30Right" color="#00ff00"/>
+ <objecttype name="12 - kSlope45Right" color="#00ff00"/>
+ <objecttype name="13 - kSlope60Right" color="#00ff00"/>
+ <objecttype name="14 - kSlope30Left" color="#00ff00"/>
+ <objecttype name="15 - kSlope45Left" color="#00ff00"/>
+ <objecttype name="16 - kSlope60Left" color="#00ff00"/>
+ <objecttype name="17 - kGoomba" color="#00ff00"/>
+ <objecttype name="18 - kMainCharacter" color="#00ff00"/>
+ <objecttype name="19 - kLadder" color="#00ff00"/>
+</objecttypes>
