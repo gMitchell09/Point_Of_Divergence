@@ -292,7 +292,7 @@ ITriggerable* Level::parseObject(QDomNode object) {
 
         case kDoorOpen: {
             Door *door = new Door(32, 32);
-            door->setPixmaps(tileMap->copyCellAtWithoutMask(idx - 1), tileMap->copyCellAtWithoutMask(idx));
+            door->setPixmaps(tileMap->copyCellAt(idx - 1), tileMap->copyCellAt(idx));
             door->setPos(x, y);
             door->controllerStateChanged(true);
             this->addToGroup(door);
