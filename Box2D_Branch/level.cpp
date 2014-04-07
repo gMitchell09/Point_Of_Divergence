@@ -128,6 +128,7 @@ void Level::parseLayer(QDomNode layer) {
     //groundBodyDef.position.Set(PX_TO_M(m_levelWidth), PX_TO_M(-m_levelHeight));
     groundBodyDef.type = b2_staticBody;
     b2Body* groundBody = m_world->CreateBody(&groundBodyDef);
+    groundBody->SetUserData((void*)nullptr);
 
     b2PolygonShape tileShape;
     tileShape.SetAsBox(PX_TO_M(32)/2, PX_TO_M(32)/2);
@@ -183,6 +184,8 @@ void Level::parseLayer(QDomNode layer) {
                 MainCharacter *mainChar = new MainCharacter(16, 32, body);
                 mainChar->setPos(pos);
                 mainChar->setSolid(true);
+
+                body->SetUserData(mainChar);
                 m_gameEngine->addSprite(mainChar, true);
 
             } else if (tp.kind == kGoomba) {
@@ -192,11 +195,13 @@ void Level::parseLayer(QDomNode layer) {
                 b2Body* body = m_world->CreateBody(&bodyDef);
                 b2PolygonShape shape;
                 shape.SetAsBox(PX_TO_M(20)/2., PX_TO_M(18)/2.,
-                               b2Vec2(PX_TO_M(20.)/2, -PX_TO_M(18.0)/2), 0);
+                               b2Vec2(PX_TO_M(20.), -PX_TO_M(18.0)/2), 0);
                 body->CreateFixture(&shape, 1.0f);
 
                 Enemy1 *goomba = new Enemy1(20, 18, enemyPath, body);
                 goomba->setPos(pos);
+
+                body->SetUserData(goomba);
                 this->addToGroup(goomba);
             } else if (tp.kind == kLever) {
                 b2BodyDef bodyDef;
@@ -211,6 +216,8 @@ void Level::parseLayer(QDomNode layer) {
                 SwitchObject *switchObj = new SwitchObject(32, 32, body);
                 switchObj->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
                 switchObj->setPos(pos);
+
+                body->SetUserData(switchObj);
                 this->addToGroup(switchObj);
             } else if (tp.kind == kCoin) {
                 b2BodyDef bodyDef;
@@ -229,6 +236,8 @@ void Level::parseLayer(QDomNode layer) {
                 coin->setPixmap(tileImage);
                 coin->setPos(pos);
                 coin->setShapeMode(Tile::BoundingRectShape);
+
+                body->SetUserData(coin);
                 this->addToGroup(coin);
             } else {
                 b2Body* body = nullptr;
@@ -241,7 +250,7 @@ void Level::parseLayer(QDomNode layer) {
                     b2BodyDef bodyDef;
                     bodyDef.position.Set(PX_TO_M(pos.x() - 32./2), PX_TO_M(-pos.y()));
                     bodyDef.type = b2_dynamicBody;
-                    bodyDef.fixedRotation = true;
+                    bodyDef.fixedRotation = false;
                     body = m_world->CreateBody(&bodyDef);
                     b2PolygonShape shape;
                     shape.SetAsBox(PX_TO_M(32.)/2., PX_TO_M(32.)/2.,
@@ -264,7 +273,12 @@ void Level::parseLayer(QDomNode layer) {
                 tile->setPixmap(tileImage);
 
                 tile->setPos(pos);
-                tile->setShapeMode(Tile::BoundingRectShape);
+                tile->setShapeMode(Tile::BoundingRectShape);\
+
+                if (body && tp.kind == kBox) {
+                    body->SetUserData(tile);
+                }
+
                 this->addToGroup(tile);
             }
             validTiles++;

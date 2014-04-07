@@ -32,6 +32,19 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
            this->setPos(M_TO_PX(position.x) + this->pixmap().width()/2, M_TO_PX(-position.y));
            this->setTransformOriginPoint(0, 0);
            this->setRotation(-(angle * DEGREE_TO_RADIAN_FACTOR));
+
+           for (b2ContactEdge* edge = m_body->GetContactList(); edge; edge = edge->next) {
+               if (edge->contact->IsTouching()) {
+                   if (edge->contact->GetFixtureA()->GetBody()->GetUserData() != nullptr && edge->contact->GetFixtureB()->GetBody()->GetUserData() != nullptr) {
+                       AnimatedCollideableSprite *obj1, *obj2;
+                       obj1 = (AnimatedCollideableSprite*)edge->contact->GetFixtureA()->GetBody()->GetUserData();
+                       obj2 = (AnimatedCollideableSprite*)edge->contact->GetFixtureB()->GetBody()->GetUserData();
+                       if (obj1 && obj2 && (obj1->className() == "MainCharacter" || obj2->className() == "MainCharacter")) {
+                            qDebug() << "Collision between: " << obj1->className() << " and " << obj2->className();
+                       }
+                   }
+               }
+           }
        }
    }
 }
@@ -59,11 +72,11 @@ void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraph
             painter->drawRect(aabb);
             fix = fix->GetNext();
 
-            qDebug() << this->className()
-                     << "Rect: " << aabb;
+//            qDebug() << this->className()
+//                     << "Rect: " << aabb;
 
-            qDebug() << "Lower: " << QPoint(M_TO_PX(b2aabb.lowerBound.x), M_TO_PX(-b2aabb.lowerBound.y));
-            qDebug() << "Upper: " << QPoint(M_TO_PX(b2aabb.upperBound.x), M_TO_PX(-b2aabb.upperBound.y));
+//            qDebug() << "Lower: " << QPoint(M_TO_PX(b2aabb.lowerBound.x), M_TO_PX(-b2aabb.lowerBound.y));
+//            qDebug() << "Upper: " << QPoint(M_TO_PX(b2aabb.upperBound.x), M_TO_PX(-b2aabb.upperBound.y));
         }
     }
 }
