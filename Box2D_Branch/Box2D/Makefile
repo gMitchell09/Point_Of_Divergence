@@ -41,10 +41,11 @@ $(OBJDIR)/core/%.o: $(SOURCE)%.cpp
 
 createdir:
 ifdef UNIX_TOOLS
-	-mkdir $(OBJDIR)
-	-mkdir $(OBJDIR)/core
-	-mkdir $(OBJDIR)/glui
-	-mkdir $(OBJDIR)/freeglut
+	-mkdir -p $(OBJDIR)
+	-mkdir -p $(OBJDIR)/core
+	-mkdir -p $(OBJDIR)/glui
+	-mkdir -p $(OBJDIR)/freeglut
+	-mkdir -p $(LIBDIR)
 else
 	-mkdir $(OBJDIR)
 	-mkdir $(OBJDIR)\core

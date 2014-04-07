@@ -9,7 +9,7 @@
 
 #include "door.h"
 
-Door::Door(int width, int height, QGraphicsItem* parent) :
-    AnimatedCollideableSprite(width, height, parent) {
+Door::Door(int width, int height, b2Body* body, QGraphicsItem* parent) :
+    AnimatedCollideableSprite(width, height, body, parent) {
     this->setSolid(true);
 }

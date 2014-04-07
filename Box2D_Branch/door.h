@@ -20,7 +20,7 @@ class Door : public ITriggerable, public AnimatedCollideableSprite
 {
     Q_OBJECT
 public:
-    explicit Door(int width, int height, QGraphicsItem* parent = 0);
+    explicit Door(int width, int height, b2Body* body = 0, QGraphicsItem* parent = 0);
 
     /// setPixmaps
     /// Set on state and off state pixmaps

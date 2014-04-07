@@ -44,6 +44,8 @@
 #include "networkmanager.h"
 #include "networkplayer.h"
 
+#include "Box2D.h"
+
 class Level;
 class MainCharacter;
 class MenuButton;
@@ -56,6 +58,8 @@ class GameEngine : public QGraphicsScene
 private:
     /* Arbitrary Constants, chosen by fair dice roll */
     static const float m_gravity; // The enemy's gate is down.
+
+    b2World *m_world;
 
     double m_timeDivider;
     bool m_gamePaused;
@@ -195,6 +199,8 @@ public:
     virtual void characterDamaged();
 
     void saveGame(std::vector<QString> values);
+
+    b2World* getWorld() { return m_world; }
 
     virtual ~GameEngine();
 

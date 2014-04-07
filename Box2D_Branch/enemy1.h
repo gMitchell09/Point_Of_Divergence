@@ -6,6 +6,8 @@
 #include "tilemap.h"
 #include "animatedcollideablesprite.h"
 
+#include "Box2D.h"
+
 class Enemy1 : public AnimatedCollideableSprite
 {
 private:
@@ -16,7 +18,7 @@ private:
     MovementState m_currentState;
 
 public:
-    Enemy1(int width, int height, QString path, QGraphicsItem *parent = 0);
+    Enemy1(int width, int height, QString path, b2Body* body = 0, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);

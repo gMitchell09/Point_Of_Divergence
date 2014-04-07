@@ -2,8 +2,8 @@
 
 #include <QtMath>
 
-Tile::Tile(int width, int height, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent)
+Tile::Tile(int width, int height, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent)
 {
     this->setVelocity(QPointF(0, 0));
     this->setAcceleration(QPointF(0, 0));

@@ -6,8 +6,8 @@
 #include "enemy1.h"
 #include "gameengine.h"
 
-Enemy1::Enemy1(int width, int height, QString path, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent) {
+Enemy1::Enemy1(int width, int height, QString path, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent) {
 
     m_leftAccel = -150;
     m_rightAccel = -m_leftAccel;

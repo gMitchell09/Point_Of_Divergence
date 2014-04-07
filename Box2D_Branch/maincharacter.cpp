@@ -10,8 +10,8 @@
 #define MAX(x, y) ((x>y)?x:y)
 #define SIGN(x) ((x>0)?1:-1)
 
-MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent),
+MainCharacter::MainCharacter(int width, int height, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent),
     m_isOnLadder(false),
     m_leftPressed(false),
     m_rightPressed(false),
@@ -120,6 +120,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
             this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
         this->setBrake(true);
 
+        this->m_body->ApplyForceToCenter(b2Vec2(0, -500), true);
         m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
 
@@ -136,7 +137,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         this->setBrake(false);
 
         this->triggerAnimation(m_currentState);
-
+        this->m_body->ApplyForceToCenter(b2Vec2(500, 0), true);
         m_rightPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
@@ -148,6 +149,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
             this->setAcceleration(QPointF(m_leftAccel, this->getAcceleration().y()));
         }
         this->setBrake(false);
+        this->m_body->ApplyForceToCenter(b2Vec2(-500, 0), true);
 
         this->triggerAnimation(m_currentState);
 
@@ -170,6 +172,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 
             m_jumping = true;
         }
+        this->m_body->ApplyForceToCenter(b2Vec2(0, 1000), true);
     } else if (keyEvent->key() == Qt::Key_Shift) {
         this->beginSlice();
     }

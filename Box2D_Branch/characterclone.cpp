@@ -1,8 +1,8 @@
 #include "characterclone.h"
 #include "tilemap.h"
 
-CharacterClone::CharacterClone(int width, int height, std::vector<State> stateStack, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent)
+CharacterClone::CharacterClone(int width, int height, std::vector<State> stateStack, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent)
 {
     this->setZValue(1);
     this->setSolid(true);

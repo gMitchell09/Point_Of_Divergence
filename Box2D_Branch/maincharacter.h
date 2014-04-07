@@ -43,7 +43,7 @@ private:
     int m_keyRecentPress;
 
 public:
-    explicit MainCharacter(int width, int height, QGraphicsItem *parent = 0);
+    explicit MainCharacter(int width, int height, b2Body* body = 0, QGraphicsItem *parent = 0);
     void keyPressEvent(QKeyEvent * keyEvent);
     void keyReleaseEvent(QKeyEvent * keyEvent);
 

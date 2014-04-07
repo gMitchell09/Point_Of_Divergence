@@ -62,6 +62,8 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
         QMessageBox *msg = new QMessageBox("Level not found!", "Level Not Found!!", QMessageBox::Critical, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         msg->show();
     }
+
+    m_world = new b2World(b2Vec2(0.0f, -10.0f));
 }
 
 GameEngine::~GameEngine() {
@@ -73,6 +75,8 @@ GameEngine::~GameEngine() {
     delete m_hud;
     delete heartbeat;
     delete m_networkPlayer;
+
+    delete m_world; // Destroy zee vorld!!!
 
     for (auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); ++itr) {
         this->removeItem(*itr);
@@ -103,6 +107,8 @@ void GameEngine::step(qint64 time) {
         //   to accurately play back events.
         m_gameTime += deltaTime;
         m_totalGameTime += ABS(deltaTime);
+
+        m_world->Step(1.f/60.f, 8, 3);
 
         for(auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); itr++) {
             Sprite* spr = dynamic_cast<Sprite*>(*itr);

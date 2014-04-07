@@ -27,7 +27,7 @@ private:
 //    MovementState m_nextState;
 
 public:
-    explicit NetworkPlayer(int width, int height, QGraphicsItem *parent = 0);
+    explicit NetworkPlayer(int width, int height, b2Body* body = 0, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);

@@ -9,8 +9,8 @@
 
 #include "switchobject.h"
 
-SwitchObject::SwitchObject(int width, int height, QGraphicsItem* parent) :
-    AnimatedCollideableSprite(width, height, parent) {
+SwitchObject::SwitchObject(int width, int height, b2Body* body, QGraphicsItem* parent) :
+    AnimatedCollideableSprite(width, height, body, parent) {
     this->setSolid(false);
     this->setZValue(10);
     this->setShapeMode(ShapeMode::BoundingRectShape);

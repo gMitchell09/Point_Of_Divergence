@@ -10,8 +10,8 @@
 #include "tilemap.h"
 #include "networkplayer.h"
 
-NetworkPlayer::NetworkPlayer(int width, int height, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent)
+NetworkPlayer::NetworkPlayer(int width, int height, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent)
 {
     this->setZValue(1);
 

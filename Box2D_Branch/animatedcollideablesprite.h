@@ -28,7 +28,7 @@ private:
     bool m_onLeftSlope, m_onRightSlope;
 
 public:
-    explicit AnimatedCollideableSprite(int width, int height, QGraphicsItem *parent = 0);
+    explicit AnimatedCollideableSprite(int width, int height, b2Body* body, QGraphicsItem *parent);
 
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
@@ -57,9 +57,13 @@ public:
     bool isCollideable() { return true; }
     bool isBackground() { return false; }
     virtual QString className() { return "AnimatedCollideableSprite"; }
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
 protected:
     virtual bool usesStack() { return false; }
+
+    b2Body* m_body;
+
 };
 
 #endif // ANIMATEDCOLLIDEABLESPRITE_H
