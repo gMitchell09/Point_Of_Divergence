@@ -30,6 +30,8 @@ box_2d.commands = pushd $$PWD/Box2D && make -f ./Makefile box2d && cd $$OUT_PWD
 
 QMAKE_EXTRA_TARGETS += box_2d
 
+PRE_TARGETDEPS += box2d_lib
+
 LIBS += $$box2d_lib
 
 SOURCES += main.cpp \

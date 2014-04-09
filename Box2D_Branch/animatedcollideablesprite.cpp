@@ -6,7 +6,7 @@
 #include "animatedcollideablesprite.h"
 #include "level.h"
 
-#define DEGREE_TO_RADIAN_FACTOR 57.295779513082320876798154814105
+#define RADIAN_TO_DEGREE_FACTOR 57.295779513082320876798154814105
 
 AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, b2Body* body, QGraphicsItem *parent) :
    AnimatedSprite(width, height, parent),
@@ -27,11 +27,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
 
    else {
        if (m_body != nullptr) {
-           b2Vec2 position = m_body->GetPosition();
-           float32 angle = m_body->GetAngle();
-           this->setPos(M_TO_PX(position.x) + this->pixmap().width()/2, M_TO_PX(-position.y));
-           this->setTransformOriginPoint(0, 0);
-           this->setRotation(-(angle * DEGREE_TO_RADIAN_FACTOR));
+           this->updatePosition();
 
            for (b2ContactEdge* edge = m_body->GetContactList(); edge; edge = edge->next) {
                if (edge->contact->IsTouching()) {
@@ -49,34 +45,46 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
    }
 }
 
+void AnimatedCollideableSprite::updatePosition() {
+    if (m_body != nullptr) {
+        b2Vec2 position = m_body->GetPosition();
+        float32 angle = m_body->GetAngle(); //M_PI/2;
+        this->setPos(M_TO_PX(position.x) + this->pixmap().width()/2, M_TO_PX(-position.y));
+        this->setTransformOriginPoint(this->pixmap().width()/2, this->pixmap().height()/2);
+        this->setRotation(-((angle) * RADIAN_TO_DEGREE_FACTOR));
+    }
+}
+
 void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
    // Override this method in your subclasses if you want to be alerted when collisions occur.
    Q_UNUSED(collisions);
    Q_UNUSED(side);
 }
 
+QRectF AnimatedCollideableSprite::boundingRect() const {
+    return QRectF(QPointF(-50, -50), QSizeF(100, 100));
+}
+
 void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     AnimatedSprite::paint(painter, option, widget);
-    if (m_body) {
+    if (m_body && this->blockType() == kBox) {
         b2Fixture *fix = m_body->GetFixtureList();
         while(fix) {
-            QRect aabb;
-            b2AABB b2aabb = fix->GetAABB(0);
-            aabb.setBottomLeft(QPoint(M_TO_PX(b2aabb.lowerBound.x), M_TO_PX(-b2aabb.lowerBound.y)));
-            aabb.setTopRight(QPoint(M_TO_PX(b2aabb.upperBound.x), M_TO_PX(-b2aabb.upperBound.y)));
+            QPolygon poly;
+            if (fix->GetShape()->GetType() == b2Shape::e_polygon) {
+                b2PolygonShape *shape = static_cast<b2PolygonShape*>(fix->GetShape());
+                for (int i = 0; i < shape->GetVertexCount(); i++) {
+                    b2Vec2 vertex = shape->GetVertex(i);
+                    poly << QPoint(M_TO_PX(vertex.x), M_TO_PX(-vertex.y));
+                }
+            }
 
             painter->setPen(Qt::red);
             painter->setBrush(QColor(Qt::red));
 
-            painter->translate(-this->pos());
-            painter->drawRect(aabb);
+            painter->translate(-this->pixmap().width()/2, 0);
+            painter->drawPolygon(poly);
             fix = fix->GetNext();
-
-//            qDebug() << this->className()
-//                     << "Rect: " << aabb;
-
-//            qDebug() << "Lower: " << QPoint(M_TO_PX(b2aabb.lowerBound.x), M_TO_PX(-b2aabb.lowerBound.y));
-//            qDebug() << "Upper: " << QPoint(M_TO_PX(b2aabb.upperBound.x), M_TO_PX(-b2aabb.upperBound.y));
         }
     }
 }

@@ -166,18 +166,26 @@ void Level::parseLayer(QDomNode layer) {
                 b2Body* body = m_world->CreateBody(&bodyDef);
                 b2PolygonShape mcShape;
                 b2Vec2 verts[] = {
-                    b2Vec2(-0.95,1.0),
-                    b2Vec2(-1.0,0.95),
-                    b2Vec2(-1.0,-0.95),
-                    b2Vec2(-0.95,-1.0),
-                    b2Vec2(0.95,-1.0),
-                    b2Vec2(1.0,-0.95),
-                    b2Vec2(1.0,0.95),
-                    b2Vec2(0.95,1.0)
+//                    b2Vec2(-0.95,1.0),
+//                    b2Vec2(-1.0,0.95),
+//                    b2Vec2(-1.0,-0.95),
+//                    b2Vec2(-0.95,-1.0),
+//                    b2Vec2(0.95,-1.0),
+//                    b2Vec2(1.0,-0.95),
+//                    b2Vec2(1.0,0.95),
+//                    b2Vec2(0.95,1.0)
+                    b2Vec2(0.55, 0.0),
+                    b2Vec2(0.5, -0.05),
+                    b2Vec2(0.5, -1.95),
+                    b2Vec2(0.55, -2.0),
+                    b2Vec2(1.45, -2),
+                    b2Vec2(1.5, -1.95),
+                    b2Vec2(1.5, -0.95),
+                    b2Vec2(1.45, 0.0)
                 };
-                //mcShape.Set(verts, 8);
-                mcShape.SetAsBox(PX_TO_M(16.)/2, PX_TO_M(32.)/2,
-                                 b2Vec2(PX_TO_M(16.), -PX_TO_M(32.)/2), 0);
+                mcShape.Set(verts, 8);
+                //mcShape.SetAsBox(PX_TO_M(16.)/2, PX_TO_M(32.)/2,
+                //                 b2Vec2(PX_TO_M(16.), -PX_TO_M(32.)/2), 0);
                 body->SetFixedRotation(true);
                 body->CreateFixture(&mcShape, 1.0f)->SetFriction(0.);
 

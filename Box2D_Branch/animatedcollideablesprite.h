@@ -27,11 +27,14 @@ class AnimatedCollideableSprite : public AnimatedSprite
 private:
     bool m_onLeftSlope, m_onRightSlope;
 
+    void updatePosition();
+
 public:
     explicit AnimatedCollideableSprite(int width, int height, b2Body* body, QGraphicsItem *parent);
 
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+    virtual QRectF boundingRect() const;
 
     bool isOnLeftSlope() { return m_onLeftSlope; }
     bool isOnRightSlope() { return m_onRightSlope; }
@@ -41,15 +44,22 @@ public:
     }
 
     virtual void pushState(qint64 time, long delta, State& state) {
-        state.pos = this->pos();
-        state.vel = this->getApparentVelocity();
+        if (m_body) {
+            state.pos = m_body->GetPosition();
+            state.vel = m_body->GetLinearVelocity();
+            state.angle = m_body->GetAngle();
+        }
+
         AnimatedSprite::pushState(time, delta, state);
     }
 
     virtual void setState(State currentState) {
         AnimatedSprite::setState(currentState);
-        this->setPos(currentState.pos);
-        this->setApparentVelocity(currentState.vel);
+        if (m_body) {
+            m_body->SetTransform(currentState.pos, currentState.angle);
+            m_body->SetLinearVelocity(currentState.vel);
+            this->updatePosition();
+        }
     }
 
     bool isStatic() { return false; }
