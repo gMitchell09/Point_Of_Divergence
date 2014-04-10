@@ -265,18 +265,18 @@ void Level::parseLayer(QDomNode layer) {
                                    b2Vec2(PX_TO_M(32.), -PX_TO_M(32.)/2), 0);
                     body->CreateFixture(&shape, 1.0f);
                 } else if (tp.kind == kSlope45Right) {
-                    float32 xMeters = M_TO_PX(pos.x());
-                    float32 yMeters = M_TO_PX(-pos.y());
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
                     b2Vec2 verts[] = {
                         b2Vec2(xMeters + 0.0, yMeters - 2.0),
                         b2Vec2(xMeters + 2.0, yMeters - 2.0),
-                        b2Vec2(xMeters + 0.0, yMeters + 2.0)
+                        b2Vec2(xMeters + 2.0, yMeters + 0.0)
                     };
                     tileShape.Set(verts, 3);
                     groundBody->CreateFixture(&tileShape, 0.0f);
                 } else if (tp.kind == kSlope45Left) {
-                    float32 xMeters = M_TO_PX(pos.x());
-                    float32 yMeters = M_TO_PX(-pos.y());
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
                     b2Vec2 verts[] = {
                         b2Vec2(xMeters + 0.0, yMeters + 0.0),
                         b2Vec2(xMeters + 0.0, yMeters - 2.0),
@@ -284,19 +284,20 @@ void Level::parseLayer(QDomNode layer) {
                     };
                     tileShape.Set(verts, 3);
                     groundBody->CreateFixture(&tileShape, 0.0f);
+                    // TODO: Set slope friction on the fixture
                 } else if (tp.kind == kSlope30Right) {
-                    float32 xMeters = M_TO_PX(pos.x());
-                    float32 yMeters = M_TO_PX(-pos.y());
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
                     b2Vec2 verts[] = {
                         b2Vec2(xMeters + 0.0, yMeters - 2.0),
                         b2Vec2(xMeters + 2.0, yMeters - 2.0),
-                        b2Vec2(xMeters + 0.0, yMeters + 1.0)
+                        b2Vec2(xMeters + 2.0, yMeters - 1.0)
                     };
                     tileShape.Set(verts, 3);
                     groundBody->CreateFixture(&tileShape, 0.0f);
                 } else if (tp.kind == kSlope30Left) {
-                    float32 xMeters = M_TO_PX(pos.x());
-                    float32 yMeters = M_TO_PX(-pos.y());
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
                     b2Vec2 verts[] = {
                         b2Vec2(xMeters + 0.0, yMeters - 1.0),
                         b2Vec2(xMeters + 0.0, yMeters - 2.0),
@@ -305,18 +306,18 @@ void Level::parseLayer(QDomNode layer) {
                     tileShape.Set(verts, 3);
                     groundBody->CreateFixture(&tileShape, 0.0f);
                 } else if (tp.kind == kSlope60Right) {
-                    float32 xMeters = M_TO_PX(pos.x());
-                    float32 yMeters = M_TO_PX(-pos.y());
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
                     b2Vec2 verts[] = {
                         b2Vec2(xMeters + 0.0, yMeters - 1.0),
                         b2Vec2(xMeters + 2.0, yMeters - 1.0),
-                        b2Vec2(xMeters + 0.0, yMeters + 2.0)
+                        b2Vec2(xMeters + 2.0, yMeters - 0.0)
                     };
                     tileShape.Set(verts, 3);
                     groundBody->CreateFixture(&tileShape, 0.0f);
                 } else if (tp.kind == kSlope60Left) {
-                    float32 xMeters = M_TO_PX(pos.x());
-                    float32 yMeters = M_TO_PX(-pos.y());
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
                     b2Vec2 verts[] = {
                         b2Vec2(xMeters + 0.0, yMeters + 0.0),
                         b2Vec2(xMeters + 0.0, yMeters - 1.0),
