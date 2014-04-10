@@ -50,7 +50,7 @@ void AnimatedCollideableSprite::updatePosition() {
         b2Vec2 position = m_body->GetPosition();
         float32 angle = m_body->GetAngle(); //M_PI/2;
         this->setPos(M_TO_PX(position.x) + this->pixmap().width()/2, M_TO_PX(-position.y));
-        this->setTransformOriginPoint(this->pixmap().width()/2, this->pixmap().height()/2);
+        this->setTransformOriginPoint(-this->pixmap().width()/2, 0);
         this->setRotation(-((angle) * RADIAN_TO_DEGREE_FACTOR));
     }
 }
@@ -61,13 +61,9 @@ void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, 
    Q_UNUSED(side);
 }
 
-QRectF AnimatedCollideableSprite::boundingRect() const {
-    return QRectF(QPointF(-50, -50), QSizeF(100, 100));
-}
-
 void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     AnimatedSprite::paint(painter, option, widget);
-    if (m_body && this->blockType() == kBox) {
+    if (0 && m_body) {
         b2Fixture *fix = m_body->GetFixtureList();
         while(fix) {
             QPolygon poly;

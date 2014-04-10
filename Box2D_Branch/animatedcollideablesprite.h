@@ -34,7 +34,6 @@ public:
 
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
-    virtual QRectF boundingRect() const;
 
     bool isOnLeftSlope() { return m_onLeftSlope; }
     bool isOnRightSlope() { return m_onRightSlope; }
