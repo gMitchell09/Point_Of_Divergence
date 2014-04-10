@@ -12,6 +12,12 @@ static const QString enemyPath = spritePath + "/enemies";
 static const QString itemPath = spritePath + "/items";
 static const QString otherSpritePath = spritePath + "/other";
 
+#define SLOPE_FRICTION 0.2f
+#define BODY_FRICTION 0.4f
+#define BOX_DENSITY 0.5f
+#define BOX_FRICTION 0.1f
+#define GROUND_FRICTION 0.3f
+
 Level::Level(QString filePath, QString fileName, GameEngine *gameEngine, QGraphicsItem *parent) :
     QGraphicsItemGroup(parent),
     m_gameEngine(gameEngine),
@@ -187,7 +193,7 @@ void Level::parseLayer(QDomNode layer) {
                 //mcShape.SetAsBox(PX_TO_M(16.)/2, PX_TO_M(32.)/2,
                 //                 b2Vec2(PX_TO_M(16.), -PX_TO_M(32.)/2), 0);
                 body->SetFixedRotation(true);
-                body->CreateFixture(&mcShape, 1.0f)->SetFriction(0.);
+                body->CreateFixture(&mcShape, 1.0f)->SetFriction(BODY_FRICTION);
 
                 MainCharacter *mainChar = new MainCharacter(16, 32, body);
                 mainChar->setPos(pos);
@@ -204,7 +210,7 @@ void Level::parseLayer(QDomNode layer) {
                 b2PolygonShape shape;
                 shape.SetAsBox(PX_TO_M(20)/2., PX_TO_M(18)/2.,
                                b2Vec2(PX_TO_M(20.), -PX_TO_M(18.0)/2), 0);
-                body->CreateFixture(&shape, 1.0f);
+                body->CreateFixture(&shape, 1.0f)->SetFriction(BODY_FRICTION);
 
                 Enemy1 *goomba = new Enemy1(20, 18, enemyPath, body);
                 goomba->setPos(pos);
@@ -263,7 +269,7 @@ void Level::parseLayer(QDomNode layer) {
                     b2PolygonShape shape;
                     shape.SetAsBox(PX_TO_M(32.)/2., PX_TO_M(32.)/2.,
                                    b2Vec2(PX_TO_M(32.), -PX_TO_M(32.)/2), 0);
-                    body->CreateFixture(&shape, 1.0f);
+                    body->CreateFixture(&shape, BOX_DENSITY)->SetFriction(BOX_FRICTION);
                 } else if (tp.kind == kSlope45Right) {
                     float32 xMeters = PX_TO_M(pos.x());
                     float32 yMeters = PX_TO_M(-pos.y());
@@ -273,7 +279,7 @@ void Level::parseLayer(QDomNode layer) {
                         b2Vec2(xMeters + 2.0, yMeters + 0.0)
                     };
                     tileShape.Set(verts, 3);
-                    groundBody->CreateFixture(&tileShape, 0.0f);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
                 } else if (tp.kind == kSlope45Left) {
                     float32 xMeters = PX_TO_M(pos.x());
                     float32 yMeters = PX_TO_M(-pos.y());
@@ -283,7 +289,7 @@ void Level::parseLayer(QDomNode layer) {
                         b2Vec2(xMeters + 2.0, yMeters - 2.0)
                     };
                     tileShape.Set(verts, 3);
-                    groundBody->CreateFixture(&tileShape, 0.0f);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
                     // TODO: Set slope friction on the fixture
                 } else if (tp.kind == kSlope30Right) {
                     float32 xMeters = PX_TO_M(pos.x());
@@ -294,7 +300,7 @@ void Level::parseLayer(QDomNode layer) {
                         b2Vec2(xMeters + 2.0, yMeters - 1.0)
                     };
                     tileShape.Set(verts, 3);
-                    groundBody->CreateFixture(&tileShape, 0.0f);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
                 } else if (tp.kind == kSlope30Left) {
                     float32 xMeters = PX_TO_M(pos.x());
                     float32 yMeters = PX_TO_M(-pos.y());
@@ -304,7 +310,7 @@ void Level::parseLayer(QDomNode layer) {
                         b2Vec2(xMeters + 2.0, yMeters - 2.0)
                     };
                     tileShape.Set(verts, 3);
-                    groundBody->CreateFixture(&tileShape, 0.0f);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
                 } else if (tp.kind == kSlope60Right) {
                     float32 xMeters = PX_TO_M(pos.x());
                     float32 yMeters = PX_TO_M(-pos.y());
@@ -314,7 +320,7 @@ void Level::parseLayer(QDomNode layer) {
                         b2Vec2(xMeters + 2.0, yMeters - 0.0)
                     };
                     tileShape.Set(verts, 3);
-                    groundBody->CreateFixture(&tileShape, 0.0f);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
                 } else if (tp.kind == kSlope60Left) {
                     float32 xMeters = PX_TO_M(pos.x());
                     float32 yMeters = PX_TO_M(-pos.y());
@@ -324,12 +330,20 @@ void Level::parseLayer(QDomNode layer) {
                         b2Vec2(xMeters + 2.0, yMeters - 1.0)
                     };
                     tileShape.Set(verts, 3);
-                    groundBody->CreateFixture(&tileShape, 0.0f);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
                 } else if (tp.solid) {
-                    groundBody->CreateFixture(&tileShape, 0.0f);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(GROUND_FRICTION);
                     //body = groundBody;
                 } else {
-                    groundBody->CreateFixture(&tileShape, 0.0f)->SetSensor(true);
+                    b2BodyDef bodyDef;
+                    bodyDef.position.Set(PX_TO_M(pos.x() - 32./2), PX_TO_M(-pos.y()));
+                    bodyDef.type = b2_staticBody;
+                    body = m_world->CreateBody(&bodyDef);
+                    b2PolygonShape shape;
+                    shape.SetAsBox(PX_TO_M(32.)/2., PX_TO_M(32.)/2.,
+                                   b2Vec2(PX_TO_M(32.), -PX_TO_M(32.)/2), 0);
+                    b2Fixture *fix = body->CreateFixture(&shape, 1.0f);
+                    fix->SetSensor(true);
                 }
 
                 // We have an actual tile and not a "special" tile, i.e. goomba, mainchar, ...
@@ -344,7 +358,7 @@ void Level::parseLayer(QDomNode layer) {
                 tile->setPos(pos);
                 tile->setShapeMode(Tile::BoundingRectShape);\
 
-                if (body && tp.kind == kBox) {
+                if (body && tp.kind != kBlock) {
                     body->SetUserData(tile);
                 }
 

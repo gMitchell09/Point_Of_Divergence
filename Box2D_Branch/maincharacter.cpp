@@ -113,14 +113,6 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         if (m_isOnLadder) {
             this->climbLadder(-1);
         }
-        if ((this->isOnLeftSlope() && this->getVelocity().x() > 0) ||
-                (this->isOnRightSlope() && this->getVelocity().x() < 0))
-            this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccelSliding, this->getAcceleration().y()));
-        else
-            this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
-        this->setBrake(true);
-
-        this->m_body->ApplyForceToCenter(b2Vec2(0, -500), true);
         m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
 
@@ -130,29 +122,16 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         m_currentState = Walk_Right;
         if (!m_jumping && this->getVelocity().x() < 0) {
             m_currentState = Brake_Right; // We are already moving left so we have to play "brake" animation
-            this->setAcceleration(QPointF(2*m_rightAccel, this->getAcceleration().y()));
-        } else {
-            this->setAcceleration(QPointF(m_rightAccel, this->getAcceleration().y()));
         }
-        this->setBrake(false);
-
         this->triggerAnimation(m_currentState);
-        this->m_body->ApplyForceToCenter(b2Vec2(500, 0), true);
         m_rightPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
         m_currentState = Walk_Left;
         if (!m_jumping && this->getVelocity().x() > 0) {
             m_currentState = Brake_Left;
-            this->setAcceleration(QPointF(2*m_leftAccel, this->getAcceleration().y()));
-        } else {
-            this->setAcceleration(QPointF(m_leftAccel, this->getAcceleration().y()));
         }
-        this->setBrake(false);
-        this->m_body->ApplyForceToCenter(b2Vec2(-500, 0), true);
-
         this->triggerAnimation(m_currentState);
-
         m_leftPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Up)  {
@@ -170,9 +149,8 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
             m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
             this->triggerAnimation(m_currentState);
 
-            m_jumping = true;
+            m_jumping = false;
         }
-        this->m_body->ApplyForceToCenter(b2Vec2(0, 1000), true);
     } else if (keyEvent->key() == Qt::Key_Shift) {
         this->beginSlice();
     }
@@ -299,6 +277,14 @@ void MainCharacter::step(qint64 time, long delta) {
         else
             this->getVelocity().setY(MAX(this->getVelocity().y(), -m_maxVelY));
     }
+
+    if (m_leftPressed) {
+        this->m_body->ApplyForceToCenter(b2Vec2(-15, 0), true);
+    }
+
+    if (m_rightPressed) {
+        this->m_body->ApplyForceToCenter(b2Vec2(15, 0), true);
+    }
 }
 
 /* Possible User Input:
@@ -402,12 +388,14 @@ void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned cha
 }
 
 void MainCharacter::jump() {
-    this->getVelocity().setY(m_jumpStartVel);
+    this->m_body->ApplyForceToCenter(b2Vec2(0, 1000), true);
 
     SFXManager *inst = SFXManager::Instance();
     inst->playSound(SFXManager::SFX::MainChar_Jump);
 }
 
 void MainCharacter::climbLadder(int dir) {
-    this->getVelocity().setY(dir * m_ladderClimbSpeed);
+    b2Vec2 vel = this->m_body->GetLinearVelocity();
+    vel.y = 0.5;
+    this->m_body->SetLinearVelocity(vel);
 }

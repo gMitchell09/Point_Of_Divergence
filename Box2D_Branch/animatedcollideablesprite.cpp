@@ -35,14 +35,24 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                        AnimatedCollideableSprite *obj1, *obj2;
                        obj1 = (AnimatedCollideableSprite*)edge->contact->GetFixtureA()->GetBody()->GetUserData();
                        obj2 = (AnimatedCollideableSprite*)edge->contact->GetFixtureB()->GetBody()->GetUserData();
-                       if (obj1 && obj2 && (obj1->className() == "MainCharacter" || obj2->className() == "MainCharacter")) {
-                            qDebug() << "Collision between: " << obj1->className() << " and " << obj2->className();
-                       }
-                   }
-               }
-           }
-       }
-   }
+                       if (obj1 && obj2) {
+                           obj1 = (obj1 == this) ? obj2 : obj1;
+                           if (this->className() == "MainCharacter") {
+                                qDebug() << "Collision between: " << this->className() << " and " << obj1->className();
+                                Side side;
+                                if (this->m_body->GetLinearVelocity().y < 0) {
+                                    side = Bottom;
+                                } else {
+                                    side = Top | Left | Right;
+                                }
+                                //this->collisionOccurred(obj1, side);
+                           }
+                       } // Blocks?
+                   } // Nested
+               } // Enough
+           } // Have
+       } // I
+   } // Do
 }
 
 void AnimatedCollideableSprite::updatePosition() {
@@ -55,9 +65,8 @@ void AnimatedCollideableSprite::updatePosition() {
     }
 }
 
-void AnimatedCollideableSprite::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
+void AnimatedCollideableSprite::collisionOccurred(unsigned char side) {
    // Override this method in your subclasses if you want to be alerted when collisions occur.
-   Q_UNUSED(collisions);
    Q_UNUSED(side);
 }
 
