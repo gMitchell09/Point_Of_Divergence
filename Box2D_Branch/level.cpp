@@ -13,10 +13,10 @@ static const QString itemPath = spritePath + "/items";
 static const QString otherSpritePath = spritePath + "/other";
 
 #define SLOPE_FRICTION 0.2f
-#define BODY_FRICTION 0.4f
+#define BODY_FRICTION 0.0f
 #define BOX_DENSITY 0.5f
 #define BOX_FRICTION 0.1f
-#define GROUND_FRICTION 0.3f
+#define GROUND_FRICTION 0.4f
 
 Level::Level(QString filePath, QString fileName, GameEngine *gameEngine, QGraphicsItem *parent) :
     QGraphicsItemGroup(parent),
@@ -360,6 +360,10 @@ void Level::parseLayer(QDomNode layer) {
 
                 if (body && tp.kind != kBlock) {
                     body->SetUserData(tile);
+                }
+
+                if (!body && tp.solid) {
+                    groundBody->SetUserData(tile);
                 }
 
                 this->addToGroup(tile);

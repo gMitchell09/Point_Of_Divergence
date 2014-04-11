@@ -36,7 +36,7 @@ public:
     virtual bool isCollideable() { return true; }
     virtual bool isBackground() { return false; }
 
-    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+    virtual void collisionsOccurred(QList<Collision> &collisions, unsigned char side);
 
     virtual QString className() { return "Tile"; }
 

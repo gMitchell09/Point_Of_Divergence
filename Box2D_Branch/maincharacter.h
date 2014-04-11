@@ -50,7 +50,7 @@ public:
     void setBrake(bool brake) { m_brake = brake; }
 
     virtual void step(qint64 time, long delta);
-    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+    virtual void collisionOccurred(Sprite *sprite, Side side);
     void jump();
     void climbLadder(int dir = 1);
 

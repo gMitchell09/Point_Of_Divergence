@@ -21,7 +21,7 @@ public:
     virtual void step(qint64 time, long delta) {
         AnimatedCollideableSprite::step(time, delta);
     }
-    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side) {}
+    virtual void collisionsOccurred(QList<Collision> &collisions, unsigned char side) {}
 
     virtual QString className() { return "CharacterClone"; }
 

@@ -228,9 +228,14 @@ void GameEngine::removeItem(QGraphicsItem *item) {
 }
 
 void GameEngine::removeItem(Sprite *item) {
-    QGraphicsScene::removeItem(item);
-
-    m_deletedItems.push_back(item);
+    if (item->scene() == this) {
+        QGraphicsScene::removeItem(item);
+        m_deletedItems.push_back(item);
+        delete item;
+    } else {
+        ((Level*)m_levels.at(0))->removeFromGroup(item);
+        delete item;
+    }
 }
 
 void GameEngine::removeDeletedItems() {

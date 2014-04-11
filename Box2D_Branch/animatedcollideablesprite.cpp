@@ -9,23 +9,23 @@
 #define RADIAN_TO_DEGREE_FACTOR 57.295779513082320876798154814105
 
 AnimatedCollideableSprite::AnimatedCollideableSprite(int width, int height, b2Body* body, QGraphicsItem *parent) :
-   AnimatedSprite(width, height, parent),
-   m_body(body) { }
+    AnimatedSprite(width, height, parent),
+    m_body(body) { }
 
 void AnimatedCollideableSprite::step(qint64 time, long delta) {
-   AnimatedSprite::step(time, delta);
+    AnimatedSprite::step(time, delta);
 
-   bool timeReversed = false;
+    bool timeReversed = false;
 
-   if (delta < 0) {
+    if (delta < 0) {
        //time = time;
        timeReversed = true;
-   }
+    }
 
-   if (timeReversed && this->usesStack()) {
-   }
+    if (timeReversed && this->usesStack()) {
+    }
 
-   else {
+    else {
        if (m_body != nullptr) {
            this->updatePosition();
 
@@ -36,23 +36,51 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                        obj1 = (AnimatedCollideableSprite*)edge->contact->GetFixtureA()->GetBody()->GetUserData();
                        obj2 = (AnimatedCollideableSprite*)edge->contact->GetFixtureB()->GetBody()->GetUserData();
                        if (obj1 && obj2) {
-                           obj1 = (obj1 == this) ? obj2 : obj1;
-                           if (this->className() == "MainCharacter") {
-                                qDebug() << "Collision between: " << this->className() << " and " << obj1->className();
-                                Side side;
-                                if (this->m_body->GetLinearVelocity().y < 0) {
-                                    side = Bottom;
+                           if (obj1 == this) {
+                                Side side = (Side)0;
+
+                                // we force world normal to always point from this to
+                                //  the other object
+                                b2Vec2 worldNormal;
+                                Sprite *otherObject;
+
+                                if (this == obj1) {
+                                    otherObject = obj2;
+                                    b2WorldManifold worldManifold;
+                                    edge->contact->GetWorldManifold(&worldManifold);
+
+                                    worldNormal = worldManifold.normal;
+
                                 } else {
-                                    side = Top | Left | Right;
+                                    otherObject = obj1;
+                                    b2WorldManifold worldManifold;
+                                    edge->contact->GetWorldManifold(&worldManifold);
+
+                                    worldNormal = -worldManifold.normal;
                                 }
-                                //this->collisionOccurred(obj1, side);
+
+                                if (worldNormal.x > 0.707) { // Collision on Right
+                                    side = Right;
+                                } else if (worldNormal.x < -0.707) { // Collision on Left
+                                    side = Left;
+                                } else if (worldNormal.y > 0.707) { // collision on Top
+                                    side = Top;
+                                } else if (worldNormal.y < -0.707) { // collision on Bottom
+                                    side = Bottom;
+                                }
+
+                                if (otherObject->blockType() == kBlock) {
+                                    qDebug() << " ACS: " << otherObject->isSolid() << " - Side: " << side;
+                                }
+
+                                this->collisionOccurred(otherObject, side);
                            }
                        } // Blocks?
                    } // Nested
                } // Enough
            } // Have
        } // I
-   } // Do
+    } // Do
 }
 
 void AnimatedCollideableSprite::updatePosition() {
@@ -65,9 +93,15 @@ void AnimatedCollideableSprite::updatePosition() {
     }
 }
 
-void AnimatedCollideableSprite::collisionOccurred(unsigned char side) {
+void AnimatedCollideableSprite::collisionsOccurred(QList<Collision> &collisions, unsigned char side) {
    // Override this method in your subclasses if you want to be alerted when collisions occur.
-   Q_UNUSED(side);
+    Q_UNUSED(collisions);
+    Q_UNUSED(side);
+}
+
+void AnimatedCollideableSprite::collisionOccurred(Sprite* other, Side side) {
+    Q_UNUSED(other);
+    Q_UNUSED(side);
 }
 
 void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
@@ -91,5 +125,12 @@ void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraph
             painter->drawPolygon(poly);
             fix = fix->GetNext();
         }
+    }
+}
+
+AnimatedCollideableSprite::~AnimatedCollideableSprite() {
+    qDebug() << "Deleting " << this->className();
+    if (m_body) {
+        m_body->GetWorld()->DestroyBody(m_body); // Ouch!
     }
 }

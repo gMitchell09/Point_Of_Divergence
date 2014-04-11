@@ -54,8 +54,8 @@ void Enemy1::step(qint64 time, long delta) {
     }
 }
 
-void Enemy1::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    AnimatedCollideableSprite::collisionOccurred(collisions, side);
+void Enemy1::collisionsOccurred(QList<Collision> &collisions, unsigned char side) {
+    AnimatedCollideableSprite::collisionsOccurred(collisions, side);
     if (m_currentState == Squish) return;
     if (side & Right) {
         this->getAcceleration().setX(m_leftAccel);

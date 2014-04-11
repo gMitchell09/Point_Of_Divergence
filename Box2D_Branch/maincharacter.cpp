@@ -295,96 +295,89 @@ void MainCharacter::step(qint64 time, long delta) {
  * Up (Moving Right) Jump_Right animation
 */
 
-void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    bool hitCoin = false;
-    m_isOnLadder = false;
-    int ladderSide = 0;
-    for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
-        Sprite* other = ((Collision)(*itr)).secondSprite;
-        Side locSide = ((Collision)(*itr)).firstSide;
+void MainCharacter::collisionOccurred(Sprite *other, Side side) {
+    AnimatedCollideableSprite::collisionOccurred(other, side);
+    unsigned int ladderSide = 0;
+    qDebug() << "Mario" << other->isSolid() << " - Side: " << side;
+    if (side == Bottom && other->isSolid()) {
+        m_jumping_double = false;
+        m_jumping = false;
+        qDebug() << "Ground";
+    }
 
-        if (locSide & Bottom && this->getVelocity().y() >= 0 && other->isSolid() && other->y() > this->y()) {
-            m_jumping_double = false;
-            m_jumping = false;
-        }
+    if (side & other->damagesChar()) {
+        ((GameEngine*)this->scene())->characterDamaged();
 
-        if (locSide & other->damagesChar()) {
-            ((GameEngine*)this->scene())->characterDamaged();
+        SFXManager *inst = SFXManager::Instance();
+        inst->playSound(SFXManager::SFX::MainChar_Damaged);
+    }
+
+    switch (other->blockType()) {
+        case ItemType::kBlock: break;
+        case ItemType::kCoin: {
+            ((GameEngine*)this->scene())->removeItem(other);
+            ((GameEngine*)this->scene())->incrementCoins();
 
             SFXManager *inst = SFXManager::Instance();
-            inst->playSound(SFXManager::SFX::MainChar_Damaged);
-        }
+            inst->playSound(SFXManager::SFX::Coin_Grab);
 
-        switch (other->blockType()) {
-            case ItemType::kBlock: break;
-            case ItemType::kCoin:
-                if (!hitCoin) {
-                    ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
-                    ((GameEngine*)this->scene())->incrementCoins();
-                    hitCoin = true;
-
-                    SFXManager *inst = SFXManager::Instance();
-                    inst->playSound(SFXManager::SFX::Coin_Grab);
-                }
-                break;
-            case ItemType::kBox:
-                if ((locSide & Left && m_leftPressed) || (locSide & Right && m_rightPressed)) {
-                    qDebug() << "PUSH THE BOX";
-                    if (locSide & Left && m_leftPressed) {
-    //                    SFXManager *inst = SFXManager::Instance();
-    //                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
-                        other->setVelocity(QPointF(-m_boxPushVelocity, other->getVelocity().y()));
-                        qDebug() << "Push Left";
-                        //other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
-                    }
-                    else if (locSide & Right && m_rightPressed) {
-    //                    SFXManager *inst = SFXManager::Instance();
-    //                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
-                        other->setVelocity(QPointF(m_boxPushVelocity, other->getVelocity().y()));
-                        qDebug() << "Push Right";
-                        //other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
-                    }
-                }
-                break;
-            case ItemType::kLadder:
-                ladderSide |= locSide;
-                if (locSide & Top) m_isOnLadder = true;
-                if (m_upPressed) {
-                    if (!m_isOnLadder) {
-                        this->jump();
-                    }
-//                    this->getVelocity().setX(0);
-                    this->getVelocity().setY(0);
-//                    this->getAcceleration().setX(0);
-                    this->getAcceleration().setY(0);
-                }
-                break;
-            case ItemType::kLever:
-                if (m_downPressed) {
-                    dynamic_cast<SwitchObject*>(other)->toggle();
-                }
-    //        case ItemType::kSlope30Left:
-    //            qDebug() << "kSlope30Left";
-    //            break;
-    //        case ItemType::kSlope45Left:
-    //            qDebug() << "kSlope45Left";
-    //            break;
-    //        case ItemType::kSlope60Left:
-    //            qDebug() << "kSlope60Left";
-    //            break;
-    //        case ItemType::kSlope30Right:
-    //            qDebug() << "kSlope30Right";
-    //            break;
-    //        case ItemType::kSlope45Right:
-    //            qDebug() << "kSlope45Right";
-    //            break;
-    //        case ItemType::kSlope60Right:
-    //            qDebug() << "kSlope60Right";
-    //            break;
-            default:
-                break;
+            break;
         }
+        case ItemType::kBox:
+            if ((side & Left && m_leftPressed) || (side & Right && m_rightPressed)) {
+                qDebug() << "PUSH THE BOX";
+                if (side & Left && m_leftPressed) {
+//                    SFXManager *inst = SFXManager::Instance();
+//                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
+                    qDebug() << "Push Left";
+                    //other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
+                }
+                else if (side & Right && m_rightPressed) {
+//                    SFXManager *inst = SFXManager::Instance();
+//                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
+                    qDebug() << "Push Right";
+                    //other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
+                }
+            }
+            break;
+        case ItemType::kLadder:
+            ladderSide |= side;
+            if (side & Top) m_isOnLadder = true;
+            if (m_upPressed) {
+                if (!m_isOnLadder) {
+                    this->jump();
+                }
+                b2Vec2 vel = this->m_body->GetLinearVelocity();
+                vel.x = 0;
+                this->m_body->SetLinearVelocity(vel);
+            }
+            break;
+        case ItemType::kLever:
+            if (m_downPressed) {
+                dynamic_cast<SwitchObject*>(other)->toggle();
+            }
+//        case ItemType::kSlope30Left:
+//            qDebug() << "kSlope30Left";
+//            break;
+//        case ItemType::kSlope45Left:
+//            qDebug() << "kSlope45Left";
+//            break;
+//        case ItemType::kSlope60Left:
+//            qDebug() << "kSlope60Left";
+//            break;
+//        case ItemType::kSlope30Right:
+//            qDebug() << "kSlope30Right";
+//            break;
+//        case ItemType::kSlope45Right:
+//            qDebug() << "kSlope45Right";
+//            break;
+//        case ItemType::kSlope60Right:
+//            qDebug() << "kSlope60Right";
+//            break;
+        default:
+            break;
     }
+
 }
 
 void MainCharacter::jump() {

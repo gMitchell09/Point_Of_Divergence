@@ -13,8 +13,8 @@ ObjectItem::ObjectItem(int width, int height, QString path, b2Body* body, QGraph
     this->triggerAnimation(0);
 }
 
-void ObjectItem::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    AnimatedCollideableSprite::collisionOccurred(collisions, side);
+void ObjectItem::collisionsOccurred(QList<Collision> &collisions, unsigned char side) {
+    AnimatedCollideableSprite::collisionsOccurred(collisions, side);
 
 
 }

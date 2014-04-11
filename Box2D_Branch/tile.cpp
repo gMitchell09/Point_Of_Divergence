@@ -13,7 +13,7 @@ Tile::Tile(int width, int height, b2Body* body, QGraphicsItem *parent) :
     this->setTransformOriginPoint(this->boundingRect().width()/2, this->boundingRect().height()/2);
 }
 
-void Tile::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
+void Tile::collisionsOccurred(QList<Collision> &collisions, unsigned char side) {
     if (this->blockType() == kBox) {
         if (this->isOnLeftSlope() || this->isOnRightSlope()) {
             for (auto itr = collisions.begin(); itr != collisions.end(); ++itr) {

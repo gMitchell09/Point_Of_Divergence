@@ -21,7 +21,7 @@ public:
     Enemy1(int width, int height, QString path, b2Body* body = 0, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta);
-    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+    virtual void collisionsOccurred(QList<Collision> &collisions, unsigned char side);
 
     virtual QString className() { return "Enemy1"; }
 
