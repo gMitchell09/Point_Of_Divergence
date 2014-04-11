@@ -57,4 +57,8 @@ void Tile::step(qint64 time, long delta) {
 
 void Tile::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     qDebug() << "Tile: " << this->blockType();
+    if (this->m_body) {
+        Sprite* sprite = (Sprite*)m_body->GetUserData();
+        qDebug() << "Body: " << sprite;
+    }
 }

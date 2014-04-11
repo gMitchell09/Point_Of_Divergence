@@ -36,7 +36,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                        obj1 = (AnimatedCollideableSprite*)edge->contact->GetFixtureA()->GetBody()->GetUserData();
                        obj2 = (AnimatedCollideableSprite*)edge->contact->GetFixtureB()->GetBody()->GetUserData();
                        if (obj1 && obj2) {
-                           if (obj1 == this) {
+                           if (obj1 == this || obj2 == this) {
                                 Side side = (Side)0;
 
                                 // we force world normal to always point from this to
@@ -70,7 +70,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                 }
 
                                 if (otherObject->blockType() == kBlock) {
-                                    qDebug() << " ACS: " << otherObject->isSolid() << " - Side: " << side;
+                                   // qDebug() << " ACS: " << otherObject->isSolid() << " - Side: " << side;
                                 }
 
                                 this->collisionOccurred(otherObject, side);

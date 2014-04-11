@@ -149,7 +149,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
             m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
             this->triggerAnimation(m_currentState);
 
-            m_jumping = false;
+            m_jumping = true;
         }
     } else if (keyEvent->key() == Qt::Key_Shift) {
         this->beginSlice();
@@ -298,11 +298,9 @@ void MainCharacter::step(qint64 time, long delta) {
 void MainCharacter::collisionOccurred(Sprite *other, Side side) {
     AnimatedCollideableSprite::collisionOccurred(other, side);
     unsigned int ladderSide = 0;
-    qDebug() << "Mario" << other->isSolid() << " - Side: " << side;
     if (side == Bottom && other->isSolid()) {
         m_jumping_double = false;
         m_jumping = false;
-        qDebug() << "Ground";
     }
 
     if (side & other->damagesChar()) {

@@ -349,7 +349,12 @@ void Level::parseLayer(QDomNode layer) {
                 // We have an actual tile and not a "special" tile, i.e. goomba, mainchar, ...
                 QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
 
-                tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), body);
+                if (!body && tp.solid) {
+                    tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), groundBody);
+                } else {
+                    tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), body);
+                }
+
                 tile->setSolid(tp.solid);
                 tile->setBlockType(tp.kind);
 
