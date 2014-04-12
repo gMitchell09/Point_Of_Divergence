@@ -38,6 +38,7 @@
 #include "objectitem.h"
 #include "staticplatform.h"
 #include "enemy1.h"
+#include "enemyboss.h"
 #include "databasecontroller.h"
 #include "optionbutton.h"
 #include "optionslider.h"

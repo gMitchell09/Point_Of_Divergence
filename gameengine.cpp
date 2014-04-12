@@ -300,7 +300,7 @@ void GameEngine::startSinglePlayer() {
     gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
     gameTime->setPos(QPointF(630, 15));
 
-    Level *level = new Level(levelPath, "MountainCave.tmx", this);
+    Level *level = new Level(levelPath, "LevelTest.tmx", this);
     level->setPos(QPointF(0, 0));
 
     this->setSceneRect(0, 0, level->getLevelWidth(), level->getLevelHeight());
