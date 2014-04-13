@@ -217,22 +217,6 @@ void Level::parseLayer(QDomNode layer) {
 
                 body->SetUserData(goomba);
                 this->addToGroup(goomba);
-            } else if (tp.kind == kLever) {
-                b2BodyDef bodyDef;
-                bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
-                bodyDef.type = b2_dynamicBody;
-                b2Body* body = m_world->CreateBody(&bodyDef);
-                b2PolygonShape shape;
-                shape.SetAsBox(PX_TO_M(32)/2., PX_TO_M(32)/2.,
-                               b2Vec2(PX_TO_M(32)/2, -PX_TO_M(32.)/2), 0);
-                body->CreateFixture(&shape, 1.0f);
-
-                SwitchObject *switchObj = new SwitchObject(32, 32, body);
-                switchObj->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
-                switchObj->setPos(pos);
-
-                body->SetUserData(switchObj);
-                this->addToGroup(switchObj);
             } else if (tp.kind == kCoin) {
                 b2BodyDef bodyDef;
                 bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
@@ -253,6 +237,25 @@ void Level::parseLayer(QDomNode layer) {
 
                 body->SetUserData(coin);
                 this->addToGroup(coin);
+            } else if (tp.kind == kTurretRight) {
+
+            } else if (tp.kind == kTurretLeft) {
+
+            } else if (tp.kind == kBossEnemy) {
+                b2BodyDef bodyDef;
+                bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
+                bodyDef.type = b2_dynamicBody;
+                b2Body* body = m_world->CreateBody(&bodyDef);
+                b2PolygonShape shape;
+                shape.SetAsBox(PX_TO_M(20)/2., PX_TO_M(18)/2.,
+                               b2Vec2(PX_TO_M(20.), -PX_TO_M(18.0)/2), 0);
+                body->CreateFixture(&shape, 1.0f)->SetFriction(BODY_FRICTION);
+
+                EnemyBoss *boss = new EnemyBoss(20, 18, enemyPath, tp.life, body);
+                boss->setPos(pos);
+
+                body->SetUserData(boss);
+                this->addToGroup(boss);
             } else {
                 b2Body* body = nullptr;
                 tileShape.SetAsBox(PX_TO_M(tileMap->getCellWidth()/2),
@@ -399,6 +402,12 @@ void Level::parseTile(QDomNode tile, QMap<int, TileProperties> &tileProperties) 
                 tp.solid = property.attribute("value", "1").toInt() != 0;
             } else if (property.attribute("name") == "type") {
                 tp.kind = (ItemType) property.attribute("value", "0").toInt();
+            } else if (property.attribute("name") == "fixedRotation") {
+                tp.fixedRotation = (bool) property.attribute("value").toInt();
+            } else if (property.attribute("name") == "rate") {
+                tp.rate = property.attribute("value").toInt();
+            } else if (property.attribute("name") == "life") {
+                tp.life = property.attribute("value").toInt();
             } else qDebug() << "Unknown property: " << property.attribute("name");
         }
         child = child.nextSibling();
@@ -497,7 +506,7 @@ ITriggerable* Level::parseObject(QDomNode object) {
 
         case kDoor: {
             Door *door = new Door(32, 32, body);
-            door->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
+            door->setPixmaps(tileMap->copyCellAt(idx), tileMap->copyCellAt(idx + 1));
             door->setPos(x, y);
             this->addToGroup(door);
 

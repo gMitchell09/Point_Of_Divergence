@@ -12,11 +12,17 @@ struct TileProperties {
     bool solid;
     ItemType kind;
     bool placeholderTile;
+    bool fixedRotation;
+    int rate;
+    int life;
 
     TileProperties() {
         solid = true;
         kind = ItemType::kBlock;
         placeholderTile = false;
+        fixedRotation = 0;
+        rate = 0;
+        life = 0;
     }
 };
 
