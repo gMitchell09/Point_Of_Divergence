@@ -81,6 +81,8 @@ public:
         emit stateChanged(m_state);
     }
 
+    ~SwitchObject();
+
 signals:
 
 public slots:

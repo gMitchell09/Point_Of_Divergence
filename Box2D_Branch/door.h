@@ -51,8 +51,10 @@ public slots:
         m_state = !m_state;
         if (m_state) {
             this->setPixmap(m_onPixmap);
+            if (m_body) m_body->SetActive(false);
         } else {
             this->setPixmap(m_offPixmap);
+            if (m_body) m_body->SetActive(true);
         }
     }
 

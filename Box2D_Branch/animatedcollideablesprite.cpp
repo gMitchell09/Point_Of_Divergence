@@ -69,10 +69,6 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                     side = Bottom;
                                 }
 
-                                if (otherObject->blockType() == kBlock) {
-                                   // qDebug() << " ACS: " << otherObject->isSolid() << " - Side: " << side;
-                                }
-
                                 this->collisionOccurred(otherObject, side);
                            }
                        } // Blocks?

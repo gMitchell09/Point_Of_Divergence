@@ -205,8 +205,30 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
             break;
         case Qt::Key_Shift:
             this->endSlice();
-            CharacterClone* clone = new CharacterClone(16, 33, this->m_stateSlice);
-            ((GameEngine*)this->scene())->addSprite(clone);
+            if (m_body) {
+                b2BodyDef bodyDef;
+                bodyDef.position.Set(m_body->GetPosition().x, m_body->GetPosition().y);
+                bodyDef.type = b2_dynamicBody;
+                b2Body* body = this->m_body->GetWorld()->CreateBody(&bodyDef);
+                b2PolygonShape mcShape;
+                b2Vec2 verts[] = {
+                    b2Vec2(0.55, 0.0),
+                    b2Vec2(0.5, -0.05),
+                    b2Vec2(0.5, -1.95),
+                    b2Vec2(0.55, -2.0),
+                    b2Vec2(1.45, -2),
+                    b2Vec2(1.5, -1.95),
+                    b2Vec2(1.5, -0.95),
+                    b2Vec2(1.45, 0.0)
+                };
+                mcShape.Set(verts, 8);
+                body->SetFixedRotation(true);
+                body->CreateFixture(&mcShape, 1.0f)->SetFriction(0.1f);
+
+                CharacterClone* clone = new CharacterClone(16, 33, this->m_stateSlice, body);
+                ((GameEngine*)this->scene())->addSprite(clone);
+                body->SetUserData(clone);
+            }
 
             break;
     }
@@ -279,11 +301,11 @@ void MainCharacter::step(qint64 time, long delta) {
     }
 
     if (m_leftPressed) {
-        this->m_body->ApplyForceToCenter(b2Vec2(-15, 0), true);
+        this->m_body->ApplyForceToCenter(b2Vec2(-20, 0), true);
     }
 
     if (m_rightPressed) {
-        this->m_body->ApplyForceToCenter(b2Vec2(15, 0), true);
+        this->m_body->ApplyForceToCenter(b2Vec2(20, 0), true);
     }
 }
 
@@ -309,6 +331,7 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
         SFXManager *inst = SFXManager::Instance();
         inst->playSound(SFXManager::SFX::MainChar_Damaged);
     }
+    qDebug() << "Other: " << other->blockType();
 
     switch (other->blockType()) {
         case ItemType::kBlock: break;
@@ -351,6 +374,7 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
             }
             break;
         case ItemType::kLever:
+            qDebug() << "Yeah, right";
             if (m_downPressed) {
                 dynamic_cast<SwitchObject*>(other)->toggle();
             }

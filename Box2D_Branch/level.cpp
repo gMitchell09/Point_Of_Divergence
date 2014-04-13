@@ -441,6 +441,7 @@ void Level::parseObjectGroup(QDomNode objectGroup) {
 
 ITriggerable* Level::parseObject(QDomNode object) {
     ITriggerable *spr = nullptr;
+    AnimatedCollideableSprite* acs = nullptr;
     int gid = object.toElement().attribute("gid", "0").toInt();
     int x = object.toElement().attribute("x", "0").toInt();
     int y = object.toElement().attribute("y", "0").toInt() - 32; // -32 Because of what looks like a bug in Tiled... boo...
@@ -459,39 +460,62 @@ ITriggerable* Level::parseObject(QDomNode object) {
     //  our current tilemap.
     int idx = gid - firstElement;
 
+    b2BodyDef bodyDef;
+    bodyDef.position.Set(PX_TO_M(x - 32./2.), PX_TO_M(-y));
+    bodyDef.type = b2_staticBody;
+    b2Body* body = m_world->CreateBody(&bodyDef);
+    b2PolygonShape shape;
+    shape.SetAsBox(PX_TO_M(32)/2., PX_TO_M(32)/2.,
+                   b2Vec2(PX_TO_M(32.), -PX_TO_M(32.0)/2), 0);
+    body->CreateFixture(&shape, 0.0f)->SetSensor(false);
+
     switch (type) {
         case kLever: {
-            SwitchObject* switchObject = new SwitchObject(32, 32);
+            SwitchObject* switchObject = new SwitchObject(32, 32, body);
             switchObject->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
             switchObject->setPos(x, y);
             this->addToGroup(switchObject);
+
+            acs = switchObject;
+            body->GetFixtureList()->SetSensor(true);
+
             spr = switchObject;
             break;
         }
         case kLeverFlipped: {
-            SwitchObject* switchObject = new SwitchObject(32, 32);
+            SwitchObject* switchObject = new SwitchObject(32, 32, body);
             switchObject->setPixmaps(tileMap->copyCellAtWithoutMask(idx - 1), tileMap->copyCellAtWithoutMask(idx));
             switchObject->setPos(x, y);
             this->addToGroup(switchObject);
+
+            acs = switchObject;
+            body->GetFixtureList()->SetSensor(true);
+
             spr = switchObject;
             break;
         }
 
         case kDoor: {
-            Door *door = new Door(32, 32);
+            Door *door = new Door(32, 32, body);
             door->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
             door->setPos(x, y);
             this->addToGroup(door);
+
+            acs = door;
+
             spr = door;
             break;
         }
 
         case kDoorOpen: {
-            Door *door = new Door(32, 32);
+            Door *door = new Door(32, 32, body);
             door->setPixmaps(tileMap->copyCellAtWithoutMask(idx - 1), tileMap->copyCellAtWithoutMask(idx));
             door->setPos(x, y);
             door->controllerStateChanged(true);
             this->addToGroup(door);
+
+            acs = door;
+
             spr = door;
             break;
         }
@@ -499,6 +523,8 @@ ITriggerable* Level::parseObject(QDomNode object) {
         default:
             qDebug() << "Invalid Object!!!";
     }
+
+    body->SetUserData(acs);
     return spr;
 }
 

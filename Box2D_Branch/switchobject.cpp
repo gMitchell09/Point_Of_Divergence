@@ -17,3 +17,7 @@ SwitchObject::SwitchObject(int width, int height, b2Body* body, QGraphicsItem* p
 
     m_toggleDelay.setSingleShot(true);
 }
+
+SwitchObject::~SwitchObject() {
+    qDebug() << "WTMFF?!?";
+}
