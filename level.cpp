@@ -12,10 +12,17 @@ static const QString enemyPath = spritePath + "/enemies";
 static const QString itemPath = spritePath + "/items";
 static const QString otherSpritePath = spritePath + "/other";
 
+#define SLOPE_FRICTION 0.2f
+#define BODY_FRICTION 0.0f
+#define BOX_DENSITY 0.5f
+#define BOX_FRICTION 0.1f
+#define GROUND_FRICTION 0.4f
+
 Level::Level(QString filePath, QString fileName, GameEngine *gameEngine, QGraphicsItem *parent) :
     QGraphicsItemGroup(parent),
     m_gameEngine(gameEngine),
-    m_filePath(filePath) {
+    m_filePath(filePath),
+    m_world(gameEngine->getWorld()) {
     QFile tileFile(filePath + "/" + fileName);
     if(!tileFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qDebug() << "Couldn't open file";
@@ -122,6 +129,16 @@ void Level::parseLayer(QDomNode layer) {
     int currentTile = 0;
     int validTiles = 0;
     int firstElement = 1;
+
+    b2BodyDef groundBodyDef;
+    //groundBodyDef.position.Set(PX_TO_M(m_levelWidth), PX_TO_M(-m_levelHeight));
+    groundBodyDef.type = b2_staticBody;
+    b2Body* groundBody = m_world->CreateBody(&groundBodyDef);
+    groundBody->SetUserData((void*)nullptr);
+
+    b2PolygonShape tileShape;
+    tileShape.SetAsBox(PX_TO_M(32)/2, PX_TO_M(32)/2);
+
     while (!child.isNull()) {
         int gid = child.toElement().attribute("gid", "0").toInt();
         if (gid != 0) {
@@ -149,33 +166,212 @@ void Level::parseLayer(QDomNode layer) {
             }
 
             if (tp.kind == kMainCharacter) {
-                MainCharacter *mainChar = new MainCharacter(16, 32);
+                b2BodyDef bodyDef;
+                bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
+                bodyDef.type = b2_dynamicBody;
+                b2Body* body = m_world->CreateBody(&bodyDef);
+                b2PolygonShape mcShape;
+                b2Vec2 verts[] = {
+//                    b2Vec2(-0.95,1.0),
+//                    b2Vec2(-1.0,0.95),
+//                    b2Vec2(-1.0,-0.95),
+//                    b2Vec2(-0.95,-1.0),
+//                    b2Vec2(0.95,-1.0),
+//                    b2Vec2(1.0,-0.95),
+//                    b2Vec2(1.0,0.95),
+//                    b2Vec2(0.95,1.0)
+                    b2Vec2(0.55, 0.0),
+                    b2Vec2(0.5, -0.05),
+                    b2Vec2(0.5, -1.95),
+                    b2Vec2(0.55, -2.0),
+                    b2Vec2(1.45, -2),
+                    b2Vec2(1.5, -1.95),
+                    b2Vec2(1.5, -0.95),
+                    b2Vec2(1.45, 0.0)
+                };
+                mcShape.Set(verts, 8);
+                //mcShape.SetAsBox(PX_TO_M(16.)/2, PX_TO_M(32.)/2,
+                //                 b2Vec2(PX_TO_M(16.), -PX_TO_M(32.)/2), 0);
+                body->SetFixedRotation(true);
+                body->CreateFixture(&mcShape, 1.0f)->SetFriction(BODY_FRICTION);
+
+                MainCharacter *mainChar = new MainCharacter(16, 32, body);
                 mainChar->setPos(pos);
                 mainChar->setSolid(true);
+
+                body->SetUserData(mainChar);
                 m_gameEngine->addSprite(mainChar, true);
+
             } else if (tp.kind == kGoomba) {
-                Enemy1 *goomba = new Enemy1(20, 18, enemyPath);
+                b2BodyDef bodyDef;
+                bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
+                bodyDef.type = b2_dynamicBody;
+                b2Body* body = m_world->CreateBody(&bodyDef);
+                b2PolygonShape shape;
+                shape.SetAsBox(PX_TO_M(20)/2., PX_TO_M(18)/2.,
+                               b2Vec2(PX_TO_M(20.), -PX_TO_M(18.0)/2), 0);
+                body->CreateFixture(&shape, 1.0f)->SetFriction(BODY_FRICTION);
+
+                Enemy1 *goomba = new Enemy1(20, 18, enemyPath, body);
                 goomba->setPos(pos);
+
+                body->SetUserData(goomba);
                 this->addToGroup(goomba);
             } else if (tp.kind == kLever) {
-                SwitchObject *switchObj = new SwitchObject(32, 32);
+                b2BodyDef bodyDef;
+                bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
+                bodyDef.type = b2_dynamicBody;
+                b2Body* body = m_world->CreateBody(&bodyDef);
+                b2PolygonShape shape;
+                shape.SetAsBox(PX_TO_M(32)/2., PX_TO_M(32)/2.,
+                               b2Vec2(PX_TO_M(32)/2, -PX_TO_M(32.)/2), 0);
+                body->CreateFixture(&shape, 1.0f);
+
+                SwitchObject *switchObj = new SwitchObject(32, 32, body);
                 switchObj->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
                 switchObj->setPos(pos);
+
+                body->SetUserData(switchObj);
                 this->addToGroup(switchObj);
+            } else if (tp.kind == kCoin) {
+                b2BodyDef bodyDef;
+                bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
+                bodyDef.type = b2_staticBody;
+                b2Body* body = m_world->CreateBody(&bodyDef);
+                b2PolygonShape shape;
+                shape.SetAsBox(PX_TO_M(32)/2., PX_TO_M(32)/2.,
+                               b2Vec2(PX_TO_M(32.)/2, -PX_TO_M(32.)/2), 0);
+                body->CreateFixture(&shape, 1.0f)->SetSensor(true);
+
+                QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
+                Tile *coin = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), body, this);
+                coin->setSolid(tp.solid);
+                coin->setBlockType(tp.kind);
+                coin->setPixmap(tileImage);
+                coin->setPos(pos);
+                coin->setShapeMode(Tile::BoundingRectShape);
+
+                body->SetUserData(coin);
+                this->addToGroup(coin);
             } else {
+                b2Body* body = nullptr;
+                tileShape.SetAsBox(PX_TO_M(tileMap->getCellWidth()/2),
+                                   PX_TO_M(tileMap->getCellHeight()/2),
+                                   b2Vec2(PX_TO_M(pos.x() + tileMap->getCellWidth()/2),
+                                   PX_TO_M(-pos.y() - tileMap->getCellHeight()/2)), 0);
+
+                if (tp.kind == kBox) {
+                    b2BodyDef bodyDef;
+                    bodyDef.position.Set(PX_TO_M(pos.x() - 32./2), PX_TO_M(-pos.y()));
+                    bodyDef.type = b2_dynamicBody;
+                    bodyDef.fixedRotation = false;
+                    body = m_world->CreateBody(&bodyDef);
+                    b2PolygonShape shape;
+                    shape.SetAsBox(PX_TO_M(32.)/2., PX_TO_M(32.)/2.,
+                                   b2Vec2(PX_TO_M(32.), -PX_TO_M(32.)/2), 0);
+                    body->CreateFixture(&shape, BOX_DENSITY)->SetFriction(BOX_FRICTION);
+                } else if (tp.kind == kSlope45Right) {
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
+                    b2Vec2 verts[] = {
+                        b2Vec2(xMeters + 0.0, yMeters - 2.0),
+                        b2Vec2(xMeters + 2.0, yMeters - 2.0),
+                        b2Vec2(xMeters + 2.0, yMeters + 0.0)
+                    };
+                    tileShape.Set(verts, 3);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
+                } else if (tp.kind == kSlope45Left) {
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
+                    b2Vec2 verts[] = {
+                        b2Vec2(xMeters + 0.0, yMeters + 0.0),
+                        b2Vec2(xMeters + 0.0, yMeters - 2.0),
+                        b2Vec2(xMeters + 2.0, yMeters - 2.0)
+                    };
+                    tileShape.Set(verts, 3);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
+                    // TODO: Set slope friction on the fixture
+                } else if (tp.kind == kSlope30Right) {
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
+                    b2Vec2 verts[] = {
+                        b2Vec2(xMeters + 0.0, yMeters - 2.0),
+                        b2Vec2(xMeters + 2.0, yMeters - 2.0),
+                        b2Vec2(xMeters + 2.0, yMeters - 1.0)
+                    };
+                    tileShape.Set(verts, 3);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
+                } else if (tp.kind == kSlope30Left) {
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
+                    b2Vec2 verts[] = {
+                        b2Vec2(xMeters + 0.0, yMeters - 1.0),
+                        b2Vec2(xMeters + 0.0, yMeters - 2.0),
+                        b2Vec2(xMeters + 2.0, yMeters - 2.0)
+                    };
+                    tileShape.Set(verts, 3);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
+                } else if (tp.kind == kSlope60Right) {
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
+                    b2Vec2 verts[] = {
+                        b2Vec2(xMeters + 0.0, yMeters - 1.0),
+                        b2Vec2(xMeters + 2.0, yMeters - 1.0),
+                        b2Vec2(xMeters + 2.0, yMeters - 0.0)
+                    };
+                    tileShape.Set(verts, 3);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
+                } else if (tp.kind == kSlope60Left) {
+                    float32 xMeters = PX_TO_M(pos.x());
+                    float32 yMeters = PX_TO_M(-pos.y());
+                    b2Vec2 verts[] = {
+                        b2Vec2(xMeters + 0.0, yMeters + 0.0),
+                        b2Vec2(xMeters + 0.0, yMeters - 1.0),
+                        b2Vec2(xMeters + 2.0, yMeters - 1.0)
+                    };
+                    tileShape.Set(verts, 3);
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
+                } else if (tp.solid) {
+                    groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(GROUND_FRICTION);
+                    //body = groundBody;
+                } else {
+                    b2BodyDef bodyDef;
+                    bodyDef.position.Set(PX_TO_M(pos.x() - 32./2), PX_TO_M(-pos.y()));
+                    bodyDef.type = b2_staticBody;
+                    body = m_world->CreateBody(&bodyDef);
+                    b2PolygonShape shape;
+                    shape.SetAsBox(PX_TO_M(32.)/2., PX_TO_M(32.)/2.,
+                                   b2Vec2(PX_TO_M(32.), -PX_TO_M(32.)/2), 0);
+                    b2Fixture *fix = body->CreateFixture(&shape, 1.0f);
+                    fix->SetSensor(true);
+                }
+
                 // We have an actual tile and not a "special" tile, i.e. goomba, mainchar, ...
                 QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
 
-                tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), this);
+                if (!body && tp.solid) {
+                    tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), groundBody);
+                } else {
+                    tile = new Tile(tileMap->getCellWidth(), tileMap->getCellHeight(), body);
+                }
+
                 tile->setSolid(tp.solid);
                 tile->setBlockType(tp.kind);
 
                 tile->setPixmap(tileImage);
 
                 tile->setPos(pos);
-                tile->setShapeMode(Tile::BoundingRectShape);
-                this->addToGroup(tile);
+                tile->setShapeMode(Tile::BoundingRectShape);\
 
+                if (body && tp.kind != kBlock) {
+                    body->SetUserData(tile);
+                }
+
+                if (!body && tp.solid) {
+                    groundBody->SetUserData(tile);
+                }
+
+                this->addToGroup(tile);
             }
             validTiles++;
         }
@@ -245,6 +441,7 @@ void Level::parseObjectGroup(QDomNode objectGroup) {
 
 ITriggerable* Level::parseObject(QDomNode object) {
     ITriggerable *spr = nullptr;
+    AnimatedCollideableSprite* acs = nullptr;
     int gid = object.toElement().attribute("gid", "0").toInt();
     int x = object.toElement().attribute("x", "0").toInt();
     int y = object.toElement().attribute("y", "0").toInt() - 32; // -32 Because of what looks like a bug in Tiled... boo...
@@ -263,39 +460,62 @@ ITriggerable* Level::parseObject(QDomNode object) {
     //  our current tilemap.
     int idx = gid - firstElement;
 
+    b2BodyDef bodyDef;
+    bodyDef.position.Set(PX_TO_M(x - 32./2.), PX_TO_M(-y));
+    bodyDef.type = b2_staticBody;
+    b2Body* body = m_world->CreateBody(&bodyDef);
+    b2PolygonShape shape;
+    shape.SetAsBox(PX_TO_M(32)/2., PX_TO_M(32)/2.,
+                   b2Vec2(PX_TO_M(32.), -PX_TO_M(32.0)/2), 0);
+    body->CreateFixture(&shape, 0.0f)->SetSensor(false);
+
     switch (type) {
         case kLever: {
-            SwitchObject* switchObject = new SwitchObject(32, 32);
+            SwitchObject* switchObject = new SwitchObject(32, 32, body);
             switchObject->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
             switchObject->setPos(x, y);
             this->addToGroup(switchObject);
+
+            acs = switchObject;
+            body->GetFixtureList()->SetSensor(true);
+
             spr = switchObject;
             break;
         }
         case kLeverFlipped: {
-            SwitchObject* switchObject = new SwitchObject(32, 32);
+            SwitchObject* switchObject = new SwitchObject(32, 32, body);
             switchObject->setPixmaps(tileMap->copyCellAtWithoutMask(idx - 1), tileMap->copyCellAtWithoutMask(idx));
             switchObject->setPos(x, y);
             this->addToGroup(switchObject);
+
+            acs = switchObject;
+            body->GetFixtureList()->SetSensor(true);
+
             spr = switchObject;
             break;
         }
 
         case kDoor: {
-            Door *door = new Door(32, 32);
+            Door *door = new Door(32, 32, body);
             door->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx + 1));
             door->setPos(x, y);
             this->addToGroup(door);
+
+            acs = door;
+
             spr = door;
             break;
         }
 
         case kDoorOpen: {
-            Door *door = new Door(32, 32);
+            Door *door = new Door(32, 32, body);
             door->setPixmaps(tileMap->copyCellAt(idx - 1), tileMap->copyCellAt(idx));
             door->setPos(x, y);
             door->controllerStateChanged(true);
             this->addToGroup(door);
+
+            acs = door;
+
             spr = door;
             break;
         }
@@ -303,6 +523,8 @@ ITriggerable* Level::parseObject(QDomNode object) {
         default:
             qDebug() << "Invalid Object!!!";
     }
+
+    body->SetUserData(acs);
     return spr;
 }
 

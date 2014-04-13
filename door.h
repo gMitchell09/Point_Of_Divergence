@@ -20,7 +20,7 @@ class Door : public ITriggerable, public AnimatedCollideableSprite
 {
     Q_OBJECT
 public:
-    explicit Door(int width, int height, QGraphicsItem* parent = 0);
+    explicit Door(int width, int height, b2Body* body = 0, QGraphicsItem* parent = 0);
 
     /// setPixmaps
     /// Set on state and off state pixmaps
@@ -51,8 +51,10 @@ public slots:
         m_state = !m_state;
         if (m_state) {
             this->setPixmap(m_onPixmap);
+            if (m_body) m_body->SetActive(false);
         } else {
             this->setPixmap(m_offPixmap);
+            if (m_body) m_body->SetActive(true);
         }
     }
 

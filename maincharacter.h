@@ -43,14 +43,14 @@ private:
     int m_keyRecentPress;
 
 public:
-    explicit MainCharacter(int width, int height, QGraphicsItem *parent = 0);
+    explicit MainCharacter(int width, int height, b2Body* body = 0, QGraphicsItem *parent = 0);
     void keyPressEvent(QKeyEvent * keyEvent);
     void keyReleaseEvent(QKeyEvent * keyEvent);
 
     void setBrake(bool brake) { m_brake = brake; }
 
     virtual void step(qint64 time, long delta);
-    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+    virtual void collisionOccurred(Sprite *sprite, Side side);
     void jump();
     void climbLadder(int dir = 1);
 

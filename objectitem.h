@@ -7,12 +7,14 @@
 #include "animatedcollideablesprite.h"
 #include "gameengine.h"
 
+#include "Box2D.h"
+
 class ObjectItem : public AnimatedCollideableSprite
 {
 public:
-    ObjectItem(int width, int height, QString path, QGraphicsItem *parent = 0);
+    ObjectItem(int width, int height, QString path, b2Body* body = 0, QGraphicsItem *parent = 0);
 
-    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+    virtual void collisionsOccurred(QList<Collision> &collisions, unsigned char side);
 
     virtual bool isStatic() { return true; }
     virtual bool isAnimated() { return true; }

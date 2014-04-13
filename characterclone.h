@@ -16,12 +16,12 @@ private:
     MovementState m_currentMovementState;
 
 public:
-    explicit CharacterClone(int width, int height, std::vector<State> stateStack, QGraphicsItem *parent = 0);
+    explicit CharacterClone(int width, int height, std::vector<State> stateStack, b2Body* body = 0, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta) {
         AnimatedCollideableSprite::step(time, delta);
     }
-    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side) {}
+    virtual void collisionsOccurred(QList<Collision> &collisions, unsigned char side) {}
 
     virtual QString className() { return "CharacterClone"; }
 

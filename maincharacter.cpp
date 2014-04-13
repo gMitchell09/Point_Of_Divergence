@@ -10,8 +10,8 @@
 #define MAX(x, y) ((x>y)?x:y)
 #define SIGN(x) ((x>0)?1:-1)
 
-MainCharacter::MainCharacter(int width, int height, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent),
+MainCharacter::MainCharacter(int width, int height, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent),
     m_isOnLadder(false),
     m_leftPressed(false),
     m_rightPressed(false),
@@ -113,13 +113,6 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         if (m_isOnLadder) {
             this->climbLadder(-1);
         }
-        if ((this->isOnLeftSlope() && this->getVelocity().x() > 0) ||
-                (this->isOnRightSlope() && this->getVelocity().x() < 0))
-            this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccelSliding, this->getAcceleration().y()));
-        else
-            this->setAcceleration(QPointF(SIGN(-this->getAcceleration().x()) * m_brakeAccel, this->getAcceleration().y()));
-        this->setBrake(true);
-
         m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
         this->triggerAnimation(m_currentState);
 
@@ -129,28 +122,16 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
         m_currentState = Walk_Right;
         if (!m_jumping && this->getVelocity().x() < 0) {
             m_currentState = Brake_Right; // We are already moving left so we have to play "brake" animation
-            this->setAcceleration(QPointF(2*m_rightAccel, this->getAcceleration().y()));
-        } else {
-            this->setAcceleration(QPointF(m_rightAccel, this->getAcceleration().y()));
         }
-        this->setBrake(false);
-
         this->triggerAnimation(m_currentState);
-
         m_rightPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
         m_currentState = Walk_Left;
         if (!m_jumping && this->getVelocity().x() > 0) {
             m_currentState = Brake_Left;
-            this->setAcceleration(QPointF(2*m_leftAccel, this->getAcceleration().y()));
-        } else {
-            this->setAcceleration(QPointF(m_leftAccel, this->getAcceleration().y()));
         }
-        this->setBrake(false);
-
         this->triggerAnimation(m_currentState);
-
         m_leftPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Up)  {
@@ -224,8 +205,30 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
             break;
         case Qt::Key_Shift:
             this->endSlice();
-            CharacterClone* clone = new CharacterClone(16, 33, this->m_stateSlice);
-            ((GameEngine*)this->scene())->addSprite(clone);
+            if (m_body) {
+                b2BodyDef bodyDef;
+                bodyDef.position.Set(m_body->GetPosition().x, m_body->GetPosition().y);
+                bodyDef.type = b2_dynamicBody;
+                b2Body* body = this->m_body->GetWorld()->CreateBody(&bodyDef);
+                b2PolygonShape mcShape;
+                b2Vec2 verts[] = {
+                    b2Vec2(0.55, 0.0),
+                    b2Vec2(0.5, -0.05),
+                    b2Vec2(0.5, -1.95),
+                    b2Vec2(0.55, -2.0),
+                    b2Vec2(1.45, -2),
+                    b2Vec2(1.5, -1.95),
+                    b2Vec2(1.5, -0.95),
+                    b2Vec2(1.45, 0.0)
+                };
+                mcShape.Set(verts, 8);
+                body->SetFixedRotation(true);
+                body->CreateFixture(&mcShape, 1.0f)->SetFriction(0.1f);
+
+                CharacterClone* clone = new CharacterClone(16, 33, this->m_stateSlice, body);
+                ((GameEngine*)this->scene())->addSprite(clone);
+                body->SetUserData(clone);
+            }
 
             break;
     }
@@ -296,6 +299,14 @@ void MainCharacter::step(qint64 time, long delta) {
         else
             this->getVelocity().setY(MAX(this->getVelocity().y(), -m_maxVelY));
     }
+
+    if (m_leftPressed) {
+        this->m_body->ApplyForceToCenter(b2Vec2(-20, 0), true);
+    }
+
+    if (m_rightPressed) {
+        this->m_body->ApplyForceToCenter(b2Vec2(20, 0), true);
+    }
 }
 
 /* Possible User Input:
@@ -306,105 +317,100 @@ void MainCharacter::step(qint64 time, long delta) {
  * Up (Moving Right) Jump_Right animation
 */
 
-void MainCharacter::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    bool hitCoin = false;
-    m_isOnLadder = false;
-    int ladderSide = 0;
-    for (auto itr = collisions.begin(); itr != collisions.end(); itr++) {
-        Sprite* other = ((Collision)(*itr)).secondSprite;
-        Side locSide = ((Collision)(*itr)).firstSide;
+void MainCharacter::collisionOccurred(Sprite *other, Side side) {
+    AnimatedCollideableSprite::collisionOccurred(other, side);
+    unsigned int ladderSide = 0;
+    if (side == Bottom && other->isSolid()) {
+        m_jumping_double = false;
+        m_jumping = false;
+    }
 
-        if (locSide & Bottom && this->getVelocity().y() >= 0 && other->isSolid() && other->y() > this->y()) {
-            m_jumping_double = false;
-            m_jumping = false;
-        }
+    if (side & other->damagesChar()) {
+        ((GameEngine*)this->scene())->characterDamaged();
 
-        if (locSide & other->damagesChar()) {
-            ((GameEngine*)this->scene())->characterDamaged();
+        SFXManager *inst = SFXManager::Instance();
+        inst->playSound(SFXManager::SFX::MainChar_Damaged);
+    }
+    qDebug() << "Other: " << other->blockType();
+
+    switch (other->blockType()) {
+        case ItemType::kBlock: break;
+        case ItemType::kCoin: {
+            ((GameEngine*)this->scene())->removeItem(other);
+            ((GameEngine*)this->scene())->incrementCoins();
 
             SFXManager *inst = SFXManager::Instance();
-            inst->playSound(SFXManager::SFX::MainChar_Damaged);
-        }
+            inst->playSound(SFXManager::SFX::Coin_Grab);
 
-        switch (other->blockType()) {
-            case ItemType::kBlock: break;
-            case ItemType::kCoin:
-                if (!hitCoin) {
-                    ((GameEngine*)this->scene())->removeItem((((Collision)(*itr)).secondSprite));
-                    ((GameEngine*)this->scene())->incrementCoins();
-                    hitCoin = true;
-
-                    SFXManager *inst = SFXManager::Instance();
-                    inst->playSound(SFXManager::SFX::Coin_Grab);
-                }
-                break;
-            case ItemType::kBox:
-                if ((locSide & Left && m_leftPressed) || (locSide & Right && m_rightPressed)) {
-                    qDebug() << "PUSH THE BOX";
-                    if (locSide & Left && m_leftPressed) {
-    //                    SFXManager *inst = SFXManager::Instance();
-    //                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
-                        other->setVelocity(QPointF(-m_boxPushVelocity, other->getVelocity().y()));
-                        qDebug() << "Push Left";
-                        //other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
-                    }
-                    else if (locSide & Right && m_rightPressed) {
-    //                    SFXManager *inst = SFXManager::Instance();
-    //                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
-                        other->setVelocity(QPointF(m_boxPushVelocity, other->getVelocity().y()));
-                        qDebug() << "Push Right";
-                        //other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
-                    }
-                }
-                break;
-            case ItemType::kLadder:
-                ladderSide |= locSide;
-                if (locSide & Top) m_isOnLadder = true;
-                if (m_upPressed) {
-                    if (!m_isOnLadder) {
-                        this->jump();
-                    }
-//                    this->getVelocity().setX(0);
-                    this->getVelocity().setY(0);
-//                    this->getAcceleration().setX(0);
-                    this->getAcceleration().setY(0);
-                }
-                break;
-            case ItemType::kLever:
-                if (m_downPressed) {
-                    dynamic_cast<SwitchObject*>(other)->toggle();
-                }
-    //        case ItemType::kSlope30Left:
-    //            qDebug() << "kSlope30Left";
-    //            break;
-    //        case ItemType::kSlope45Left:
-    //            qDebug() << "kSlope45Left";
-    //            break;
-    //        case ItemType::kSlope60Left:
-    //            qDebug() << "kSlope60Left";
-    //            break;
-    //        case ItemType::kSlope30Right:
-    //            qDebug() << "kSlope30Right";
-    //            break;
-    //        case ItemType::kSlope45Right:
-    //            qDebug() << "kSlope45Right";
-    //            break;
-    //        case ItemType::kSlope60Right:
-    //            qDebug() << "kSlope60Right";
-    //            break;
-            default:
-                break;
+            break;
         }
+        case ItemType::kBox:
+            if ((side & Left && m_leftPressed) || (side & Right && m_rightPressed)) {
+                qDebug() << "PUSH THE BOX";
+                if (side & Left && m_leftPressed) {
+//                    SFXManager *inst = SFXManager::Instance();
+//                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
+                    qDebug() << "Push Left";
+                    //other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
+                }
+                else if (side & Right && m_rightPressed) {
+//                    SFXManager *inst = SFXManager::Instance();
+//                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
+                    qDebug() << "Push Right";
+                    //other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
+                }
+            }
+            break;
+        case ItemType::kLadder:
+            ladderSide |= side;
+            if (side & Top) m_isOnLadder = true;
+            if (m_upPressed) {
+                if (!m_isOnLadder) {
+                    this->jump();
+                }
+                b2Vec2 vel = this->m_body->GetLinearVelocity();
+                vel.x = 0;
+                this->m_body->SetLinearVelocity(vel);
+            }
+            break;
+        case ItemType::kLever:
+            qDebug() << "Yeah, right";
+            if (m_downPressed) {
+                dynamic_cast<SwitchObject*>(other)->toggle();
+            }
+//        case ItemType::kSlope30Left:
+//            qDebug() << "kSlope30Left";
+//            break;
+//        case ItemType::kSlope45Left:
+//            qDebug() << "kSlope45Left";
+//            break;
+//        case ItemType::kSlope60Left:
+//            qDebug() << "kSlope60Left";
+//            break;
+//        case ItemType::kSlope30Right:
+//            qDebug() << "kSlope30Right";
+//            break;
+//        case ItemType::kSlope45Right:
+//            qDebug() << "kSlope45Right";
+//            break;
+//        case ItemType::kSlope60Right:
+//            qDebug() << "kSlope60Right";
+//            break;
+        default:
+            break;
     }
+
 }
 
 void MainCharacter::jump() {
-    this->getVelocity().setY(m_jumpStartVel);
+    this->m_body->ApplyForceToCenter(b2Vec2(0, 1000), true);
 
     SFXManager *inst = SFXManager::Instance();
     inst->playSound(SFXManager::SFX::MainChar_Jump);
 }
 
 void MainCharacter::climbLadder(int dir) {
-    this->getVelocity().setY(dir * m_ladderClimbSpeed);
+    b2Vec2 vel = this->m_body->GetLinearVelocity();
+    vel.y = 0.5;
+    this->m_body->SetLinearVelocity(vel);
 }

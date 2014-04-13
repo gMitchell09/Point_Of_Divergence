@@ -2,8 +2,8 @@
 
 #include <QtMath>
 
-Tile::Tile(int width, int height, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent)
+Tile::Tile(int width, int height, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent)
 {
     this->setVelocity(QPointF(0, 0));
     this->setAcceleration(QPointF(0, 0));
@@ -13,7 +13,7 @@ Tile::Tile(int width, int height, QGraphicsItem *parent) :
     this->setTransformOriginPoint(this->boundingRect().width()/2, this->boundingRect().height()/2);
 }
 
-void Tile::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
+void Tile::collisionsOccurred(QList<Collision> &collisions, unsigned char side) {
     if (this->blockType() == kBox) {
         if (this->isOnLeftSlope() || this->isOnRightSlope()) {
             for (auto itr = collisions.begin(); itr != collisions.end(); ++itr) {
@@ -57,4 +57,8 @@ void Tile::step(qint64 time, long delta) {
 
 void Tile::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     qDebug() << "Tile: " << this->blockType();
+    if (this->m_body) {
+        Sprite* sprite = (Sprite*)m_body->GetUserData();
+        qDebug() << "Body: " << sprite;
+    }
 }

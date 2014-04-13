@@ -62,6 +62,8 @@ GameEngine::GameEngine(int width, int height, QObject *parent) :
         QMessageBox *msg = new QMessageBox("Level not found!", "Level Not Found!!", QMessageBox::Critical, QMessageBox::Ok, QMessageBox::NoButton, QMessageBox::NoButton);
         msg->show();
     }
+
+    m_world = new b2World(b2Vec2(0.0f, -10.0f));
 }
 
 GameEngine::~GameEngine() {
@@ -73,6 +75,8 @@ GameEngine::~GameEngine() {
     delete m_hud;
     delete heartbeat;
     delete m_networkPlayer;
+
+    delete m_world; // Destroy zee vorld!!!
 
     for (auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); ++itr) {
         this->removeItem(*itr);
@@ -103,6 +107,8 @@ void GameEngine::step(qint64 time) {
         //   to accurately play back events.
         m_gameTime += deltaTime;
         m_totalGameTime += ABS(deltaTime);
+
+        m_world->Step(1.f/60.f, 8, 3);
 
         for(auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); itr++) {
             Sprite* spr = dynamic_cast<Sprite*>(*itr);
@@ -222,9 +228,14 @@ void GameEngine::removeItem(QGraphicsItem *item) {
 }
 
 void GameEngine::removeItem(Sprite *item) {
-    QGraphicsScene::removeItem(item);
-
-    m_deletedItems.push_back(item);
+    if (item->scene() == this) {
+        QGraphicsScene::removeItem(item);
+        m_deletedItems.push_back(item);
+        delete item;
+    } else {
+        ((Level*)m_levels.at(0))->removeFromGroup(item);
+        delete item;
+    }
 }
 
 void GameEngine::removeDeletedItems() {
@@ -300,7 +311,7 @@ void GameEngine::startSinglePlayer() {
     gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
     gameTime->setPos(QPointF(630, 15));
 
-    Level *level = new Level(levelPath, "LevelTest.tmx", this);
+    Level *level = new Level(levelPath, "MountainCave.tmx", this);
     level->setPos(QPointF(0, 0));
 
     this->setSceneRect(0, 0, level->getLevelWidth(), level->getLevelHeight());

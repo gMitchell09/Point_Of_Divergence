@@ -16,10 +16,10 @@ private:
     MovementState m_currentState;
 
 public:
-    Enemy2(int width, int height, QString path, QGraphicsItem *parent = 0);
+    Enemy2(int width, int height, QString path, b2Body* body = 0, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta);
-    virtual void collisionOccurred(QList<Collision> &collisions, unsigned char side);
+    virtual void collisionsOccurred(QList<Collision> &collisions, unsigned char side);
 
     virtual QString className() { return "Enemy2"; }
 

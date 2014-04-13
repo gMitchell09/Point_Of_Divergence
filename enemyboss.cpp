@@ -4,8 +4,8 @@
 #include "enemy1.h"
 #include "gameengine.h"
 
-EnemyBoss::EnemyBoss(int width, int height, QString path, int enemyHits, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent) {
+EnemyBoss::EnemyBoss(int width, int height, QString path, int enemyHits, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent) {
 
     m_leftAccel = -150;
     m_rightAccel = -m_leftAccel;
@@ -53,8 +53,8 @@ void EnemyBoss::step(qint64 time, long delta) {
     }
 }
 
-void EnemyBoss::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    AnimatedCollideableSprite::collisionOccurred(collisions, side);
+void EnemyBoss::collisionsOccurred(QList<Collision> &collisions, unsigned char side) {
+    AnimatedCollideableSprite::collisionsOccurred(collisions, side);
     if (m_currentState == Squish) return;
     if (side & Right) {
         this->getAcceleration().setX(m_leftAccel);

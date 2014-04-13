@@ -2,8 +2,8 @@
 #include "gameengine.h"
 #include <QDebug>
 
-ObjectItem::ObjectItem(int width, int height, QString path, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, parent) {
+ObjectItem::ObjectItem(int width, int height, QString path, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent) {
 
     TileMap itemTiles = TileMap(16, 16, 1, 1, path + "/Items.png");
     std::vector<QPixmap> coinAnimation;
@@ -13,8 +13,8 @@ ObjectItem::ObjectItem(int width, int height, QString path, QGraphicsItem *paren
     this->triggerAnimation(0);
 }
 
-void ObjectItem::collisionOccurred(QList<Collision> &collisions, unsigned char side) {
-    AnimatedCollideableSprite::collisionOccurred(collisions, side);
+void ObjectItem::collisionsOccurred(QList<Collision> &collisions, unsigned char side) {
+    AnimatedCollideableSprite::collisionsOccurred(collisions, side);
 
 
 }

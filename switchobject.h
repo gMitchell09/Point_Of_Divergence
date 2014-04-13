@@ -21,7 +21,7 @@ class SwitchObject : public ITriggerable, public AnimatedCollideableSprite
     Q_OBJECT
 
 public:
-    SwitchObject(int width, int height, QGraphicsItem* parent = 0);
+    SwitchObject(int width, int height, b2Body* body = 0, QGraphicsItem* parent = 0);
 
     /// setPixmaps
     /// Set on state and off state pixmaps
@@ -80,6 +80,8 @@ public:
 
         emit stateChanged(m_state);
     }
+
+    ~SwitchObject();
 
 signals:
 

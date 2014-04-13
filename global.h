@@ -13,4 +13,8 @@ enum ItemType { kBlock = 0, kBox, kCoin, kLever, kButton, kSwitch, kDoor, kMovin
                 kGoomba = 17, kMainCharacter = 18, kLadder = 19,
                 kLeverFlipped = 20, kDoorOpen = 21};
 
+#define SCALINGFACTOR 1.0/16.0
+#define PX_TO_M(x) (SCALINGFACTOR * (x))
+#define M_TO_PX(x) ((x) * 16.0)
+
 #endif // GLOBAL_H

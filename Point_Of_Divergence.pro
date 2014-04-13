@@ -21,8 +21,20 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Point_Of_Divergence
 TEMPLATE = app
 
+INCLUDEPATH += ./Box2D
 
-SOURCES += main.cpp\
+box2d_lib = $$PWD/Box2D/Build/libbox2d.a
+
+box_2d.target = box2d_lib
+box_2d.commands = pushd $$PWD/Box2D && make -f ./Makefile box2d && cd $$OUT_PWD
+
+QMAKE_EXTRA_TARGETS += box_2d
+
+PRE_TARGETDEPS += box2d_lib
+
+LIBS += $$box2d_lib
+
+SOURCES += main.cpp \
     gameengine.cpp \
     sprite.cpp \
     animatedsprite.cpp \

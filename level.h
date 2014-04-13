@@ -16,6 +16,8 @@
 #include "switchobject.h"
 #include "door.h"
 
+#include "Box2D.h"
+
 class TileMap;
 class GameEngine;
 struct TileProperties;
@@ -25,6 +27,8 @@ class Level : public QGraphicsItemGroup
 private:
     // m_tileSets maps THE UPPER GID contained within the tilemap to the tilemap itself
     QMap<int, TileMap*> m_tileSets;
+
+    b2World* m_world;
 
     // Width, Height in # tiles
     int m_levelWidth, m_levelHeight;

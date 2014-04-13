@@ -12,6 +12,7 @@
 
 #include "global.h"
 #include "networkmanager.h"
+#include "Box2D.h"
 
 ///
 /// \brief The Sprite class is an abstract base class for all other sprites in engine
@@ -28,7 +29,8 @@ private:
 protected:
     QPointF m_acceleration, m_velocity, m_apparentVelocity;
     struct State { char m_nCurrentFrame, m_nCurrentAnimation;
-                   QPointF pos; QPointF vel; qint64 timestamp;
+                   b2Vec2 pos; b2Vec2 vel;
+                    float32 angle; qint64 timestamp;
                               bool triggerableState; };
     virtual bool usesStack() { return false; }
 
