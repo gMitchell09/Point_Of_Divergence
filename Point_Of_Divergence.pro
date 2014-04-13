@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     characterclone.cpp \
     switchobject.cpp \
     door.cpp \
-    enemyboss.cpp
+    enemyboss.cpp \
+    enemy2.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -80,7 +81,8 @@ HEADERS  += mainwindow.h \
     switchobject.h \
     ITriggerable.h \
     door.h \
-    enemyboss.h
+    enemyboss.h \
+    enemy2.h
 
 FORMS    += mainwindow.ui
 
