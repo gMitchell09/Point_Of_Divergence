@@ -62,7 +62,9 @@ SOURCES += main.cpp \
     switchobject.cpp \
     door.cpp \
     enemyboss.cpp \
-    enemy2.cpp
+    enemy2.cpp \
+    teleportationpad.cpp \
+    boxbutton.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -94,7 +96,9 @@ HEADERS  += mainwindow.h \
     ITriggerable.h \
     door.h \
     enemyboss.h \
-    enemy2.h
+    enemy2.h \
+    teleportationpad.h \
+    boxbutton.h
 
 FORMS    += mainwindow.ui
 

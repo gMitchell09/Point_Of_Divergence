@@ -15,6 +15,7 @@
 #include "maincharacter.h"
 #include "switchobject.h"
 #include "door.h"
+#include "boxbutton.h"
 
 #include "Box2D.h"
 

@@ -331,7 +331,6 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
         SFXManager *inst = SFXManager::Instance();
         inst->playSound(SFXManager::SFX::MainChar_Damaged);
     }
-    qDebug() << "Other: " << other->blockType();
 
     switch (other->blockType()) {
         case ItemType::kBlock: break;

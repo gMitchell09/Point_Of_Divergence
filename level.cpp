@@ -270,7 +270,7 @@ void Level::parseLayer(QDomNode layer) {
                     bodyDef.fixedRotation = false;
                     body = m_world->CreateBody(&bodyDef);
                     b2PolygonShape shape;
-                    shape.SetAsBox(PX_TO_M(32.)/2., PX_TO_M(32.)/2.,
+                    shape.SetAsBox(PX_TO_M(28.)/2., PX_TO_M(28.)/2.,
                                    b2Vec2(PX_TO_M(32.), -PX_TO_M(32.)/2), 0);
                     body->CreateFixture(&shape, BOX_DENSITY)->SetFriction(BOX_FRICTION);
                 } else if (tp.kind == kSlope45Right) {
@@ -527,6 +527,18 @@ ITriggerable* Level::parseObject(QDomNode object) {
 
             spr = door;
             break;
+        }
+
+        case kBoxButton: {
+            BoxButton* button = new BoxButton(32, 32, body);
+            button->setPixmaps(tileMap->copyCellAtWithoutMask(idx), tileMap->copyCellAtWithoutMask(idx+1));
+            button->setPos(x, y);
+            this->addToGroup(button);
+
+            body->GetFixtureList()->SetSensor(true);
+
+            acs = button;
+            spr = button;
         }
 
         default:
