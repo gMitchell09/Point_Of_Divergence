@@ -12341,7 +12341,6 @@
   <object name="21" type="21 - kDoorOpen" gid="200" x="832" y="1088"/>
   <object name="21" type="21 - kDoorOpen" gid="200" x="800" y="1088"/>
   <object name="21" type="21 - kDoorOpen" gid="200" x="864" y="1088"/>
-  <object name="24" type="24 - kTurretRight" gid="1" x="1248" y="416"/>
  </objectgroup>
  <objectgroup name="tp_3a" width="100" height="40">
   <object name="23" type="23 - kTeleStation" gid="203" x="1216" y="896"/>

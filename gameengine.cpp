@@ -300,30 +300,9 @@ void GameEngine::startSinglePlayer() {
     connect(heartbeat, SIGNAL(timeout()), this, SLOT(invalidateTimer()));
     heartbeat->start(1); // 20fps
 
-    Sprite *life1, *life2, *life3;
     QGraphicsSimpleTextItem *gameTime;
-    MovingPlatform *floater;
-
-    floater = new MovingPlatform(48, 64);
-    floater->setPixmap(QPixmap(otherSpritePath + "/1.png"));
-    floater->setPos(300, 900);
-    floater->setVelocity(QPointF(200, 0));
-    floater->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
-    floater->setSolid(true);
 
     QPixmap bkgImg(bkgPath + "/sky2.jpg");
-
-    life1 = new Sprite();
-    life1->setPos(QPointF(25, 25));
-    life1->setPixmap(QPixmap(spritePath + "/HeartContainer.png"));
-
-    life2 = new Sprite();
-    life2->setPos(QPointF(50, 25));
-    life2->setPixmap(QPixmap(spritePath + "/HeartContainer.png"));
-
-    life3 = new Sprite();
-    life3->setPos(QPointF(75, 25));
-    life3->setPixmap(QPixmap(spritePath + "/HeartContainer.png"));
 
     gameTime = new QGraphicsSimpleTextItem("Wooo!!!");
     gameTime->setPos(QPointF(630, 15));
@@ -336,10 +315,6 @@ void GameEngine::startSinglePlayer() {
     this->addLevel(level);
     this->displayBackground(bkgImg);
 
-    this->addSprite(floater);
-    this->addHUD(life1);
-    this->addHUD(life2);
-    this->addHUD(life3);
     this->addHUDText(gameTime, true);
     this->addHUD(mainmenuButton);
 
