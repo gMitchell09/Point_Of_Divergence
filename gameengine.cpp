@@ -11,6 +11,7 @@
 #include "sfxmanager.h"
 #include "gameengine.h"
 #include "mainwindow.h"
+#include <QScrollBar>
 
 static const QString bkgPath = "./resources/backgrounds";
 static const QString buttonPath = "./resources/buttons";
@@ -100,6 +101,22 @@ void GameEngine::step(qint64 time) {
 
 
     m_prevTime = time;
+
+    if (m_levelPanning) {
+        qDebug() << "Rect: " << this->views().at(0)->horizontalScrollBar()->value() << ", " << this->views().at(0)->verticalScrollBar()->value();
+
+        float currentScrollX = this->views().at(0)->horizontalScrollBar()->value();
+        float currentScrollY = this->views().at(0)->verticalScrollBar()->value();
+
+        this->views().at(0)->horizontalScrollBar()->setValue(currentScrollX - panSpeed * deltaTime);
+        this->views().at(0)->verticalScrollBar()->setValue(currentScrollY - panSpeed * deltaTime);
+
+
+        if (this->views().at(0)->horizontalScrollBar()->value() <= 0 && this->views().at(0)->verticalScrollBar()->value() <= 0) {
+            m_levelPanning = false;
+            m_gamePaused = false;
+        }
+    }
     if (m_gamePausedDueToDamage) this->setForegroundBrush(QColor(200, 0, 0, 127));
     if (m_gamePaused) this->setForegroundBrush(QColor(0, 0, 0, 127));
     if (!m_gamePaused && !m_gamePausedDueToDamage) {
@@ -108,7 +125,7 @@ void GameEngine::step(qint64 time) {
         m_gameTime += deltaTime;
         m_totalGameTime += ABS(deltaTime);
 
-        m_world->Step(1.f/60.f, 8, 3);
+        m_world->Step(1.f/60.f/m_timeDivider, 8, 3);
 
         for(auto itr = m_spriteArray.begin(); itr != m_spriteArray.end(); itr++) {
             Sprite* spr = dynamic_cast<Sprite*>(*itr);
@@ -328,7 +345,18 @@ void GameEngine::startSinglePlayer() {
 
     this->initBGM(level->getBGMPath(), level->getReversedBGMPath());
 
-    m_gamePaused = false;
+    m_gamePaused = true;
+
+    this->panLevel();
+}
+
+void GameEngine::panLevel() {
+    m_levelPanning = true;
+    QRectF sceneRect = this->sceneRect();
+
+    qDebug() << "Scene Rect: " << sceneRect;
+    this->views().at(0)->horizontalScrollBar()->setValue(sceneRect.width());
+    this->views().at(0)->verticalScrollBar()->setValue(sceneRect.height());
 }
 
 void GameEngine::characterDamaged() {
@@ -356,8 +384,8 @@ void GameEngine::initBGM(QString bgmFileName, QString revBgmFileName) {
         m_mediaPlayer->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + bgmFileName));
         m_mediaPlayerReverse->setMedia(QUrl::fromLocalFile(QApplication::applicationDirPath() + bgmPath + revBgmFileName));
 
-        m_mediaPlayer->setVolume(100);
-        m_mediaPlayerReverse->setVolume(100);
+        m_mediaPlayer->setVolume(m_selectedOptions.volumeBGM);
+        m_mediaPlayerReverse->setVolume(m_selectedOptions.volumeBGM);
 
 
 //        qDebug() << "Supported: " << m_mediaPlayer->hasSupport()
@@ -455,13 +483,13 @@ void GameEngine::displayInitialMenu() {
     button_clicked = new QPixmap(buttonPath + "/sliderBall.png");
     musicButton = new OptionSlider(*button_static, *button_clicked);
     musicButton->setPos(this->width()/2-musicButton->boundingRect().width()/2, this->height()/4-musicButton->boundingRect().height()/2);
-    musicButton->setListener(&(m_selectedOptions.muteBGM));
+    musicButton->setListener(&(m_selectedOptions.volumeBGM));
 
     button_static = new QPixmap(sliderButtonTiles->copyCellAt(0, 1));
     button_clicked = new QPixmap(buttonPath + "/sliderBall.png");
     sfxButton = new OptionButton(*button_static, *button_clicked);
     sfxButton->setPos(this->width()/2-musicButton->boundingRect().width()/2, this->height()*2/4-musicButton->boundingRect().height()/2);
-    sfxButton->setListener(&(m_selectedOptions.muteSFX));
+    sfxButton->setListener(&(m_selectedOptions.volumeSFX));
 
     button_static = new QPixmap(optionButtonTiles->copyCellAt(0, 0));
     button_hover = new QPixmap(optionButtonTiles->copyCellAt(0, 1));
@@ -630,6 +658,7 @@ void GameEngine::saveSettings() {
     }
     this->displayMainMenu_option();
     SFXManager::Instance()->setMute(m_selectedOptions.muteSFX);
+    SFXManager::Instance()->setVolume(m_selectedOptions.volumeSFX);
 }
 
 //************************************************************

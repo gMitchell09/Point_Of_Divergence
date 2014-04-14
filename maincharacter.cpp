@@ -320,6 +320,9 @@ void MainCharacter::step(qint64 time, long delta) {
 void MainCharacter::collisionOccurred(Sprite *other, Side side) {
     AnimatedCollideableSprite::collisionOccurred(other, side);
     unsigned int ladderSide = 0;
+    bool m_isOnLadder = false;
+
+    if (m_jumping) qDebug() << "Side: " << side;
     if (side == Bottom && other->isSolid()) {
         m_jumping_double = false;
         m_jumping = false;
@@ -345,18 +348,13 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
         }
         case ItemType::kBox:
             if ((side & Left && m_leftPressed) || (side & Right && m_rightPressed)) {
-                qDebug() << "PUSH THE BOX";
                 if (side & Left && m_leftPressed) {
 //                    SFXManager *inst = SFXManager::Instance();
 //                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
-                    qDebug() << "Push Left";
-                    //other->setPos(this->pos().x() - other->boundingRect().width() - 1, other->pos().y());
                 }
                 else if (side & Right && m_rightPressed) {
 //                    SFXManager *inst = SFXManager::Instance();
 //                    inst->playSound(SFXManager::SFX::MainChar_PushBox);
-                    qDebug() << "Push Right";
-                    //other->setPos(this->pos().x() + this->boundingRect().width() + 1, other->pos().y());
                 }
             }
             break;
@@ -380,18 +378,18 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
 //        case ItemType::kSlope30Left:
 //            qDebug() << "kSlope30Left";
 //            break;
-//        case ItemType::kSlope45Left:
-//            qDebug() << "kSlope45Left";
-//            break;
+        case ItemType::kSlope45Left:
+            qDebug() << "kSlope45Left: " << side;
+            break;
 //        case ItemType::kSlope60Left:
 //            qDebug() << "kSlope60Left";
 //            break;
 //        case ItemType::kSlope30Right:
 //            qDebug() << "kSlope30Right";
 //            break;
-//        case ItemType::kSlope45Right:
-//            qDebug() << "kSlope45Right";
-//            break;
+        case ItemType::kSlope45Right:
+            qDebug() << "kSlope45Right: " << side;
+            break;
 //        case ItemType::kSlope60Right:
 //            qDebug() << "kSlope60Right";
 //            break;

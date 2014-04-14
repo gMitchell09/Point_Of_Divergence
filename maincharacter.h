@@ -56,6 +56,18 @@ public:
 
     virtual QString className() { return "MainCharacter"; }
 
+    void setB2DPosition(const QPointF &pos) {
+        if (m_body) {
+            m_body->SetTransform(b2Vec2(PX_TO_M(pos.x()), PX_TO_M(-pos.y())), 0);
+        }
+    }
+
+    void setB2DPosition(qreal x, qreal y) {
+        if (m_body) {
+            m_body->SetTransform(b2Vec2(PX_TO_M(x), PX_TO_M(-y)), 0);
+        }
+    }
+
 protected:
     virtual bool usesStack() { return true; }
 

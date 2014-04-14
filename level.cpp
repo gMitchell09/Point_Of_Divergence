@@ -293,7 +293,6 @@ void Level::parseLayer(QDomNode layer) {
                     };
                     tileShape.Set(verts, 3);
                     groundBody->CreateFixture(&tileShape, 0.0f)->SetFriction(SLOPE_FRICTION);
-                    // TODO: Set slope friction on the fixture
                 } else if (tp.kind == kSlope30Right) {
                     float32 xMeters = PX_TO_M(pos.x());
                     float32 yMeters = PX_TO_M(-pos.y());
@@ -441,7 +440,7 @@ void Level::parseObjectGroup(QDomNode objectGroup) {
 
                 QMetaObject::Connection conn = QObject::connect(contInst, SIGNAL(stateChanged(bool)), rcvInst, SLOT(controllerStateChanged(bool)));
                 if (!((bool)conn)) {
-                    qDebug() << "WTF";
+                    qDebug() << Q_FUNC_INFO << "Sender Receiver Connection Failed";
                 }
             }
         }
@@ -539,6 +538,33 @@ ITriggerable* Level::parseObject(QDomNode object) {
 
             acs = button;
             spr = button;
+            break;
+        }
+
+        case kTeleStation: {
+            TeleportationPad *telePad = new TeleportationPad(32, 32, true, body);
+            telePad->setPixmap(tileMap->copyCellAtWithoutMask(idx));
+            telePad->setPos(x, y);
+            this->addToGroup(telePad);
+
+            body->GetFixtureList()->SetSensor(true);
+
+            acs = telePad;
+            spr = telePad;
+            break;
+        }
+
+        case kTeleReceiver: {
+            TeleportationPad *telePad = new TeleportationPad(32, 32, false, body);
+            telePad->setPixmap(tileMap->copyCellAtWithoutMask(idx));
+            telePad->setPos(x, y);
+            this->addToGroup(telePad);
+
+            body->GetFixtureList()->SetSensor(true);
+
+            acs = telePad;
+            spr = telePad;
+            break;
         }
 
         default:

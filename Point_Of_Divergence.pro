@@ -64,7 +64,9 @@ SOURCES += main.cpp \
     enemyboss.cpp \
     enemy2.cpp \
     teleportationpad.cpp \
-    boxbutton.cpp
+    boxbutton.cpp \
+    turret.cpp \
+    projectile.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -98,7 +100,9 @@ HEADERS  += mainwindow.h \
     enemyboss.h \
     enemy2.h \
     teleportationpad.h \
-    boxbutton.h
+    boxbutton.h \
+    turret.h \
+    projectile.h
 
 FORMS    += mainwindow.ui
 

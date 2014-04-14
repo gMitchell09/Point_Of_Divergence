@@ -16,6 +16,7 @@
 #include "switchobject.h"
 #include "door.h"
 #include "boxbutton.h"
+#include "teleportationpad.h"
 
 #include "Box2D.h"
 

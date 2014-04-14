@@ -62,29 +62,32 @@ private:
 
     b2World *m_world;
 
-    double m_timeDivider;
-    bool m_gamePaused;
-    bool m_gamePausedDueToDamage;
+    double m_timeDivider { 1 };
+    bool m_gamePaused { true };
+    bool m_gamePausedDueToDamage { false };
+    bool m_levelPanning { false };
 
-    QMediaPlayer *m_mediaPlayer;
-    QMediaPlayer *m_mediaPlayerReverse;
+    const float panSpeed { .3f };
 
-    qint64 m_prevTime;
-    qint64 m_gameTime;
-    qint64 m_totalGameTime;
+    QMediaPlayer *m_mediaPlayer { nullptr };
+    QMediaPlayer *m_mediaPlayerReverse { nullptr };
 
-    MainCharacter * m_mainActor;
-    NetworkPlayer *m_networkPlayer;
-    StaticBackground *m_bkg;
+    qint64 m_prevTime { 0 };
+    qint64 m_gameTime { 0 };
+    qint64 m_totalGameTime { 0 };
 
-    QGraphicsItemGroup * m_initialMenu;
-    QGraphicsItemGroup * m_loadMenu;
-    QGraphicsItemGroup * m_mpMenu;
-    QGraphicsItemGroup * m_optionsMenu;
+    MainCharacter * m_mainActor { nullptr };
+    NetworkPlayer *m_networkPlayer { nullptr };
+    StaticBackground *m_bkg { nullptr };
 
-    QGraphicsSimpleTextItem *m_waitingForNetworkPlayer;
+    QGraphicsItemGroup * m_initialMenu { nullptr };
+    QGraphicsItemGroup * m_loadMenu { nullptr };
+    QGraphicsItemGroup * m_mpMenu { nullptr };
+    QGraphicsItemGroup * m_optionsMenu { nullptr };
 
-    NetworkManager *m_networkManager;
+    QGraphicsSimpleTextItem *m_waitingForNetworkPlayer { nullptr };
+
+    NetworkManager *m_networkManager { nullptr };
     QHostAddress m_peerAddress;
 
     std::vector<std::function<void(long)>> m_stepHandlerVector;
@@ -94,15 +97,15 @@ private:
     std::vector<Sprite*> m_deletedItems;
     std::vector<Level*> m_levels;
 
-    HUD* m_hud;
-    QGraphicsSimpleTextItem* m_hudGameTime;
+    HUD* m_hud { nullptr };
+    QGraphicsSimpleTextItem* m_hudGameTime { nullptr };
 
     //int m_keyRecentPress;
     bool m_timeReversed;
 
     int m_coinCount;
 
-    QTimer *heartbeat;
+    QTimer *heartbeat { nullptr };
 
     struct ge_opts {
         bool muteBGM;
@@ -118,6 +121,7 @@ private:
 
     void removeDeletedItems();
     void initBGM(QString bgmFileName, QString revBgmFileName);
+    void panLevel();
 
 public:
     explicit GameEngine(QObject *parent = 0);

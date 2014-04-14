@@ -59,14 +59,14 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                     worldNormal = -worldManifold.normal;
                                 }
 
-                                if (worldNormal.x > 0.707) { // Collision on Right
-                                    side = Right;
+                                if (worldNormal.y <= -0.707) { // collision on Bottom
+                                    side = Bottom;
                                 } else if (worldNormal.x < -0.707) { // Collision on Left
                                     side = Left;
                                 } else if (worldNormal.y > 0.707) { // collision on Top
                                     side = Top;
-                                } else if (worldNormal.y < -0.707) { // collision on Bottom
-                                    side = Bottom;
+                                } else if (worldNormal.x > 0.707) { // Collision on Right
+                                    side = Right;
                                 }
 
                                 this->collisionOccurred(otherObject, side);

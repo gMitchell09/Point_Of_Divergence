@@ -20,4 +20,11 @@
  <objecttype name="17 - kGoomba" color="#00ff00"/>
  <objecttype name="18 - kMainCharacter" color="#00ff00"/>
  <objecttype name="19 - kLadder" color="#00ff00"/>
+ <objecttype name="20 - kLeverFlipped" color="#00a40c"/>
+ <objecttype name="21 - kDoorOpen" color="#35a450"/>
+ <objecttype name="22 - kBoxButton" color="#12a400"/>
+ <objecttype name="23 - kTeleStation" color="#00a41b"/>
+ <objecttype name="24 - kTurretRight" color="#00a400"/>
+ <objecttype name="25 - kTurretLeft" color="#0ca400"/>
+ <objecttype name="27 - kTeleReceiver" color="#00a405"/>
 </objecttypes>

@@ -54,6 +54,7 @@ void OptionSlider::setSliderPos(QGraphicsSceneMouseEvent *ev) {
 
 void OptionSlider::mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) {
     m_value = round(100*(m_slider->pos().x()-1)/(m_bkg->boundingRect().width()-15)+1);
+    qDebug() << "m_value: " << m_value;
 }
 
 int OptionSlider::optionState() {
