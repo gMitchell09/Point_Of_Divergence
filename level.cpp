@@ -547,7 +547,13 @@ ITriggerable* Level::parseObject(QDomNode object) {
             telePad->setPos(x, y);
             this->addToGroup(telePad);
 
-            body->GetFixtureList()->SetSensor(true);
+            body->DestroyFixture(body->GetFixtureList());
+
+            shape.SetAsBox(PX_TO_M(32)/2., PX_TO_M(16)/2.,
+                           b2Vec2(PX_TO_M(32.), -PX_TO_M(32.0)), 0);
+
+            body->CreateFixture(&shape, 0.0f)->SetSensor(true);
+
 
             acs = telePad;
             spr = telePad;
