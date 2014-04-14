@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(gameEngine);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //ui->graphicsView->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform | QPainter::TextAntialiasing);
 
     connect(gameEngine, SIGNAL(myExit()), this, SLOT(newGraphicsScene()));
 }
