@@ -408,6 +408,6 @@ void MainCharacter::jump() {
 
 void MainCharacter::climbLadder(int dir) {
     b2Vec2 vel = this->m_body->GetLinearVelocity();
-    vel.y = 0.5;
+    vel.y = 0.05;
     this->m_body->SetLinearVelocity(vel);
 }

@@ -78,23 +78,21 @@ void Enemy1::collisionsOccurred(QList<Collision> &collisions, unsigned char side
     }
 }
 
-//void Enemy1::collisionOccurred(Sprite *other, Side side) {
-//    AnimatedCollideableSprite::collisionOccurred(other, side);
-//    if (m_currentState == Squish) return;
-//    if (side & Right) {
-//        this->getAcceleration().setX(m_leftAccel);
-//    }
-//    if (side & Left) {
-//        this->getAcceleration().setX(m_rightAccel);
-//    }
-//    Collision col = (*itr);
-//    if (col.firstSide & Top && col.secondSprite->className() == "MainCharacter") {
-//        // Bounce!!!
-//        col.secondSprite->setVelocity(QPointF(col.secondSprite->getVelocity().x(), -400));
-//        m_currentState = Squish;
-//        this->triggerAnimation(m_currentState);
+void Enemy1::collisionOccurred(Sprite *other, Side side) {
+    AnimatedCollideableSprite::collisionOccurred(other, side);
+    if (m_currentState == Squish) return;
+    if (side == Right) {
+        this->getAcceleration().setX(m_leftAccel);
+    }
+    if (side == Left) {
+        this->getAcceleration().setX(m_rightAccel);
+    }
+    if (side == Top && other->className() == "MainCharacter") {
+        //col.secondSprite->setVelocity(QPointF(col.secondSprite->getVelocity().x(), -400));
+        m_currentState = Squish;
+        this->triggerAnimation(m_currentState);
 
-//        SFXManager *inst = SFXManager::Instance();
-//        inst->playSound(SFXManager::SFX::Enemy_Squish);
-//    }
-//}
+        SFXManager *inst = SFXManager::Instance();
+        inst->playSound(SFXManager::SFX::Enemy_Squish);
+    }
+}
