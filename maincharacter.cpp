@@ -142,8 +142,9 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
             m_jumping_double = false;
         }
         else if (!(m_jumping && m_jumping_double)) {
-            if(m_jumping)
+            if(m_jumping) {
                 m_jumping_double=true;
+            }
             this->jump();
 
             m_currentState = (MovementState) (Jump_Right + (m_currentState % 2));
@@ -322,8 +323,8 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
     unsigned int ladderSide = 0;
     bool m_isOnLadder = false;
 
-    if (m_jumping) qDebug() << "Side: " << side;
-    if (side == Bottom && other->isSolid()) {
+    //if (m_jumping) qDebug() << "Side: " << side;
+    if (side == Bottom && other->isSolid() && m_body->GetLinearVelocity().y <= 0) {
         m_jumping_double = false;
         m_jumping = false;
     }
