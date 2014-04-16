@@ -42,7 +42,7 @@ public:
     virtual bool isCollideable() { return true; }
     virtual bool isBackground() { return false; }
 
-    virtual void collisionsOccurred(QList<Collision> &collisions, unsigned char side);
+    virtual void collisionOccurred(Sprite* other, Side side);
 
     virtual QString className() { return "Tile"; }
 
@@ -50,7 +50,6 @@ public:
     void setBlockType(ItemType kind) {
         m_kind = kind;
         if (m_kind == kBox) {
-            this->setAcceleration(QPointF(0, 2000));
             m_isStatic = false;
             m_usesStack = true;
             this->setZValue(0);

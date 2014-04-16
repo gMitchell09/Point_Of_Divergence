@@ -14,7 +14,7 @@ class ObjectItem : public AnimatedCollideableSprite
 public:
     ObjectItem(int width, int height, QString path, b2Body* body = 0, QGraphicsItem *parent = 0);
 
-    virtual void collisionsOccurred(QList<Collision> &collisions, unsigned char side);
+    virtual void collisionOccurred(Sprite* other, Side side);
 
     virtual bool isStatic() { return true; }
     virtual bool isAnimated() { return true; }

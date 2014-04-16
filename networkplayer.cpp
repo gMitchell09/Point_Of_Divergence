@@ -79,11 +79,13 @@ NetworkPlayer::NetworkPlayer(int width, int height, b2Body* body, QGraphicsItem 
 }
 
 void NetworkPlayer::step(qint64 time, long delta) {}
-void NetworkPlayer::collisionsOccurred(QList<Collision> &collisions, unsigned char side) {}
+void NetworkPlayer::collisionOccurred(Sprite* other, Side side) {
+    AnimatedCollideableSprite::collisionOccurred(other, side);
+}
 
 void NetworkPlayer::decodeDatagram(NetworkManager::DatagramFormat dg) {
     AnimatedCollideableSprite::decodeDatagram(dg);
-    this->setPos(dg.pos);
+    if (m_body) m_body->SetTransform(dg.pos, 0);
     this->setVelocity(dg.vel);
 
     qDebug() << "Decode datagram: " << dg.toString();

@@ -95,15 +95,6 @@ public:
     ///
     virtual bool isBackground() { return false; }
 
-    void setAcceleration(QPointF acceleration) { m_acceleration = acceleration; }
-    QPointF& getAcceleration() { return m_acceleration; }
-
-    void setVelocity(QPointF velocity) { m_velocity = velocity; }
-    QPointF& getVelocity() { return m_velocity; }
-
-    QPointF& getApparentVelocity() { return m_apparentVelocity; }
-    void setApparentVelocity(QPointF vel) { m_apparentVelocity = vel; }
-
     virtual void step(qint64 time, long delta) {
         if (delta > 0) {
             State state;
@@ -164,10 +155,7 @@ public:
         return t == kSlope60Right || t == kSlope60Left;
     }
 
-    virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) {
-        datagram.pos = this->pos();
-        datagram.vel = this->getVelocity();
-    }
+    virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) { }
 
     virtual void decodeDatagram(NetworkManager::DatagramFormat dg)  { Q_UNUSED(dg); }
 

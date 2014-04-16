@@ -89,12 +89,6 @@ void AnimatedCollideableSprite::updatePosition() {
     }
 }
 
-void AnimatedCollideableSprite::collisionsOccurred(QList<Collision> &collisions, unsigned char side) {
-   // Override this method in your subclasses if you want to be alerted when collisions occur.
-    Q_UNUSED(collisions);
-    Q_UNUSED(side);
-}
-
 void AnimatedCollideableSprite::collisionOccurred(Sprite* other, Side side) {
     Q_UNUSED(other);
     Q_UNUSED(side);

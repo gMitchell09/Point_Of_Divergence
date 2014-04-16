@@ -33,6 +33,8 @@ private:
     float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity, m_ladderClimbSpeed;
     float m_boxPushVelocity, m_boxPushAcceleration;
 
+    const float32 m_maxSpeed { 10 };
+
     bool m_upPressed, m_downPressed, m_leftPressed, m_rightPressed;
 
     bool m_jumping, m_jumping_double;

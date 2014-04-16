@@ -9,6 +9,7 @@
 #define MIN(x, y) ((x<y)?x:y)
 #define MAX(x, y) ((x>y)?x:y)
 #define SIGN(x) ((x>0)?1:-1)
+#define ABS(x) ((x>0)?(x):(-x))
 
 MainCharacter::MainCharacter(int width, int height, b2Body* body, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, body, parent),
@@ -95,11 +96,8 @@ MainCharacter::MainCharacter(int width, int height, b2Body* body, QGraphicsItem 
     this->addAnimation(brakeLeft, Loop);
 
     this->setSolid(true);
-    this->setVelocity(QPointF(0, 0));
-    this->setAcceleration(QPointF(0, 0));
 
     this->triggerAnimation(Stand_Right);
-    this->setAcceleration(QPointF(0, m_gravity));
 }
 
 void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
@@ -120,7 +118,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
     }
     else if (keyEvent->key() == Qt::Key_Right) {
         m_currentState = Walk_Right;
-        if (!m_jumping && this->getVelocity().x() < 0) {
+        if (!m_jumping && this->getVelocity().x < 0) {
             m_currentState = Brake_Right; // We are already moving left so we have to play "brake" animation
         }
         this->triggerAnimation(m_currentState);
@@ -128,7 +126,7 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
         m_currentState = Walk_Left;
-        if (!m_jumping && this->getVelocity().x() > 0) {
+        if (!m_jumping && this->getVelocity().x > 0) {
             m_currentState = Brake_Left;
         }
         this->triggerAnimation(m_currentState);
@@ -179,30 +177,30 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
         case Qt::Key_Up:
             m_upPressed = false;
             if (m_isOnLadder)  {
-                this->getVelocity().setY(0);
-                this->getAcceleration().setY(0);
+//                this->getVelocity().setY(0);
+//                this->getAcceleration().setY(0);
             }
             break;
         case Qt::Key_Down:
             m_downPressed = false;
             if (m_isOnLadder)  {
-                this->getVelocity().setY(0);
-                this->getAcceleration().setY(0);
+//                this->getVelocity().setY(0);
+//                this->getAcceleration().setY(0);
             }
             break;
         case Qt::Key_Left:
             m_leftPressed = false;
-            if (this->getAcceleration().x() < 0) {
-                this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
-                this->setBrake(true);
-            }
+//            if (this->getAcceleration().x() < 0) {
+//                this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
+//                this->setBrake(true);
+//            }
             break;
         case Qt::Key_Right:
             m_rightPressed = false;
-            if (this->getAcceleration().x() > 0) {
-                this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
-                this->setBrake(true);
-            }
+//            if (this->getAcceleration().x() > 0) {
+//                this->setAcceleration(QPointF(((m_currentState % 2 == 0) ? -m_brakeAccel : m_brakeAccel), this->getAcceleration().y()));
+//                this->setBrake(true);
+//            }
             break;
         case Qt::Key_Shift:
             this->endSlice();
@@ -238,41 +236,39 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
 void MainCharacter::step(qint64 time, long delta) {
     AnimatedCollideableSprite::step(time, delta);
 
-    if (!m_isOnLadder) {
-        this->getAcceleration().setY(m_gravity);
-    } else {
-        this->getAcceleration().setY(0);
-    }
+//    if (!m_isOnLadder) {
+//        this->getAcceleration().setY(m_gravity);
+//    } else {
+//        this->getAcceleration().setY(0);
+//    }
 
     if (delta > 0) {
         switch (m_currentState) {
             case Walk_Right:
             case Run_Right:
             case Brake_Left:
-                if (this->getVelocity().x() < 0.005 && !m_rightPressed) {
+                if (this->getVelocity().x < 1 && !m_rightPressed) {
                     m_currentState = Stand_Right;
                     this->triggerAnimation(m_currentState);
-                    this->setVelocity(QPointF(0, this->getVelocity().y()));
+                    this->resetForces();
                 }
                 break;
             case Walk_Left:
             case Run_Left:
             case Brake_Right:
-                if (this->getVelocity().x() > -0.005 && !m_leftPressed) {
+                if (this->getVelocity().x > -1 && !m_leftPressed) {
                     m_currentState = Stand_Left;
                     this->triggerAnimation(m_currentState);
-                    this->setVelocity(QPointF(0, this->getVelocity().y()));
+                    this->resetForces();
                 }
                 break;
         }
 
         // If we are magically moving at a walking pace in either direction then play the walking animation
-        if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() < -10) {
-            if (m_acceleration.x() < 2*m_leftAccel) this->getAcceleration().setX(m_leftAccel);
+        if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x < -1) {
             m_currentState = Walk_Left;
             this->triggerAnimation(m_currentState);
-        } else if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x() > 10) {
-            if (m_acceleration.x() > 2*m_rightAccel) this->getAcceleration().setX(m_rightAccel);
+        } else if ((m_currentState == Stand_Left || m_currentState == Stand_Right) && this->getVelocity().x > 1) {
             m_currentState = Walk_Right;
             this->triggerAnimation(m_currentState);
         }
@@ -281,24 +277,6 @@ void MainCharacter::step(qint64 time, long delta) {
             m_currentState = (MovementState) (m_currentState - Jump_Right);
             this->triggerAnimation(m_currentState);
         }
-
-        if (m_brake) {
-            if (SIGN(this->getVelocity().x()) == SIGN(this->getAcceleration().x())) {
-                this->getVelocity().setX(0);
-                this->getAcceleration().setX(0);
-                m_brake = false;
-            }
-        }
-
-        if (this->getVelocity().x() > 0)
-            this->getVelocity().setX(MIN(this->getVelocity().x(), m_maxVelX));
-        else
-            this->getVelocity().setX(MAX(this->getVelocity().x(), -m_maxVelX));
-
-        if (this->getVelocity().y() > 0)
-            this->getVelocity().setY(MIN(this->getVelocity().y(), m_maxVelY));
-        else
-            this->getVelocity().setY(MAX(this->getVelocity().y(), -m_maxVelY));
     }
 
     if (m_leftPressed) {
@@ -307,6 +285,17 @@ void MainCharacter::step(qint64 time, long delta) {
 
     if (m_rightPressed) {
         this->m_body->ApplyForceToCenter(b2Vec2(20, 0), true);
+    }
+
+    // Velocity Limiting:
+    b2Vec2 vel = this->getVelocity();
+    if (ABS(vel.x) > ABS(this->m_maxSpeed)) {
+        this->setVelocity(b2Vec2(SIGN(vel.x) * this->m_maxSpeed, vel.y), false);
+    }
+
+    // We only want to check if we are going UP faster than our max speed
+    if (vel.y > this->m_maxSpeed) {
+        this->setVelocity(b2Vec2(vel.x, this->m_maxSpeed), false);
     }
 }
 
@@ -323,10 +312,11 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
     unsigned int ladderSide = 0;
     bool m_isOnLadder = false;
 
-    //if (m_jumping) qDebug() << "Side: " << side;
     if (side == Bottom && other->isSolid() && m_body->GetLinearVelocity().y <= 0) {
         m_jumping_double = false;
         m_jumping = false;
+        if (m_currentState == Jump_Left || m_currentState == Jump_Right)
+            m_currentState = (MovementState) (m_currentState % 2);
     }
 
     if (side & other->damagesChar()) {
@@ -372,28 +362,10 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
             }
             break;
         case ItemType::kLever:
-            qDebug() << "Yeah, right";
             if (m_downPressed) {
                 dynamic_cast<SwitchObject*>(other)->toggle();
             }
-//        case ItemType::kSlope30Left:
-//            qDebug() << "kSlope30Left";
-//            break;
-        case ItemType::kSlope45Left:
-            qDebug() << "kSlope45Left: " << side;
-            break;
-//        case ItemType::kSlope60Left:
-//            qDebug() << "kSlope60Left";
-//            break;
-//        case ItemType::kSlope30Right:
-//            qDebug() << "kSlope30Right";
-//            break;
-        case ItemType::kSlope45Right:
-            qDebug() << "kSlope45Right: " << side;
-            break;
-//        case ItemType::kSlope60Right:
-//            qDebug() << "kSlope60Right";
-//            break;
+
         default:
             break;
     }

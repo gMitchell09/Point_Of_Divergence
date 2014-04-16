@@ -486,6 +486,7 @@ ITriggerable* Level::parseObject(QDomNode object) {
 
             acs = switchObject;
             body->GetFixtureList()->SetSensor(true);
+            body->GetFixtureList()->SetFriction(0.0f);
 
             spr = switchObject;
             break;
@@ -498,6 +499,7 @@ ITriggerable* Level::parseObject(QDomNode object) {
 
             acs = switchObject;
             body->GetFixtureList()->SetSensor(true);
+            body->GetFixtureList()->SetFriction(0.0f);
 
             spr = switchObject;
             break;

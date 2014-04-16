@@ -24,6 +24,7 @@
 #include <QTcpServer>
 
 #include <queue>
+#include <Box2D.h>
 
 /// NetworkManager
 class NetworkManager : public QObject
@@ -34,8 +35,8 @@ public:
     /*! This defines the packet format used in PoD and also defines serialization and deserialization methods
         to convert datagrams (QByteArray's) to and from this format */
     struct DatagramFormat {
-        QPointF pos;
-        QPointF vel;
+        b2Vec2 pos;
+        b2Vec2 vel;
         int mainCharFrame;
         int mainCharAnim;
         qint64 timestamp;
@@ -58,9 +59,9 @@ public:
         }
 
         QString toString() {
-            return "DatagramFormat: Pos: (" + QString::number(this->pos.x()) +
-                    ", " + QString::number(this->pos.y()) + ")\nVel: (" + QString::number(this->vel.x()) +
-                    ", " + QString::number(this->vel.y()) + ")\nTimestamp: " + QString::number(timestamp);
+            return "DatagramFormat: Pos: (" + QString::number(this->pos.x) +
+                    ", " + QString::number(this->pos.y) + ")\nVel: (" + QString::number(this->vel.x) +
+                    ", " + QString::number(this->vel.y) + ")\nTimestamp: " + QString::number(timestamp);
         }
     };
 
