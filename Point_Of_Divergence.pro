@@ -38,15 +38,11 @@ SOURCES += main.cpp \
     gameengine.cpp \
     sprite.cpp \
     animatedsprite.cpp \
-    staticbackground.cpp \
     animatedcollideablesprite.cpp \
     tilemap.cpp \
     maincharacter.cpp \
-    staticplatform.cpp \
-    movingplatform.cpp \
     statearray.cpp \
     enemy1.cpp \
-    objectitem.cpp \
     mainwindow.cpp \
     tile.cpp \
     hud.cpp \
@@ -66,7 +62,8 @@ SOURCES += main.cpp \
     teleportationpad.cpp \
     boxbutton.cpp \
     turret.cpp \
-    projectile.cpp
+    projectile.cpp \
+    staticbackground.cpp
 
 HEADERS  += mainwindow.h \
     gameengine.h \
@@ -76,11 +73,8 @@ HEADERS  += mainwindow.h \
     animatedcollideablesprite.h \
     tilemap.h \
     maincharacter.h \
-    staticplatform.h \
-    movingplatform.h \
     statearray.h \
     enemy1.h \
-    objectitem.h \
     tile.h \
     global.h \
     hud.h \
