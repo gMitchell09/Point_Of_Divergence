@@ -7,24 +7,28 @@
   <image source="../tilesets/Tiles2_32x32.png" width="256" height="256"/>
   <tile id="0">
    <properties>
+    <property name="rate" value="500"/>
     <property name="solid" value="1"/>
     <property name="type" value="24"/>
    </properties>
   </tile>
   <tile id="1">
    <properties>
+    <property name="rate" value="500"/>
     <property name="solid" value="1"/>
     <property name="type" value="25"/>
    </properties>
   </tile>
   <tile id="2">
    <properties>
+    <property name="rate" value="500"/>
     <property name="solid" value="1"/>
     <property name="type" value="24"/>
    </properties>
   </tile>
   <tile id="3">
    <properties>
+    <property name="rate" value="500"/>
     <property name="solid" value="1"/>
     <property name="type" value="25"/>
    </properties>

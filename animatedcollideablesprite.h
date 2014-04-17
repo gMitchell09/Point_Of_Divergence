@@ -72,30 +72,30 @@ public:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
     // Position is Box2D position
-    virtual b2BodyDef getBodyDef(b2Vec2 b2Pos) {
+    // Hides base implemenation
+    static b2BodyDef getBodyDef(b2Vec2 b2Pos, bool isStatic) {
         b2BodyDef bodyDef;
         bodyDef.position.Set(b2Pos.x, b2Pos.y);
-        bodyDef.type = b2_staticBody;
-        bodyDef.userData = dynamic_cast<AnimatedCollideableSprite*>(this);
+        bodyDef.type = (isStatic) ? b2_staticBody : b2_dynamicBody;
         return bodyDef;
     }
 
-    virtual b2BodyDef getBodyDef(qreal qtx, qreal qty) {
-        return this->getBodyDef(b2Vec2(PX_TO_M(qtx), PX_TO_M(-qty)));
+    static b2BodyDef getBodyDef(qreal qtx, qreal qty, bool isStatic) {
+        return AnimatedCollideableSprite::getBodyDef(b2Vec2(PX_TO_M(qtx), PX_TO_M(-qty)), isStatic);
     }
 
-    virtual b2PolygonShape getShape() {
+    static b2PolygonShape getShape(int width, int height) {
         b2PolygonShape shape;
-//        shape.SetAsBox(PX_TO_M(this->m_width/2),
-//                       PX_TO_M(this->m_height/2),
-//                       b2Vec2(PX_TO_M(this->m_width/2), PX_TO_M(-this->m_height/2)),
-//                       0);
+        shape.SetAsBox(PX_TO_M(width/2),
+                       PX_TO_M(height/2),
+                       b2Vec2(PX_TO_M(width/2), PX_TO_M(-height/2)),
+                       0);
         return shape;
     }
 
-    virtual b2FixtureDef getFixtureDef() {
+    static b2FixtureDef getFixtureDef(int width, int height) {
         b2FixtureDef fixDef;
-        b2PolygonShape shape = this->getShape();
+        b2PolygonShape shape = AnimatedCollideableSprite::getShape(width, height);
         fixDef.density = 1.0f;
         fixDef.friction = 0.1f;
         fixDef.isSensor = false;
@@ -112,6 +112,8 @@ public:
     void resetForces() { if (m_body) { m_body->SetLinearVelocity(b2Vec2(0, m_body->GetLinearVelocity().y)); m_body->SetAngularVelocity(0); } }
 
     void setPosition(b2Vec2 pos, float32 angle = 0) { if (m_body) m_body->SetTransform(pos, angle); }
+
+    void setBody(b2Body* body) { m_body = body; }
 
     virtual ~AnimatedCollideableSprite();
 

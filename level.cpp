@@ -1,4 +1,5 @@
 #include "level.h"
+#include "turret.h"
 
 static const QString bkgPath = "./resources/backgrounds";
 static const QString buttonPath = "./resources/buttons";
@@ -237,9 +238,24 @@ void Level::parseLayer(QDomNode layer) {
 
                 body->SetUserData(coin);
                 this->addToGroup(coin);
-            } else if (tp.kind == kTurretRight) {
+            } else if (tp.kind == kTurretRight || tp.kind == kTurretLeft) {
+                b2BodyDef bodyDef;
+                bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
+                bodyDef.type = b2_staticBody;
+                b2Body* body = m_world->CreateBody(&bodyDef);
+                b2PolygonShape shape;
+                shape.SetAsBox(PX_TO_M(32)/2., PX_TO_M(32)/2.,
+                               b2Vec2(PX_TO_M(32.)/2, -PX_TO_M(32.)/2), 0);
 
-            } else if (tp.kind == kTurretLeft) {
+                QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
+
+                Turret *turret = new Turret(32, 32, (tp.kind == kTurretLeft), tp.rate, body);
+                turret->setPixmap(tileImage);
+                turret->setPos(pos);
+                turret->setShapeMode(Tile::BoundingRectShape);
+
+                body->SetUserData(turret);
+                this->addToGroup(turret);
 
             } else if (tp.kind == kBossEnemy) {
                 b2BodyDef bodyDef;
