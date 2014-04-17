@@ -150,7 +150,7 @@ void GameEngine::step(qint64 time) {
              this->setForegroundBrush(QColor(255, 255, 255, 127));
         } else this->setForegroundBrush(QColor(255, 255, 255, 0));
 
-        if (!m_peerAddress.isNull() && m_networkManager->isConnected()) {
+        if (/*!m_peerAddress.isNull() &&*/ m_networkManager->isConnected()) {
             NetworkManager::DatagramFormat dg;
             dg.timestamp = m_gameTime;
             m_mainActor->fillDatagram(dg);
@@ -158,7 +158,6 @@ void GameEngine::step(qint64 time) {
         }
 
         if (m_networkPlayer && m_networkManager) {
-            qDebug() << m_networkManager->hasPendingDatagrams();
             while (m_networkManager->hasPendingDatagrams()) {
                 NetworkManager::DatagramFormat nextDG = m_networkManager->nextDatagram();
                 m_networkPlayer->decodeDatagram(nextDG);
@@ -662,8 +661,30 @@ void GameEngine::joinMPPressed() {
 
 void GameEngine::networkPlayerConnected() {
     qDebug() << "Woo!  We have a connection!";
-    m_networkPlayer = new NetworkPlayer(16, 32);
+
+    b2BodyDef bodyDef;
+    bodyDef.position.Set(0, 0);
+    bodyDef.type = b2_dynamicBody;
+    b2Body* body = m_world->CreateBody(&bodyDef);
+    b2PolygonShape mcShape;
+    b2Vec2 verts[] = {
+        b2Vec2(0.55, 0.0),
+        b2Vec2(0.5, -0.05),
+        b2Vec2(0.5, -1.95),
+        b2Vec2(0.55, -2.0),
+        b2Vec2(1.45, -2),
+        b2Vec2(1.5, -1.95),
+        b2Vec2(1.5, -0.95),
+        b2Vec2(1.45, 0.0)
+    };
+    mcShape.Set(verts, 8);
+    body->SetFixedRotation(true);
+    body->CreateFixture(&mcShape, 1.0f)->SetFriction(0.1f);
+
+    m_networkPlayer = new NetworkPlayer(16, 32, body);
     m_networkPlayer->setSolid(true);
+
+    body->SetUserData(m_networkPlayer);
 
     this->addSprite(m_networkPlayer);
 

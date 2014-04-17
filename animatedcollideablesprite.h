@@ -32,12 +32,17 @@ public:
     bool isOnRightSlope() { return m_onRightSlope; }
 
     virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) {
+        AnimatedSprite::fillDatagram(datagram);
+
         datagram.pos = (m_body) ? m_body->GetPosition() : b2Vec2();
         datagram.vel = (this->getVelocity());
     }
 
     virtual void decodeDatagram(NetworkManager::DatagramFormat dg) {
         AnimatedSprite::decodeDatagram(dg);
+
+        this->setPosition(dg.pos);
+        this->setVelocity(dg.vel, true);
     }
 
     virtual void pushState(qint64 time, long delta, State& state) {
@@ -105,6 +110,8 @@ public:
     b2Vec2 getVelocity() { if (m_body) return m_body->GetLinearVelocity(); else return b2Vec2(); }
     void setForce(b2Vec2 force) { if (m_body) m_body->ApplyForceToCenter(force, true);}
     void resetForces() { if (m_body) { m_body->SetLinearVelocity(b2Vec2(0, m_body->GetLinearVelocity().y)); m_body->SetAngularVelocity(0); } }
+
+    void setPosition(b2Vec2 pos, float32 angle = 0) { if (m_body) m_body->SetTransform(pos, angle); }
 
     virtual ~AnimatedCollideableSprite();
 

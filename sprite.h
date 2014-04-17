@@ -155,7 +155,7 @@ public:
         return t == kSlope60Right || t == kSlope60Left;
     }
 
-    virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) { }
+    virtual void fillDatagram(NetworkManager::DatagramFormat &datagram) { Q_UNUSED(datagram); }
 
     virtual void decodeDatagram(NetworkManager::DatagramFormat dg)  { Q_UNUSED(dg); }
 
