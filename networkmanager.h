@@ -55,6 +55,7 @@ public:
 
         /// Deconstruct a packet into our struct
         void deserialize(char* data, size_t size) {
+            Q_UNUSED(size);
             memcpy(this, data, sizeof(DatagramFormat));
         }
 

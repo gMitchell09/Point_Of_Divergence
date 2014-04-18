@@ -45,6 +45,7 @@ public:
     bool isCollideable() { return true; }
     bool isBackground() { return false; }
     virtual QString className() { return "Projectile"; }
+    virtual void collisionOccurred(Sprite *sprite, Side side);
 
 signals:
 

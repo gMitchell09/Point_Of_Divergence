@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
-    gameEngine = new GameEngine(ui->graphicsView->width(), ui->graphicsView->height());
+    gameEngine = new GameEngine();
     gameEngine->setSceneRect(0, 0, 1275, 643);
     gameEngine->displayInitialMenu();//displayLoadMenu
 
@@ -34,7 +34,7 @@ void MainWindow::newGraphicsScene() {
 
     qDebug() << "trying to create new scene";
 
-    gameEngine = new GameEngine(ui->graphicsView->width(), ui->graphicsView->height());
+    gameEngine = new GameEngine();
     gameEngine->setSceneRect(0, 0, 1275, 643);
     gameEngine->displayInitialMenu();//displayLoadMenu
     connect(gameEngine, SIGNAL(myExit()), this, SLOT(newGraphicsScene()));

@@ -55,9 +55,7 @@ class GameEngine : public QGraphicsScene
     Q_OBJECT
 private:
     /* Arbitrary Constants, chosen by fair dice roll */
-    static const float m_gravity; // The enemy's gate is down.
-
-    b2World *m_world;
+    b2World *m_world { nullptr };
 
     double m_timeDivider { 1 };
     bool m_gamePaused { true };
@@ -98,9 +96,9 @@ private:
     QGraphicsSimpleTextItem* m_hudGameTime { nullptr };
 
     //int m_keyRecentPress;
-    bool m_timeReversed;
+    bool m_timeReversed { false };
 
-    int m_coinCount;
+    int m_coinCount { 0 };
 
     QTimer *heartbeat { nullptr };
 
@@ -122,7 +120,6 @@ private:
 
 public:
     explicit GameEngine(QObject *parent = 0);
-    GameEngine(int width, int height, QObject *parent = 0);
 
     /* Iterate over m_stepHandlerVector and call each object so that they may update
      * 0. Calculate dt and update m_prevTime
@@ -189,8 +186,6 @@ public:
     inline void addNetworkSprite(NetworkPlayer *np) {
         this->addSprite(np);
     }
-
-    float getGravity() { return m_gravity; }
 
     virtual bool event(QEvent *event);
     virtual void removeItem(QGraphicsItem *item);

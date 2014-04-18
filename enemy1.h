@@ -15,6 +15,10 @@ private:
     float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
     long m_squishCtr;
 
+
+    const float32 m_maxSpeed { 4 };
+    bool m_shuffleRight { true };
+
     MovementState m_currentState;
 
 public:

@@ -29,11 +29,10 @@ struct TileProperties {
 class Tile : public AnimatedCollideableSprite
 {
 private:
-    ItemType m_kind;
-    bool m_isStatic;
-    bool m_usesStack;
+    ItemType m_kind { kBlock };
+    bool m_isStatic { true };
+    bool m_usesStack { false };
 
-    qreal m_rotation;
 public:
     explicit Tile(int width, int height, b2Body* body = 0, QGraphicsItem *parent = 0);
 
@@ -47,11 +46,13 @@ public:
     virtual QString className() { return "Tile"; }
 
     virtual ItemType blockType() { return m_kind; }
+
     void setBlockType(ItemType kind) {
         m_kind = kind;
         if (m_kind == kBox) {
             m_isStatic = false;
             m_usesStack = true;
+            this->setSolid(true);
             this->setZValue(0);
         }
     }

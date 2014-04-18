@@ -49,6 +49,6 @@ void Turret::step(qint64 time, long delta) {
     m_lastFireTime += delta;
     if (m_lastFireTime >= m_fireDelay) {
         m_lastFireTime = 0;
-        this->fireProjectile();
+//        this->fireProjectile();
     }
 }

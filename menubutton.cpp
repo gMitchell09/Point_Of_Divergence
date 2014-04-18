@@ -10,6 +10,7 @@ MenuButton::MenuButton(QPixmap *up, QPixmap *down, QPixmap *hover, QGraphicsItem
 }
 
 void MenuButton::mousePressEvent(QGraphicsSceneMouseEvent *ev) {
+    Q_UNUSED(ev);
     this->setPixmap(*m_downGraphic);
 }
 
@@ -21,10 +22,12 @@ void MenuButton::mouseReleaseEvent(QGraphicsSceneMouseEvent *ev) {
 }
 
 void MenuButton::hoverEnterEvent(QGraphicsSceneHoverEvent *ev) {
+    Q_UNUSED(ev);
     this->setPixmap(*m_hoverGraphic);
 }
 
 void MenuButton::hoverLeaveEvent(QGraphicsSceneHoverEvent *ev) {
+    Q_UNUSED(ev);
     this->setPixmap(*m_upGraphic);
 }
 

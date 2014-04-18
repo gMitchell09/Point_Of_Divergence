@@ -48,6 +48,7 @@ signals:
     
 public slots:
     virtual void controllerStateChanged(bool state) {
+        Q_UNUSED(state);
         m_state = !m_state;
         if (m_state) {
             this->setPixmap(m_onPixmap);

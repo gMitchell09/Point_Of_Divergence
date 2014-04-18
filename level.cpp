@@ -207,6 +207,7 @@ void Level::parseLayer(QDomNode layer) {
                 b2BodyDef bodyDef;
                 bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
                 bodyDef.type = b2_dynamicBody;
+                bodyDef.fixedRotation = true; // :'(
                 b2Body* body = m_world->CreateBody(&bodyDef);
                 b2PolygonShape shape;
                 shape.SetAsBox(PX_TO_M(20)/2., PX_TO_M(18)/2.,

@@ -26,22 +26,8 @@ static const QString otherSpritePath = spritePath + "/other";
 
 #define ABS(x) ((x<0)?(-x):(x))
 
-GameEngine::GameEngine(QObject* parent) : QGraphicsScene(parent), m_mainActor(NULL), m_prevTime(0) {}
-
-GameEngine::GameEngine(int width, int height, QObject *parent) :
-    QGraphicsScene(parent),
-    m_mainActor(NULL),
-    m_prevTime(0),
-    m_gameTime(0),
-    m_hudGameTime(NULL),
-    m_coinCount(0),
-    m_timeReversed(false),
-    m_hud(0),
-    m_timeDivider(1),
-    m_gamePaused(false),
-    m_gamePausedDueToDamage(false),
-    m_networkPlayer(NULL),
-    m_peerAddress() {
+GameEngine::GameEngine(QObject *parent) :
+    QGraphicsScene(parent) {
     this->setBackgroundBrush(QBrush(QColor(210, 210, 255, 255)));
 
     qDebug() << "Level Path: " << levelPath + "/MountainCave.tmx";
@@ -247,19 +233,18 @@ void GameEngine::removeItem(Sprite *item) {
     if (item->scene() == this) {
         QGraphicsScene::removeItem(item);
         m_deletedItems.push_back(item);
-        delete item;
     } else {
         ((Level*)m_levels.at(0))->removeFromGroup(item);
-        delete item;
+        m_deletedItems.push_back(item);
     }
 }
 
 void GameEngine::removeDeletedItems() {
-    for (auto itr = m_deletedItems.begin(); itr != m_deletedItems.end(); itr++) {
-        m_spriteArray.erase(std::remove(m_spriteArray.begin(), m_spriteArray.end(), (*itr)), m_spriteArray.end());
+    for (auto itr = m_deletedItems.begin(); itr != m_deletedItems.end(); ++itr) {
+        delete (*itr);
     }
 
-    m_deletedItems.empty();
+    m_deletedItems.clear();
 }
 
 void GameEngine::displayBackground(QColor mycolor) {

@@ -12,26 +12,7 @@
 #define ABS(x) ((x>0)?(x):(-x))
 
 MainCharacter::MainCharacter(int width, int height, b2Body* body, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, body, parent),
-    m_isOnLadder(false),
-    m_leftPressed(false),
-    m_rightPressed(false),
-    m_downPressed(false),
-    m_upPressed(false) {
-
-    m_leftAccel = -400;
-    m_rightAccel = -m_leftAccel;
-    m_maxVelX = 300;
-    m_maxVelY = 2000;
-
-    m_jumpStartVel = -500;
-    m_ladderClimbSpeed = -100;
-    m_gravity = 2000;
-    m_brakeAccel = 800;
-    m_brakeAccelSliding = m_brakeAccel / 4;
-
-    m_boxPushAcceleration = 100;
-    m_boxPushVelocity = 100;
+    AnimatedCollideableSprite(width, height, body, parent) {
 
     this->setZValue(1);
 
@@ -315,8 +296,10 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
     if (side == Bottom && other->isSolid() && m_body->GetLinearVelocity().y <= 0) {
         m_jumping_double = false;
         m_jumping = false;
-        if (m_currentState == Jump_Left || m_currentState == Jump_Right)
+        if (m_currentState == Jump_Left || m_currentState == Jump_Right) {
             m_currentState = (MovementState) (m_currentState % 2);
+            this->triggerAnimation(m_currentState);
+        }
     }
 
     if (side & other->damagesChar()) {
@@ -351,14 +334,28 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
             break;
         case ItemType::kLadder:
             ladderSide |= side;
-            if (side & Top) m_isOnLadder = true;
+            if (side == Top) m_isOnLadder = true;
             if (m_upPressed) {
-                if (!m_isOnLadder) {
-                    this->jump();
-                }
-                b2Vec2 vel = this->m_body->GetLinearVelocity();
+//                if (!m_isOnLadder) {
+//                    this->jump();
+//                }
+                this->climbLadder(1);
+                b2Vec2 vel = this->getVelocity();
                 vel.x = 0;
-                this->m_body->SetLinearVelocity(vel);
+                this->setVelocity(vel, false);
+                // Reset jumping counter
+                this->m_jumping = this->m_jumping_double = 0;
+            } else if (m_downPressed) {
+                this->climbLadder(-1);
+                b2Vec2 vel = this->getVelocity();
+                vel.x = 0;
+                this->setVelocity(vel, false);
+                // Reset jumping counter
+                this->m_jumping = this->m_jumping_double = 0;
+            } else {
+                b2Vec2 vel = this->getVelocity();
+                vel.y = 0;
+                this->setVelocity(vel, false);
             }
             break;
         case ItemType::kLever:
@@ -380,7 +377,7 @@ void MainCharacter::jump() {
 }
 
 void MainCharacter::climbLadder(int dir) {
-    b2Vec2 vel = this->m_body->GetLinearVelocity();
-    vel.y = 0.05;
-    this->m_body->SetLinearVelocity(vel);
+    b2Vec2 vel = this->getVelocity();
+    vel.y = dir * m_ladderClimbSpeed;
+    this->setVelocity(vel, true);
 }

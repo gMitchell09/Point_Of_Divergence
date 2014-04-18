@@ -21,7 +21,7 @@ public:
     virtual void step(qint64 time, long delta) {
         AnimatedCollideableSprite::step(time, delta);
     }
-    virtual void collisionOccurred(Sprite* other, Side side) {}
+    virtual void collisionOccurred(Sprite* other, Side side) { Q_UNUSED(other); Q_UNUSED(side); }
 
     virtual QString className() { return "CharacterClone"; }
 
@@ -32,6 +32,7 @@ public:
 
     // Mute these methods so we can use our custom stack
     virtual void pushState(qint64 time, long delta, State& state) {
+        Q_UNUSED(time); Q_UNUSED(delta); Q_UNUSED(state);
         ++m_sliceIndex;
 
         if (m_sliceIndex >= m_stateStack.size()) m_sliceIndex = 0;
@@ -41,6 +42,8 @@ public:
     }
 
     virtual void popState(qint64 time, long delta) {
+        Q_UNUSED(time);
+        Q_UNUSED(delta);
         --m_sliceIndex;
 
         if (m_sliceIndex < 0) m_sliceIndex = m_stateStack.size() - 1;

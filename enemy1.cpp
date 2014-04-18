@@ -6,6 +6,8 @@
 #include "enemy1.h"
 #include "gameengine.h"
 
+#define ABS(x) ((x>0)?(x):(-x))
+
 Enemy1::Enemy1(int width, int height, QString path, b2Body* body, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, body, parent) {
 
@@ -35,6 +37,8 @@ Enemy1::Enemy1(int width, int height, QString path, b2Body* body, QGraphicsItem 
 
     m_currentState = Stand;
     this->triggerAnimation(m_currentState);
+
+    this->setVelocity(b2Vec2(this->m_maxSpeed, 0), true);
 }
 
 void Enemy1::step(qint64 time, long delta) {
@@ -49,16 +53,29 @@ void Enemy1::step(qint64 time, long delta) {
             ((GameEngine*)this->scene())->removeItem(this);
         }
     }
+
+    b2Vec2 vel = this->getVelocity();
+    if (ABS(vel.x) > ABS(this->m_maxSpeed)) {
+        this->setVelocity(b2Vec2(SIGN(vel.x) * this->m_maxSpeed, vel.y), false);
+    }
+
+    if (this->m_shuffleRight) {
+        this->setVelocity(b2Vec2(this->m_maxSpeed, vel.y), false);
+    } else {
+        this->setVelocity(b2Vec2(-this->m_maxSpeed, vel.y), false);
+    }
 }
 
 void Enemy1::collisionOccurred(Sprite *other, Side side) {
     AnimatedCollideableSprite::collisionOccurred(other, side);
     if (m_currentState == Squish) return;
-    if (side == Right) {
-//        this->getAcceleration().setX(m_leftAccel);
-    }
-    if (side == Left) {
-//        this->getAcceleration().setX(m_rightAccel);
+    if (other->isSolid()) {
+        if (side == Right) {
+            m_shuffleRight = false;
+        }
+        if (side == Left) {
+            m_shuffleRight = true;
+        }
     }
     if (side == Top && other->className() == "MainCharacter") {
         //col.secondSprite->setVelocity(QPointF(col.secondSprite->getVelocity().x(), -400));

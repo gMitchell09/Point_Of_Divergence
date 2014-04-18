@@ -25,31 +25,22 @@ private:
                          Squat_Right, Squat_Left,
                          Brake_Right, Brake_Left};
 
-    MovementState m_currentState;
+    MovementState m_currentState { Stand_Right };
     // nextState is if you are running right and then pressed the left key... it is for mapping between states
 //    MovementState m_nextState;
 
-    float m_brakeAccel, m_brakeAccelSliding;
-    float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity, m_ladderClimbSpeed;
-    float m_boxPushVelocity, m_boxPushAcceleration;
-
+    const float32 m_ladderClimbSpeed { 5 };
     const float32 m_maxSpeed { 10 };
 
-    bool m_upPressed, m_downPressed, m_leftPressed, m_rightPressed;
-
-    bool m_jumping, m_jumping_double;
-    bool m_brake;
-
-    bool m_isOnLadder;
-
-    int m_keyRecentPress;
+    bool m_upPressed { false }, m_downPressed { false }, m_leftPressed { false }, m_rightPressed { false };
+    bool m_jumping { false }, m_jumping_double { false };
+    bool m_isOnLadder { false };
+    int m_keyRecentPress { 0 };
 
 public:
     explicit MainCharacter(int width, int height, b2Body* body = 0, QGraphicsItem *parent = 0);
     void keyPressEvent(QKeyEvent * keyEvent);
     void keyReleaseEvent(QKeyEvent * keyEvent);
-
-    void setBrake(bool brake) { m_brake = brake; }
 
     virtual void step(qint64 time, long delta);
     virtual void collisionOccurred(Sprite *sprite, Side side);
