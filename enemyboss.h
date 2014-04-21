@@ -6,21 +6,27 @@
 #include "tilemap.h"
 #include "animatedcollideablesprite.h"
 
+#include "Box2D.h"
+
 class EnemyBoss : public AnimatedCollideableSprite
 {
 private:
     enum MovementState {Stand = 0, Squish};
     float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
     long m_squishCtr;
-    int m_enemy_health_count;
+    int m_enemy_health_count { 3 };
+
+
+    const float32 m_maxSpeed { 4 };
+    bool m_shuffleRight { true };
 
     MovementState m_currentState;
 
 public:
-    EnemyBoss(int width, int height, QString path, int enemyHits, b2Body* body = 0, QGraphicsItem *parent = 0);
+    EnemyBoss(int width, int height, QString path, int life, b2Body* body = 0, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta);
-    virtual void collisionOccurred(Sprite* other, Side side);
+    virtual void collisionOccurred(Sprite *other, Side side);
 
     virtual QString className() { return "EnemyBoss"; }
 
@@ -30,4 +36,4 @@ protected:
     virtual bool usesStack() { return true; }
 };
 
-#endif // ENEMYBOSS_H
+#endif // ENEMY1_H

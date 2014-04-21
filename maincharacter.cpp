@@ -362,6 +362,16 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
             if (m_downPressed) {
                 dynamic_cast<SwitchObject*>(other)->toggle();
             }
+        case ItemType::kGoomba:
+        case ItemType::kEnemy2:
+        case ItemType::kBossEnemy: {
+            if (side == Bottom) {
+                if (m_body) {
+                    m_body->ApplyLinearImpulse(b2Vec2(0, 10), b2Vec2(0.5, 0.5), true);
+                    qDebug() << "Bounce!";
+                }
+            }
+        }
 
         default:
             break;

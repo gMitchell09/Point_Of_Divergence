@@ -6,6 +6,8 @@
 #include "tilemap.h"
 #include "animatedcollideablesprite.h"
 
+#include "Box2D.h"
+
 class Enemy2 : public AnimatedCollideableSprite
 {
 private:
@@ -13,13 +15,17 @@ private:
     float m_leftAccel, m_rightAccel, m_maxVelX, m_maxVelY, m_jumpStartVel, m_gravity;
     long m_squishCtr;
 
+
+    const float32 m_maxSpeed { 4 };
+    bool m_shuffleRight { true };
+
     MovementState m_currentState;
 
 public:
     Enemy2(int width, int height, QString path, b2Body* body = 0, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta);
-    virtual void collisionOccurred(Sprite* other, Side side);
+    virtual void collisionOccurred(Sprite *other, Side side);
 
     virtual QString className() { return "Enemy2"; }
 
@@ -29,4 +35,4 @@ protected:
     virtual bool usesStack() { return true; }
 };
 
-#endif // Enemy2_H
+#endif // ENEMY1_H

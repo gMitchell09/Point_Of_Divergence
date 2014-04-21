@@ -1,5 +1,6 @@
 #include "level.h"
 #include "turret.h"
+#include "enemyboss.h"
 
 static const QString bkgPath = "./resources/backgrounds";
 static const QString buttonPath = "./resources/buttons";
@@ -264,11 +265,11 @@ void Level::parseLayer(QDomNode layer) {
                 bodyDef.type = b2_dynamicBody;
                 b2Body* body = m_world->CreateBody(&bodyDef);
                 b2PolygonShape shape;
-                shape.SetAsBox(PX_TO_M(20)/2., PX_TO_M(18)/2.,
-                               b2Vec2(PX_TO_M(20.), -PX_TO_M(18.0)/2), 0);
+                shape.SetAsBox(PX_TO_M(32.)/2., PX_TO_M(21.)/2.,
+                               b2Vec2(PX_TO_M(32.), -PX_TO_M(32.0)/2), 0);
                 body->CreateFixture(&shape, 1.0f)->SetFriction(BODY_FRICTION);
 
-                EnemyBoss *boss = new EnemyBoss(20, 18, enemyPath, tp.life, body);
+                EnemyBoss *boss = new EnemyBoss(32, 32, enemyPath, tp.life, body);
                 boss->setPos(pos);
 
                 body->SetUserData(boss);

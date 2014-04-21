@@ -1,11 +1,18 @@
 #include "enemyboss.h"
 
 #include "sfxmanager.h"
-#include "enemy1.h"
+/* Author: Atley Troyer
+ */
+
+#include "sfxmanager.h"
+#include "enemyboss.h"
 #include "gameengine.h"
 
-EnemyBoss::EnemyBoss(int width, int height, QString path, int enemyHits, b2Body* body, QGraphicsItem *parent) :
-    AnimatedCollideableSprite(width, height, body, parent) {
+#define ABS(x) ((x>0)?(x):(-x))
+
+EnemyBoss::EnemyBoss(int width, int height, QString path, int life, b2Body* body, QGraphicsItem *parent) :
+    AnimatedCollideableSprite(width, height, body, parent),
+    m_enemy_health_count(life) {
 
     m_leftAccel = -150;
     m_rightAccel = -m_leftAccel;
@@ -16,10 +23,9 @@ EnemyBoss::EnemyBoss(int width, int height, QString path, int enemyHits, b2Body*
     m_gravity = 2000;
 
     m_squishCtr = 0;
-    m_enemy_health_count = enemyHits;
 
-    QPixmap goombaStand(path + "/GoombaStand.png");
-    QPixmap goombaSquish(path + "/GoombaSquish.png");
+    QPixmap goombaStand(path + "/slime_normal.png");
+    QPixmap goombaSquish(path + "/slime_dead.png");
 
     std::vector<QPixmap> stand;
     stand.push_back(goombaStand);
@@ -31,8 +37,11 @@ EnemyBoss::EnemyBoss(int width, int height, QString path, int enemyHits, b2Body*
     this->addAnimation(squish, Loop);
 
     this->setSolid(true);
+
     m_currentState = Stand;
     this->triggerAnimation(m_currentState);
+
+    this->setVelocity(b2Vec2(this->m_maxSpeed, 0), true);
 }
 
 void EnemyBoss::step(qint64 time, long delta) {
@@ -47,32 +56,39 @@ void EnemyBoss::step(qint64 time, long delta) {
             ((GameEngine*)this->scene())->removeItem(this);
         }
     }
+
+    b2Vec2 vel = this->getVelocity();
+    if (ABS(vel.x) > ABS(this->m_maxSpeed)) {
+        this->setVelocity(b2Vec2(SIGN(vel.x) * this->m_maxSpeed, vel.y), false);
+    }
+
+    if (this->m_shuffleRight) {
+        this->setVelocity(b2Vec2(this->m_maxSpeed, vel.y), false);
+    } else {
+        this->setVelocity(b2Vec2(-this->m_maxSpeed, vel.y), false);
+    }
 }
 
-void EnemyBoss::collisionOccurred(Sprite* other, Side side) {
+void EnemyBoss::collisionOccurred(Sprite *other, Side side) {
     AnimatedCollideableSprite::collisionOccurred(other, side);
-//    if (m_currentState == Squish) return;
-//    if (side & Right) {
-//        this->getAcceleration().setX(m_leftAccel);
-//    }
-//    if (side & Left) {
-//        this->getAcceleration().setX(m_rightAccel);
-//    }
-
-//    for (auto itr = collisions.begin(); itr != collisions.end(); ++itr) {
-//        Collision col = (*itr);
-//        if (col.firstSide & Top && col.secondSprite->className() == "MainCharacter") {
-//            // Bounce!!!
-//            col.secondSprite->setVelocity(QPointF(col.secondSprite->getVelocity().x(), -400));
-
-//            if (m_enemy_health_count == 0) {
-//                m_currentState = Squish;
-//                this->triggerAnimation(m_currentState);
-//            }
-//            else m_enemy_health_count--;
-
-//            SFXManager *inst = SFXManager::Instance();
-//            inst->playSound(SFXManager::SFX::Enemy_Squish);
-//        }
-//    }
+    if (m_currentState == Squish) return;
+    if (other->isSolid()) {
+        if (side == Right) {
+            m_shuffleRight = false;
+        }
+        if (side == Left) {
+            m_shuffleRight = true;
+        }
+    }
+    if (side == Top && other->className() == "MainCharacter") {
+        //col.secondSprite->setVelocity(QPointF(col.secondSprite->getVelocity().x(), -400));
+        if (m_enemy_health_count != 0) {
+            m_enemy_health_count--;
+        } else {
+            m_currentState = Squish;
+            this->triggerAnimation(m_currentState);
+        }
+        SFXManager *inst = SFXManager::Instance();
+        inst->playSound(SFXManager::SFX::Enemy_Squish);
+    }
 }

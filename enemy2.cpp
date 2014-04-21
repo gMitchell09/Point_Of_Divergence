@@ -6,6 +6,8 @@
 #include "enemy2.h"
 #include "gameengine.h"
 
+#define ABS(x) ((x>0)?(x):(-x))
+
 Enemy2::Enemy2(int width, int height, QString path, b2Body* body, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, body, parent) {
 
@@ -19,11 +21,11 @@ Enemy2::Enemy2(int width, int height, QString path, b2Body* body, QGraphicsItem 
 
     m_squishCtr = 0;
 
-    QPixmap zombieStand(path + "/ZombieStand.png");
-    QPixmap goombaSquish(path + "/GoombaSquish.png");
+    QPixmap goombaStand(path + "/slime_normal.png");
+    QPixmap goombaSquish(path + "/slime_dead.png");
 
     std::vector<QPixmap> stand;
-    stand.push_back(zombieStand);
+    stand.push_back(goombaStand);
 
     std::vector<QPixmap> squish;
     squish.push_back(goombaSquish);
@@ -35,6 +37,8 @@ Enemy2::Enemy2(int width, int height, QString path, b2Body* body, QGraphicsItem 
 
     m_currentState = Stand;
     this->triggerAnimation(m_currentState);
+
+    this->setVelocity(b2Vec2(this->m_maxSpeed, 0), true);
 }
 
 void Enemy2::step(qint64 time, long delta) {
@@ -49,28 +53,36 @@ void Enemy2::step(qint64 time, long delta) {
             ((GameEngine*)this->scene())->removeItem(this);
         }
     }
+
+    b2Vec2 vel = this->getVelocity();
+    if (ABS(vel.x) > ABS(this->m_maxSpeed)) {
+        this->setVelocity(b2Vec2(SIGN(vel.x) * this->m_maxSpeed, vel.y), false);
+    }
+
+    if (this->m_shuffleRight) {
+        this->setVelocity(b2Vec2(this->m_maxSpeed, vel.y), false);
+    } else {
+        this->setVelocity(b2Vec2(-this->m_maxSpeed, vel.y), false);
+    }
 }
 
-void Enemy2::collisionOccurred(Sprite* other, Side side) {
+void Enemy2::collisionOccurred(Sprite *other, Side side) {
     AnimatedCollideableSprite::collisionOccurred(other, side);
     if (m_currentState == Squish) return;
-    if (side & Right) {
-//        this->getAcceleration().setX(m_leftAccel);
+    if (other->isSolid()) {
+        if (side == Right) {
+            m_shuffleRight = false;
+        }
+        if (side == Left) {
+            m_shuffleRight = true;
+        }
     }
-    if (side & Left) {
-//        this->getAcceleration().setX(m_rightAccel);
+    if (side == Top && other->className() == "MainCharacter") {
+        //col.secondSprite->setVelocity(QPointF(col.secondSprite->getVelocity().x(), -400));
+        m_currentState = Squish;
+        this->triggerAnimation(m_currentState);
+
+        SFXManager *inst = SFXManager::Instance();
+        inst->playSound(SFXManager::SFX::Enemy_Squish);
     }
-
-//    for (auto itr = collisions.begin(); itr != collisions.end(); ++itr) {
-//        Collision col = (*itr);
-//        if (col.firstSide & Top && col.secondSprite->className() == "MainCharacter") {
-//            // Bounce!!!
-//            col.secondSprite->setVelocity(QPointF(col.secondSprite->getVelocity().x(), -400));
-//            m_currentState = Squish;
-//            this->triggerAnimation(m_currentState);
-
-//            SFXManager *inst = SFXManager::Instance();
-//            inst->playSound(SFXManager::SFX::Enemy_Squish);
-//        }
-//    }
 }

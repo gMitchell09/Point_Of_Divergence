@@ -19,7 +19,8 @@ enum ItemType { kBlock = 0, kBox, kCoin, kLever, kButton, kSwitch, kDoor, kMovin
                 kBossEnemy = 26,
                 kTeleReceiver = 27,
                 kNextLevel = 28,
-                kPrevLevel = 29 };
+                kPrevLevel = 29,
+                kEnemy2 = 30};
 
 #define SCALINGFACTOR 1.0/16.0
 #define PX_TO_M(x) (SCALINGFACTOR * (x))

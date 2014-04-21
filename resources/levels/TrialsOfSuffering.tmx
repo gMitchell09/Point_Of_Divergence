@@ -53,6 +53,13 @@
     <property name="solid" value="0"/>
    </properties>
   </tile>
+  <tile id="8">
+   <properties>
+    <property name="life" value="4"/>
+    <property name="solid" value="1"/>
+    <property name="type" value="26"/>
+   </properties>
+  </tile>
  </tileset>
  <tileset firstgid="65" name="Tiles_32x32" tilewidth="32" tileheight="32">
   <image source="../tilesets/Tiles_32x32.png" width="256" height="256"/>
@@ -4588,7 +4595,7 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="71"/>
-   <tile gid="111"/>
+   <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -8068,13 +8075,13 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="111"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="9"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
