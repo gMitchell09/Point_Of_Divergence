@@ -173,31 +173,23 @@ void Level::parseLayer(QDomNode layer) {
                 bodyDef.type = b2_dynamicBody;
                 b2Body* body = m_world->CreateBody(&bodyDef);
                 b2PolygonShape mcShape;
-                b2Vec2 verts[] = {
-//                    b2Vec2(-0.95,1.0),
-//                    b2Vec2(-1.0,0.95),
-//                    b2Vec2(-1.0,-0.95),
-//                    b2Vec2(-0.95,-1.0),
-//                    b2Vec2(0.95,-1.0),
-//                    b2Vec2(1.0,-0.95),
-//                    b2Vec2(1.0,0.95),
-//                    b2Vec2(0.95,1.0)
-                    b2Vec2(0.55, 0.0),
-                    b2Vec2(0.5, -0.05),
-                    b2Vec2(0.5, -1.95),
-                    b2Vec2(0.55, -2.0),
-                    b2Vec2(1.45, -2),
-                    b2Vec2(1.5, -1.95),
-                    b2Vec2(1.5, -0.95),
-                    b2Vec2(1.45, 0.0)
-                };
-                mcShape.Set(verts, 8);
-                //mcShape.SetAsBox(PX_TO_M(16.)/2, PX_TO_M(32.)/2,
-                //                 b2Vec2(PX_TO_M(16.), -PX_TO_M(32.)/2), 0);
+//                b2Vec2 verts[] = {
+//                    b2Vec2(0.55, 0.0),
+//                    b2Vec2(0.5, -0.05),
+//                    b2Vec2(0.5, -3.95),
+//                    b2Vec2(0.55, -4.0),
+//                    b2Vec2(1.45, -4),
+//                    b2Vec2(1.5, -3.95),
+//                    b2Vec2(1.5, -0.95),
+//                    b2Vec2(1.45, 0.0)
+//                };
+//                mcShape.Set(verts, 8);
+                mcShape.SetAsBox(PX_TO_M(48.)/2, PX_TO_M(64.)/2,
+                                 b2Vec2(PX_TO_M(48.), -PX_TO_M(64.)/2), 0);
                 body->SetFixedRotation(true);
-                body->CreateFixture(&mcShape, 1.0f)->SetFriction(BODY_FRICTION);
+                body->CreateFixture(&mcShape, 0.25f)->SetFriction(BODY_FRICTION);
 
-                MainCharacter *mainChar = new MainCharacter(16, 32, body);
+                MainCharacter *mainChar = new MainCharacter(48, 64, body);
                 mainChar->setPos(pos);
                 mainChar->setSolid(true);
 

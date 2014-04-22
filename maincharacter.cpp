@@ -16,47 +16,49 @@ MainCharacter::MainCharacter(int width, int height, b2Body* body, QGraphicsItem 
 
     this->setZValue(1);
 
-    TileMap * playerTiles = new TileMap(16, 33, 1, 1, "./resources/sprites/MarioMovement.png");
+    TileMap * playerTiles = new TileMap(48, 64, 0, 0, "./resources/sprites/mainChar.png");
 
     std::vector<QPixmap> standRight;
-    standRight.push_back(playerTiles->copyCellAt(4, 0));
+    standRight.push_back(playerTiles->copyCellAt(0, 0));
 
     std::vector<QPixmap> standLeft;
-    standLeft.push_back(playerTiles->copyCellAt(3, 0));
+    standLeft.push_back(playerTiles->copyCellAt(4, 0));
 
     std::vector<QPixmap> walkRight;
-    walkRight.push_back(playerTiles->copyCellAt(5, 0));
-    walkRight.push_back(playerTiles->copyCellAt(6, 0));
+    walkRight.push_back(playerTiles->copyCellAt(0, 0));
+    walkRight.push_back(playerTiles->copyCellAt(1, 0));
+    walkRight.push_back(playerTiles->copyCellAt(2, 0));
+    walkRight.push_back(playerTiles->copyCellAt(3, 0));
 
     std::vector<QPixmap> walkLeft;
-    walkLeft.push_back(playerTiles->copyCellAt(1, 0));
-    walkLeft.push_back(playerTiles->copyCellAt(2, 0));
+    walkLeft.push_back(playerTiles->copyCellAt(7, 0));
+    walkLeft.push_back(playerTiles->copyCellAt(6, 0));
+    walkLeft.push_back(playerTiles->copyCellAt(5, 0));
+    walkLeft.push_back(playerTiles->copyCellAt(4, 0));
 
     std::vector<QPixmap> runRight;
-    runRight.push_back(playerTiles->copyCellAt(5, 0));
-    runRight.push_back(playerTiles->copyCellAt(6, 0));
+    runRight.push_back(playerTiles->copyCellAt(0, 1));
+    runRight.push_back(playerTiles->copyCellAt(1, 1));
+    runRight.push_back(playerTiles->copyCellAt(2, 1));
 
     std::vector<QPixmap> runLeft;
-    runLeft.push_back(playerTiles->copyCellAt(1, 0));
-    runLeft.push_back(playerTiles->copyCellAt(2, 0));
+    runLeft.push_back(playerTiles->copyCellAt(5, 1));
+    runLeft.push_back(playerTiles->copyCellAt(4, 1));
+    runLeft.push_back(playerTiles->copyCellAt(3, 1));
 
     std::vector<QPixmap> jumpRight;
-    jumpRight.push_back(playerTiles->copyCellAt(3, 1));
+    jumpRight.push_back(playerTiles->copyCellAt(0, 2));
+    jumpRight.push_back(playerTiles->copyCellAt(1, 2));
+    jumpRight.push_back(playerTiles->copyCellAt(2, 2));
 
     std::vector<QPixmap> jumpLeft;
-    jumpLeft.push_back(playerTiles->copyCellAt(2, 1));
+    jumpLeft.push_back(playerTiles->copyCellAt(5, 2));
+    jumpLeft.push_back(playerTiles->copyCellAt(4, 2));
+    jumpLeft.push_back(playerTiles->copyCellAt(3, 2));
 
-    std::vector<QPixmap> squatRight;
-    squatRight.push_back(playerTiles->copyCellAt(1, 1));
-
-    std::vector<QPixmap> squatLeft;
-    squatLeft.push_back(playerTiles->copyCellAt(0, 1));
-
-    std::vector<QPixmap> brakeRight;
-    brakeRight.push_back(playerTiles->copyCellAt(7, 0));
-
-    std::vector<QPixmap> brakeLeft;
-    brakeLeft.push_back(playerTiles->copyCellAt(0, 0));
+    std::vector<QPixmap> climb;
+    climb.push_back(playerTiles->copyCellAt(0, 3));
+    climb.push_back(playerTiles->copyCellAt(1, 3));
 
     this->addAnimation(standRight, Loop);
     this->addAnimation(standLeft, Loop);
@@ -67,14 +69,10 @@ MainCharacter::MainCharacter(int width, int height, b2Body* body, QGraphicsItem 
     this->addAnimation(runRight, Loop);
     this->addAnimation(runLeft, Loop);
 
-    this->addAnimation(jumpRight, Loop);
-    this->addAnimation(jumpLeft, Loop);
+    this->addAnimation(jumpRight, Forward);
+    this->addAnimation(jumpLeft, Forward);
 
-    this->addAnimation(squatRight, Loop);
-    this->addAnimation(squatLeft, Loop);
-
-    this->addAnimation(brakeRight, Loop);
-    this->addAnimation(brakeLeft, Loop);
+    this->addAnimation(climb, Loop);
 
     this->setSolid(true);
 
@@ -91,25 +89,19 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
     if (keyEvent->key() == Qt::Key_Down) {
         if (m_isOnLadder) {
             this->climbLadder(-1);
+//            m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
+//            this->triggerAnimation(m_currentState);
         }
-        m_currentState = (MovementState) (Squat_Right + (m_currentState % 2));
-        this->triggerAnimation(m_currentState);
 
         m_downPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Right) {
         m_currentState = Walk_Right;
-        if (!m_jumping && this->getVelocity().x < 0) {
-            m_currentState = Brake_Right; // We are already moving left so we have to play "brake" animation
-        }
         this->triggerAnimation(m_currentState);
         m_rightPressed = true;
     }
     else if (keyEvent->key() == Qt::Key_Left)  {
         m_currentState = Walk_Left;
-        if (!m_jumping && this->getVelocity().x > 0) {
-            m_currentState = Brake_Left;
-        }
         this->triggerAnimation(m_currentState);
         m_leftPressed = true;
     }
@@ -140,15 +132,6 @@ void MainCharacter::keyPressEvent(QKeyEvent * keyEvent) {
 
 void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
     if (keyEvent->isAutoRepeat()) return; // workaround for CentOS Systems
-
-    if (keyEvent->key() == Qt::Key_Down) {
-        if (m_currentState == Squat_Left || m_currentState == Squat_Right) {
-            m_currentState = (MovementState) (m_currentState % 2);
-            this->triggerAnimation(m_currentState);
-            if (m_rightPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Right, 0));
-            if (m_leftPressed) this->keyPressEvent(new QKeyEvent(keyEvent->type(), Qt::Key_Left, 0));
-        }
-    }
 
     if (keyEvent->key() == m_keyRecentPress) {
         m_keyRecentPress = 0;
@@ -191,21 +174,23 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
                 bodyDef.type = b2_dynamicBody;
                 b2Body* body = this->m_body->GetWorld()->CreateBody(&bodyDef);
                 b2PolygonShape mcShape;
-                b2Vec2 verts[] = {
-                    b2Vec2(0.55, 0.0),
-                    b2Vec2(0.5, -0.05),
-                    b2Vec2(0.5, -1.95),
-                    b2Vec2(0.55, -2.0),
-                    b2Vec2(1.45, -2),
-                    b2Vec2(1.5, -1.95),
-                    b2Vec2(1.5, -0.95),
-                    b2Vec2(1.45, 0.0)
-                };
-                mcShape.Set(verts, 8);
+//                b2Vec2 verts[] = {
+//                    b2Vec2(0.55, 0.0),
+//                    b2Vec2(0.5, -0.05),
+//                    b2Vec2(0.5, -1.95),
+//                    b2Vec2(0.55, -2.0),
+//                    b2Vec2(1.45, -2),
+//                    b2Vec2(1.5, -1.95),
+//                    b2Vec2(1.5, -0.95),
+//                    b2Vec2(1.45, 0.0)
+//                };
+//                mcShape.Set(verts, 8);
+                mcShape.SetAsBox(PX_TO_M(48.)/2, PX_TO_M(64.)/2,
+                                 b2Vec2(PX_TO_M(48.), -PX_TO_M(64.)/2), 0);
                 body->SetFixedRotation(true);
                 body->CreateFixture(&mcShape, 1.0f)->SetFriction(0.1f);
 
-                CharacterClone* clone = new CharacterClone(16, 33, this->m_stateSlice, body);
+                CharacterClone* clone = new CharacterClone(48, 64, this->m_stateSlice, body);
                 ((GameEngine*)this->scene())->addSprite(clone);
                 body->SetUserData(clone);
             }
@@ -227,7 +212,6 @@ void MainCharacter::step(qint64 time, long delta) {
         switch (m_currentState) {
             case Walk_Right:
             case Run_Right:
-            case Brake_Left:
                 if (this->getVelocity().x < 1 && !m_rightPressed) {
                     m_currentState = Stand_Right;
                     this->triggerAnimation(m_currentState);
@@ -236,7 +220,6 @@ void MainCharacter::step(qint64 time, long delta) {
                 break;
             case Walk_Left:
             case Run_Left:
-            case Brake_Right:
                 if (this->getVelocity().x > -1 && !m_leftPressed) {
                     m_currentState = Stand_Left;
                     this->triggerAnimation(m_currentState);
@@ -261,11 +244,11 @@ void MainCharacter::step(qint64 time, long delta) {
     }
 
     if (m_leftPressed) {
-        this->m_body->ApplyForceToCenter(b2Vec2(-20, 0), true);
+        this->m_body->ApplyForceToCenter(b2Vec2(-60, 0), true);
     }
 
     if (m_rightPressed) {
-        this->m_body->ApplyForceToCenter(b2Vec2(20, 0), true);
+        this->m_body->ApplyForceToCenter(b2Vec2(60, 0), true);
     }
 
     // Velocity Limiting:
@@ -299,6 +282,12 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
         if (m_currentState == Jump_Left || m_currentState == Jump_Right) {
             m_currentState = (MovementState) (m_currentState % 2);
             this->triggerAnimation(m_currentState);
+        }
+
+        if (m_body && other->className() == "EnemyBoss") {
+            m_body->ApplyLinearImpulse(b2Vec2(0, 500), b2Vec2(0.5, 0.5), true);
+            qDebug() << "Bounce!";
+
         }
     }
 
@@ -367,7 +356,7 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
         case ItemType::kBossEnemy: {
             if (side == Bottom) {
                 if (m_body) {
-                    m_body->ApplyLinearImpulse(b2Vec2(0, 10), b2Vec2(0.5, 0.5), true);
+                    m_body->ApplyLinearImpulse(b2Vec2(0, 500), b2Vec2(0.5, 0.5), true);
                     qDebug() << "Bounce!";
                 }
             }
@@ -380,7 +369,7 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
 }
 
 void MainCharacter::jump() {
-    this->m_body->ApplyForceToCenter(b2Vec2(0, 1000), true);
+    this->m_body->ApplyForceToCenter(b2Vec2(0, 5000), true);
 
     SFXManager *inst = SFXManager::Instance();
     inst->playSound(SFXManager::SFX::MainChar_Jump);

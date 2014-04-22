@@ -22,8 +22,7 @@ private:
                          Walk_Right, Walk_Left,
                          Run_Right, Run_Left,
                          Jump_Right, Jump_Left,
-                         Squat_Right, Squat_Left,
-                         Brake_Right, Brake_Left};
+                         Climb };
 
     MovementState m_currentState { Stand_Right };
     // nextState is if you are running right and then pressed the left key... it is for mapping between states
