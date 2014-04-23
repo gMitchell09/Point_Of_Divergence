@@ -141,6 +141,7 @@ public:
     void saveSettings();
     void QuitGame();
     void modifiedOptionsWarning();
+    void aboutDialog();
 
     void createMPPressed();
     void joinMPPressed();

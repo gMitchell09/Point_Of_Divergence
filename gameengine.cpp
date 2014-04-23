@@ -375,6 +375,7 @@ void GameEngine::displayInitialMenu() {
 
     MenuButton * saveButton;
     MenuButton * cancelButton;
+    MenuButton * aboutButton;
     OptionSlider * musicButton;
     OptionButton * sfxButton;
 
@@ -454,7 +455,7 @@ void GameEngine::displayInitialMenu() {
     button_hover = new QPixmap(optionButtonTiles->copyCellAt(0, 1));
     button_clicked = new QPixmap(optionButtonTiles->copyCellAt(0, 2));
     saveButton = new MenuButton(button_static, button_clicked, button_hover);
-    saveButton->setPos(this->width()/3-saveButton->boundingRect().width()/2, this->height()*3/4-saveButton->boundingRect().height()/2);
+    saveButton->setPos(this->width()/4-saveButton->boundingRect().width()/2, this->height()*3/4-saveButton->boundingRect().height()/2);
     func = std::bind(&GameEngine::saveSettings, this);
     saveButton->setCallback(func);
 
@@ -462,14 +463,23 @@ void GameEngine::displayInitialMenu() {
     button_hover = new QPixmap(optionButtonTiles->copyCellAt(1, 1));
     button_clicked = new QPixmap(optionButtonTiles->copyCellAt(1, 2));
     cancelButton = new MenuButton(button_static, button_clicked, button_hover);
-    cancelButton->setPos(this->width()*2/3-cancelButton->boundingRect().width()/2, this->height()*3/4-cancelButton->boundingRect().height()/2);
+    cancelButton->setPos(this->width()*2/4-cancelButton->boundingRect().width()/2, this->height()*3/4-cancelButton->boundingRect().height()/2);
     func = std::bind(&GameEngine::modifiedOptionsWarning, this);
     cancelButton->setCallback(func);
+
+    button_static = new QPixmap(optionButtonTiles->copyCellAt(2, 0));
+    button_hover = new QPixmap(optionButtonTiles->copyCellAt(2, 1));
+    button_clicked = new QPixmap(optionButtonTiles->copyCellAt(2, 2));
+    aboutButton = new MenuButton(button_static, button_clicked, button_hover);
+    aboutButton->setPos(this->width()*3/4-aboutButton->boundingRect().width()/2, this->height()*3/4-aboutButton->boundingRect().height()/2);
+    func = std::bind(&GameEngine::aboutDialog, this);
+    aboutButton->setCallback(func);
 
     m_optionsMenu->addToGroup(musicButton);
     m_optionsMenu->addToGroup(sfxButton);
     m_optionsMenu->addToGroup(saveButton);
     m_optionsMenu->addToGroup(cancelButton);
+    m_optionsMenu->addToGroup(aboutButton);
     m_optionsMenu->setHandlesChildEvents(false);
     m_optionsMenu->setPos(0, 0);
     //*** End Instantiation of Options Menu
@@ -570,8 +580,9 @@ void GameEngine::displayMainMenu_load() {
 }
 
 void GameEngine::displayMainMenu_mp() {
-    this->removeItem(m_mpMenu);
-    this->addItem(m_initialMenu);
+//    this->removeItem(m_mpMenu);
+//    this->addItem(m_initialMenu);
+    emit myExit();
 }
 
 void GameEngine::displayMainMenu_option() {
@@ -589,6 +600,43 @@ void GameEngine::displayMainMenu_sp() {
 }
 
 //***************************************************************************
+
+void GameEngine::aboutDialog() {
+    QMessageBox::about(this->views().at(0), "About", "<font face=\"courier\"> \
+               <h1><center>Acknowledgements</center></h1> \
+                       <hr /> \
+                       <table> \
+                           <tr> \
+                               <td><b>Authors:</b></td> \
+                               <td>Jesse R. Hairston</td> \
+                           </tr> \
+                           <tr> \
+                               <td></td> \
+                               <td>George Mitchell</td> \
+                           </tr> \
+                           <tr> \
+                               <td></td> \
+                               <td>Atley Troyer</td> \
+                           </tr> \
+                           <tr> \
+                               <td colspan=2><hr /></td> \
+                           </tr> \
+                           <tr> \
+                               <td><b>Physics Engine:</b>&nbsp;&nbsp;&nbsp;&nbsp;</td> \
+                               <td>Box2D</td> \
+                           </tr> \
+                           <tr> <td colspan=2><hr /></td> </tr> \
+                           <tr> \
+                               <td><b>Course:</b></td> \
+                               <td>CPE453 &mdash; Senior Software Studio</td> \
+                           </tr> \
+                           <tr> \
+                               <td><b>Date:</b></td> \
+                               <td>Spring 2014</td> \
+                           </tr> \
+                       </table> \
+                       </font>");
+}
 
 void GameEngine::modifiedOptionsWarning() {
     QMessageBox msgBox;
