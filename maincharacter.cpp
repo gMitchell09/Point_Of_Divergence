@@ -16,7 +16,7 @@ MainCharacter::MainCharacter(int width, int height, b2Body* body, QGraphicsItem 
 
     this->setZValue(1);
 
-    TileMap * playerTiles = new TileMap(48, 64, 0, 0, "./resources/sprites/mainChar.png");
+    TileMap * playerTiles = new TileMap(32, 32, 0, 0, "./resources/sprites/mainChar.png");
 
     std::vector<QPixmap> standRight;
     standRight.push_back(playerTiles->copyCellAt(0, 0));
@@ -174,19 +174,19 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
                 bodyDef.type = b2_dynamicBody;
                 b2Body* body = this->m_body->GetWorld()->CreateBody(&bodyDef);
                 b2PolygonShape mcShape;
-//                b2Vec2 verts[] = {
-//                    b2Vec2(0.55, 0.0),
-//                    b2Vec2(0.5, -0.05),
-//                    b2Vec2(0.5, -1.95),
-//                    b2Vec2(0.55, -2.0),
-//                    b2Vec2(1.45, -2),
-//                    b2Vec2(1.5, -1.95),
-//                    b2Vec2(1.5, -0.95),
-//                    b2Vec2(1.45, 0.0)
-//                };
-//                mcShape.Set(verts, 8);
-                mcShape.SetAsBox(PX_TO_M(48.)/2, PX_TO_M(64.)/2,
-                                 b2Vec2(PX_TO_M(48.), -PX_TO_M(64.)/2), 0);
+                b2Vec2 verts[] = {
+                    b2Vec2(1.55, 0.0),
+                    b2Vec2(1.5, -0.05),
+                    b2Vec2(1.5, -1.95),
+                    b2Vec2(1.55, -2.0),
+                    b2Vec2(2.45, -2),
+                    b2Vec2(2.5, -1.95),
+                    b2Vec2(2.5, -0.95),
+                    b2Vec2(2.45, 0.0)
+                };
+                mcShape.Set(verts, 8);
+//                mcShape.SetAsBox(PX_TO_M(48.)/2, PX_TO_M(64.)/2,
+//                                 b2Vec2(PX_TO_M(48.), -PX_TO_M(64.)/2), 0);
                 body->SetFixedRotation(true);
                 body->CreateFixture(&mcShape, 1.0f)->SetFriction(0.1f);
 
@@ -244,11 +244,11 @@ void MainCharacter::step(qint64 time, long delta) {
     }
 
     if (m_leftPressed) {
-        this->m_body->ApplyForceToCenter(b2Vec2(-60, 0), true);
+        this->m_body->ApplyForceToCenter(b2Vec2(-10, 0), true);
     }
 
     if (m_rightPressed) {
-        this->m_body->ApplyForceToCenter(b2Vec2(60, 0), true);
+        this->m_body->ApplyForceToCenter(b2Vec2(10, 0), true);
     }
 
     // Velocity Limiting:
@@ -356,6 +356,7 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
         case ItemType::kBossEnemy: {
             if (side == Bottom) {
                 if (m_body) {
+                    m_body->SetLinearVelocity(b2Vec2(m_body->GetLinearVelocity().x, 0));
                     m_body->ApplyLinearImpulse(b2Vec2(0, 500), b2Vec2(0.5, 0.5), true);
                     qDebug() << "Bounce!";
                 }
@@ -369,7 +370,7 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
 }
 
 void MainCharacter::jump() {
-    this->m_body->ApplyForceToCenter(b2Vec2(0, 5000), true);
+    this->m_body->ApplyForceToCenter(b2Vec2(0, 500), true);
 
     SFXManager *inst = SFXManager::Instance();
     inst->playSound(SFXManager::SFX::MainChar_Jump);

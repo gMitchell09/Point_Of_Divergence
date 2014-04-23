@@ -96,7 +96,7 @@ void AnimatedCollideableSprite::collisionOccurred(Sprite* other, Side side) {
 
 void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     AnimatedSprite::paint(painter, option, widget);
-    if (m_body && this->className() == "EnemyBoss") {
+    if (0 && m_body && this->className() == "MainCharacter") {
         b2Fixture *fix = m_body->GetFixtureList();
         while(fix) {
             QPolygon poly;

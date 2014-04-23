@@ -7,7 +7,7 @@ CharacterClone::CharacterClone(int width, int height, std::vector<State> stateSt
     this->setZValue(1);
     this->setSolid(true);
 
-    TileMap * playerTiles = new TileMap(48, 64, 0, 0, "./resources/sprites/mainChar.png");
+    TileMap * playerTiles = new TileMap(32, 32, 0, 0, "./resources/sprites/mainChar.png");
 
     std::vector<QPixmap> standRight;
     standRight.push_back(playerTiles->copyCellAt(0, 0));
