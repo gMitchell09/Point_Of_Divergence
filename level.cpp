@@ -1,5 +1,4 @@
 #include "level.h"
-#include "turret.h"
 #include "enemyboss.h"
 
 static const QString bkgPath = "./resources/backgrounds";
@@ -16,7 +15,7 @@ static const QString otherSpritePath = spritePath + "/other";
 
 #define SLOPE_FRICTION 0.2f
 #define BODY_FRICTION 0.0f
-#define BOX_DENSITY 0.5f
+#define BOX_DENSITY 0.3f
 #define BOX_FRICTION 0.1f
 #define GROUND_FRICTION 0.4f
 
@@ -233,23 +232,23 @@ void Level::parseLayer(QDomNode layer) {
                 body->SetUserData(coin);
                 this->addToGroup(coin);
             } else if (tp.kind == kTurretRight || tp.kind == kTurretLeft) {
-                b2BodyDef bodyDef;
-                bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
-                bodyDef.type = b2_staticBody;
-                b2Body* body = m_world->CreateBody(&bodyDef);
-                b2PolygonShape shape;
-                shape.SetAsBox(PX_TO_M(32)/2., PX_TO_M(32)/2.,
-                               b2Vec2(PX_TO_M(32.)/2, -PX_TO_M(32.)/2), 0);
+//                b2BodyDef bodyDef;
+//                bodyDef.position.Set(PX_TO_M(pos.x()), PX_TO_M(-pos.y()));
+//                bodyDef.type = b2_staticBody;
+//                b2Body* body = m_world->CreateBody(&bodyDef);
+//                b2PolygonShape shape;
+//                shape.SetAsBox(PX_TO_M(32)/2., PX_TO_M(32)/2.,
+//                               b2Vec2(PX_TO_M(32.)/2, -PX_TO_M(32.)/2), 0);
 
-                QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
+//                QPixmap tileImage = tileMap->copyCellAtWithoutMask(idx);
 
-                Turret *turret = new Turret(32, 32, (tp.kind == kTurretLeft), tp.rate, body);
-                turret->setPixmap(tileImage);
-                turret->setPos(pos);
-                turret->setShapeMode(Tile::BoundingRectShape);
+//                Turret *turret = new Turret(32, 32, (tp.kind == kTurretLeft), tp.rate, body);
+//                turret->setPixmap(tileImage);
+//                turret->setPos(pos);
+//                turret->setShapeMode(Tile::BoundingRectShape);
 
-                body->SetUserData(turret);
-                this->addToGroup(turret);
+//                body->SetUserData(turret);
+//                this->addToGroup(turret);
 
             } else if (tp.kind == kBossEnemy) {
                 b2BodyDef bodyDef;

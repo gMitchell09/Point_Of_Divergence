@@ -24,6 +24,6 @@ void Tile::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     }
 }
 
-void Tile::collisionOccurred(Sprite* other, Side side) {
+void Tile::collisionOccurred(AnimatedCollideableSprite* other, Side side) {
     AnimatedCollideableSprite::collisionOccurred(other, side);
 }

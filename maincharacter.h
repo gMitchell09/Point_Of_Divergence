@@ -42,7 +42,7 @@ public:
     void keyReleaseEvent(QKeyEvent * keyEvent);
 
     virtual void step(qint64 time, long delta);
-    virtual void collisionOccurred(Sprite *sprite, Side side);
+    virtual void collisionOccurred(AnimatedCollideableSprite *sprite, Side side);
     void jump();
     void climbLadder(int dir = 1);
 

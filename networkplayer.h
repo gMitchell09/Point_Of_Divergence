@@ -30,7 +30,7 @@ public:
     explicit NetworkPlayer(int width, int height, b2Body* body = 0, QGraphicsItem *parent = 0);
 
     virtual void step(qint64 time, long delta);
-    virtual void collisionOccurred(Sprite* other, Side side);
+    virtual void collisionOccurred(AnimatedCollideableSprite* other, Side side);
 
     virtual void decodeDatagram(NetworkManager::DatagramFormat dg);
 

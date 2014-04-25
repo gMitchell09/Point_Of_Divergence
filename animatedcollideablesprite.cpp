@@ -42,7 +42,7 @@ void AnimatedCollideableSprite::step(qint64 time, long delta) {
                                 // we force world normal to always point from this to
                                 //  the other object
                                 b2Vec2 worldNormal;
-                                Sprite *otherObject;
+                                AnimatedCollideableSprite *otherObject;
 
                                 if (this == obj1) {
                                     otherObject = obj2;
@@ -89,7 +89,7 @@ void AnimatedCollideableSprite::updatePosition() {
     }
 }
 
-void AnimatedCollideableSprite::collisionOccurred(Sprite* other, Side side) {
+void AnimatedCollideableSprite::collisionOccurred(AnimatedCollideableSprite* other, Side side) {
     Q_UNUSED(other);
     Q_UNUSED(side);
 }

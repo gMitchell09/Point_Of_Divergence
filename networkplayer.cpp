@@ -82,7 +82,7 @@ void NetworkPlayer::step(qint64 time, long delta) {
     AnimatedCollideableSprite::step(time, delta);
 }
 
-void NetworkPlayer::collisionOccurred(Sprite* other, Side side) {
+void NetworkPlayer::collisionOccurred(AnimatedCollideableSprite* other, Side side) {
     AnimatedCollideableSprite::collisionOccurred(other, side);
 }
 

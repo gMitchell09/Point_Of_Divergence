@@ -701,20 +701,20 @@ void GameEngine::networkPlayerConnected() {
     b2Body* body = m_world->CreateBody(&bodyDef);
     b2PolygonShape mcShape;
     b2Vec2 verts[] = {
-        b2Vec2(0.55, 0.0),
-        b2Vec2(0.5, -0.05),
-        b2Vec2(0.5, -1.95),
-        b2Vec2(0.55, -2.0),
-        b2Vec2(1.45, -2),
+        b2Vec2(1.55, 0.0),
+        b2Vec2(1.5, -0.05),
         b2Vec2(1.5, -1.95),
-        b2Vec2(1.5, -0.95),
-        b2Vec2(1.45, 0.0)
+        b2Vec2(1.55, -2.0),
+        b2Vec2(2.45, -2),
+        b2Vec2(2.5, -1.95),
+        b2Vec2(2.5, -0.95),
+        b2Vec2(2.45, 0.0)
     };
     mcShape.Set(verts, 8);
     body->SetFixedRotation(true);
-    body->CreateFixture(&mcShape, 1.0f)->SetFriction(0.1f);
+    body->CreateFixture(&mcShape, 0.25f)->SetFriction(0.1f);
 
-    m_networkPlayer = new NetworkPlayer(16, 32, body);
+    m_networkPlayer = new NetworkPlayer(32, 32, body);
     m_networkPlayer->setSolid(true);
 
     body->SetUserData(m_networkPlayer);

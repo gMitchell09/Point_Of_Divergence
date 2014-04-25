@@ -32,8 +32,9 @@ void AnimatedSprite::addAnimation(std::vector<QPixmap> pixmapList, kAnimationTyp
 void AnimatedSprite::triggerAnimation(unsigned int anim) {
     if (anim >= m_animationType.size()) return;
 
+    m_animationPaused = false;
+
     m_nCurrentAnimation = anim;
-    m_msPerFrame = 120;
 
     switch (m_animationType.at(anim)) {
         case Forward:
@@ -68,7 +69,7 @@ void AnimatedSprite::step(qint64 time, long delta) {
 
     if (isReversed && this->usesStack()) { // Smart reverse
     } else { // normal time flow
-        m_msCounter += delta;
+        if (!m_animationPaused) m_msCounter += delta;
 
         if (isReversed) {
             if (currentAnimType % 2) currentAnimType = (kAnimationType) (currentAnimType - 1);

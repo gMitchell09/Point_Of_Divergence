@@ -33,14 +33,15 @@ private:
      */
 
     std::vector<QPainterPath> m_animationPathList;
-    char m_nCurrentFrame;
-    char m_nCurrentAnimation;
     std::vector<std::vector<QPixmap>> m_animationList;
     std::vector<kAnimationType> m_animationType;
 
-    bool m_countUp;
-    unsigned int m_msPerFrame;
-    unsigned int m_msCounter;
+    char m_nCurrentFrame { 0 };
+    char m_nCurrentAnimation { 0 };
+    bool m_countUp { true };
+    bool m_animationPaused { false };
+    unsigned int m_msPerFrame { 120 };
+    unsigned int m_msCounter { 0 };
 
     int m_width, m_height;
 
@@ -50,6 +51,9 @@ public:
 
     void addAnimation(std::vector<QPixmap> pixmapList, QPainterPath animationPath, kAnimationType animationType = Forward);
     void addAnimation(std::vector<QPixmap> pixmapList, kAnimationType animationType = Forward);
+
+    void pauseAnimation() { m_animationPaused = true; }
+    void playAnimation(bool reset) { if (reset) m_nCurrentFrame = 0; m_animationPaused = false; }
 
     virtual void step(qint64 time, long delta);
 

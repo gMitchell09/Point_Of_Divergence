@@ -41,7 +41,6 @@ SOURCES += main.cpp \
     animatedcollideablesprite.cpp \
     tilemap.cpp \
     maincharacter.cpp \
-    statearray.cpp \
     enemy1.cpp \
     mainwindow.cpp \
     tile.cpp \
@@ -58,11 +57,8 @@ SOURCES += main.cpp \
     switchobject.cpp \
     door.cpp \
     enemyboss.cpp \
-    enemy2.cpp \
     teleportationpad.cpp \
     boxbutton.cpp \
-    turret.cpp \
-    projectile.cpp \
     staticbackground.cpp
 
 HEADERS  += mainwindow.h \
@@ -73,7 +69,6 @@ HEADERS  += mainwindow.h \
     animatedcollideablesprite.h \
     tilemap.h \
     maincharacter.h \
-    statearray.h \
     enemy1.h \
     tile.h \
     global.h \
@@ -92,11 +87,8 @@ HEADERS  += mainwindow.h \
     ITriggerable.h \
     door.h \
     enemyboss.h \
-    enemy2.h \
     teleportationpad.h \
-    boxbutton.h \
-    turret.h \
-    projectile.h
+    boxbutton.h
 
 FORMS    += mainwindow.ui
 

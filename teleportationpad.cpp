@@ -6,7 +6,7 @@ AnimatedCollideableSprite(width, height, body, parent),
     m_sender(controller) {
 }
 
-void TeleportationPad::collisionOccurred(Sprite* other, Side side) {
+void TeleportationPad::collisionOccurred(AnimatedCollideableSprite* other, Side side) {
     if (this->isController() && other->className() == "MainCharacter") {
         mc = dynamic_cast<MainCharacter*>(other);
         emit stateChanged(true);

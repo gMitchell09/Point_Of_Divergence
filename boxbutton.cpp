@@ -5,7 +5,7 @@ BoxButton::BoxButton(int width, int height, b2Body* body, QGraphicsItem *parent)
 {
 }
 
-void BoxButton::collisionOccurred(Sprite *other, Side side) {
+void BoxButton::collisionOccurred(AnimatedCollideableSprite *other, Side side) {
     Q_UNUSED(side);
     if (!m_state && other->blockType() == kBox) {
         m_state = true;

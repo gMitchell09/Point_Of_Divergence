@@ -41,7 +41,7 @@ public:
     virtual bool isCollideable() { return true; }
     virtual bool isBackground() { return false; }
 
-    virtual void collisionOccurred(Sprite* other, Side side);
+    virtual void collisionOccurred(AnimatedCollideableSprite* other, Side side);
 
     virtual QString className() { return "Tile"; }
 

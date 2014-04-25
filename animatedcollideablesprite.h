@@ -26,7 +26,7 @@ public:
     explicit AnimatedCollideableSprite(int width, int height, b2Body* body, QGraphicsItem *parent);
 
     virtual void step(qint64 time, long delta);
-    virtual void collisionOccurred(Sprite* other, Side side);
+    virtual void collisionOccurred(AnimatedCollideableSprite *sprite, Side side);
 
     bool isOnLeftSlope() { return m_onLeftSlope; }
     bool isOnRightSlope() { return m_onRightSlope; }

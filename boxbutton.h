@@ -54,7 +54,7 @@ public:
         emit stateChanged(m_state);
     }
 
-    virtual void collisionOccurred(Sprite* other, Side side);
+    virtual void collisionOccurred(AnimatedCollideableSprite* other, Side side);
 
 signals:
 

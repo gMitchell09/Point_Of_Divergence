@@ -27,7 +27,7 @@ public:
 
     virtual QString className() { return "TeleportationPad"; }
 
-    virtual void collisionOccurred(Sprite* other, Side side);
+    virtual void collisionOccurred(AnimatedCollideableSprite* other, Side side);
 
     MainCharacter* mc;
 

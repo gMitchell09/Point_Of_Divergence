@@ -69,7 +69,7 @@ void EnemyBoss::step(qint64 time, long delta) {
     }
 }
 
-void EnemyBoss::collisionOccurred(Sprite *other, Side side) {
+void EnemyBoss::collisionOccurred(AnimatedCollideableSprite *other, Side side) {
     AnimatedCollideableSprite::collisionOccurred(other, side);
     if (m_currentState == Squish) return;
     if (other->isSolid()) {

@@ -188,9 +188,9 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
 //                mcShape.SetAsBox(PX_TO_M(48.)/2, PX_TO_M(64.)/2,
 //                                 b2Vec2(PX_TO_M(48.), -PX_TO_M(64.)/2), 0);
                 body->SetFixedRotation(true);
-                body->CreateFixture(&mcShape, 1.0f)->SetFriction(0.1f);
+                body->CreateFixture(&mcShape, 0.25f)->SetFriction(0.1f);
 
-                CharacterClone* clone = new CharacterClone(48, 64, this->m_stateSlice, body);
+                CharacterClone* clone = new CharacterClone(32, 32, this->m_stateSlice, body);
                 ((GameEngine*)this->scene())->addSprite(clone);
                 body->SetUserData(clone);
             }
@@ -271,12 +271,12 @@ void MainCharacter::step(qint64 time, long delta) {
  * Up (Moving Right) Jump_Right animation
 */
 
-void MainCharacter::collisionOccurred(Sprite *other, Side side) {
+void MainCharacter::collisionOccurred(AnimatedCollideableSprite *other, Side side) {
     AnimatedCollideableSprite::collisionOccurred(other, side);
     unsigned int ladderSide = 0;
     bool m_isOnLadder = false;
 
-    if (side == Bottom && other->isSolid() && m_body->GetLinearVelocity().y <= 0) {
+    if (side == Bottom && other->isSolid() && (m_body->GetLinearVelocity().y <= 0 || other->getVelocity().y > 0)) {
         m_jumping_double = false;
         m_jumping = false;
         if (m_currentState == Jump_Left || m_currentState == Jump_Right) {
@@ -345,6 +345,9 @@ void MainCharacter::collisionOccurred(Sprite *other, Side side) {
                 b2Vec2 vel = this->getVelocity();
                 vel.y = 0;
                 this->setVelocity(vel, false);
+                m_currentState = Climb;
+                this->triggerAnimation(m_currentState);
+                this->pauseAnimation();
             }
             break;
         case ItemType::kLever:
@@ -380,4 +383,9 @@ void MainCharacter::climbLadder(int dir) {
     b2Vec2 vel = this->getVelocity();
     vel.y = dir * m_ladderClimbSpeed;
     this->setVelocity(vel, true);
+
+    if (m_currentState != Climb) {
+        m_currentState = Climb;
+        this->triggerAnimation(m_currentState);
+    }
 }

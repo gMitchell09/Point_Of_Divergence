@@ -21,7 +21,7 @@ public:
     virtual void step(qint64 time, long delta) {
         AnimatedCollideableSprite::step(time, delta);
     }
-    virtual void collisionOccurred(Sprite* other, Side side) { Q_UNUSED(other); Q_UNUSED(side); }
+    virtual void collisionOccurred(AnimatedCollideableSprite* other, Side side) { Q_UNUSED(other); Q_UNUSED(side); }
 
     virtual QString className() { return "CharacterClone"; }
 
