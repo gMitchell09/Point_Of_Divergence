@@ -94,6 +94,8 @@ FORMS    += mainwindow.ui
 
 INSTALLS += copy_resources
 
-QMAKE_CXXFLAGS += -g -fprofile-arcs -ftest-coverage -pedantic -Wall -Wextra -Wno-nested-anon-types
-QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
-CONFIG += gcov
+QMAKE_CXXFLAGS += -pedantic -Wall -Wextra -Wno-nested-anon-types
+
+#QMAKE_CXXFLAGS += -g -fprofile-arcs -ftest-coverage
+#QMAKE_LFLAGS += -fprofile-arcs -ftest-coverage
+#CONFIG += gcov

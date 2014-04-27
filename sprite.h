@@ -65,6 +65,7 @@ protected:
                       std::back_inserter(m_stateSlice));
         } else {
             qDebug() << "WWWWWWWWTTTTTTTTTTTTTFFFFFFFFFFFF";
+            m_stateSlice.clear();
         }
     }
 

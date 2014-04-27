@@ -1,5 +1,6 @@
 #include "characterclone.h"
 #include "tilemap.h"
+#include "gameengine.h"
 
 CharacterClone::CharacterClone(int width, int height, std::vector<State> stateStack, b2Body* body, QGraphicsItem *parent) :
     AnimatedCollideableSprite(width, height, body, parent)
@@ -69,4 +70,16 @@ CharacterClone::CharacterClone(int width, int height, std::vector<State> stateSt
     this->triggerAnimation(Stand_Right);
 
     m_stateStack = stateStack;
+}
+
+void CharacterClone::step(qint64 time, long delta) {
+    AnimatedCollideableSprite::step(time, delta);
+    if (m_removeNextStep) ((GameEngine*)this->scene())->removeItem(this);
+}
+
+void CharacterClone::collisionOccurred(AnimatedCollideableSprite *other, Side side) {
+    AnimatedCollideableSprite::collisionOccurred(other, side);
+    if (side & other->damagesChar()) {
+        m_removeNextStep = true;
+    }
 }

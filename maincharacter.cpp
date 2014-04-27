@@ -168,7 +168,7 @@ void MainCharacter::keyReleaseEvent(QKeyEvent * keyEvent) {
             break;
         case Qt::Key_Shift:
             this->endSlice();
-            if (m_body) {
+            if (m_body && this->m_stateSlice.size() > 0) {
                 b2BodyDef bodyDef;
                 bodyDef.position.Set(m_body->GetPosition().x, m_body->GetPosition().y);
                 bodyDef.type = b2_dynamicBody;

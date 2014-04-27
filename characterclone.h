@@ -14,14 +14,14 @@ private:
                          Brake_Right, Brake_Left};
 
     MovementState m_currentMovementState;
+    bool m_removeNextStep { false };
 
 public:
     explicit CharacterClone(int width, int height, std::vector<State> stateStack, b2Body* body = 0, QGraphicsItem *parent = 0);
 
-    virtual void step(qint64 time, long delta) {
-        AnimatedCollideableSprite::step(time, delta);
-    }
-    virtual void collisionOccurred(AnimatedCollideableSprite* other, Side side) { Q_UNUSED(other); Q_UNUSED(side); }
+    virtual void step(qint64 time, long delta);
+
+    virtual void collisionOccurred(AnimatedCollideableSprite *other, Side side);
 
     virtual QString className() { return "CharacterClone"; }
 

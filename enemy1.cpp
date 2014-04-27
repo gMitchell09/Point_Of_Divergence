@@ -50,7 +50,11 @@ void Enemy1::step(qint64 time, long delta) {
     if (m_currentState == Squish) {
         m_squishCtr += delta;
         if (m_squishCtr > 250) {
-            ((GameEngine*)this->scene())->removeItem(this);
+//            ((GameEngine*)this->scene())->removeItem(this);
+            this->setPosition(b2Vec2(-100, -100), 0);
+            m_currentState = Stand;
+            m_squishCtr = 0;
+            this->triggerAnimation(m_currentState);
         }
     }
 
