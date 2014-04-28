@@ -246,6 +246,7 @@ void GameEngine::removeDeletedItems() {
 
     for (auto itr = m_deletedItems.begin(); itr != m_deletedItems.end(); itr++) {
         m_spriteArray.erase(std::remove(m_spriteArray.begin(), m_spriteArray.end(), (*itr)), m_spriteArray.end());
+        delete (*itr);
     }
 
     m_deletedItems.clear();

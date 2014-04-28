@@ -96,7 +96,7 @@ void AnimatedCollideableSprite::collisionOccurred(AnimatedCollideableSprite* oth
 
 void AnimatedCollideableSprite::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) {
     AnimatedSprite::paint(painter, option, widget);
-    if (0 && m_body && this->className() == "MainCharacter") {
+    if (0 && m_body && this->className() == "CharacterClone") {
         b2Fixture *fix = m_body->GetFixtureList();
         while(fix) {
             QPolygon poly;
