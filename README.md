@@ -1,4 +1,4 @@
-Game_Test
+Point Of Divergence
 =========
 
-Quick QT Game Engine for CPE453
+QT Game Engine for CPE453
