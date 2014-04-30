@@ -83,3 +83,7 @@ void CharacterClone::collisionOccurred(AnimatedCollideableSprite *other, Side si
         m_removeNextStep = true;
     }
 }
+
+void CharacterClone::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    m_removeNextStep = true;
+}

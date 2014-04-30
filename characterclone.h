@@ -56,6 +56,8 @@ public:
         AnimatedCollideableSprite::setState(currentState);
     }
 
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
 protected:
     virtual bool usesStack() { return true; }
 
